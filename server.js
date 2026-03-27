@@ -5,9 +5,9 @@ const path = require("path");
 const bodyParser = require("body-parser");
 const session = require("express-session");
 const fs = require("fs");
-
+const env = require("dotenv").config();
 const { db, initDB } = require('./models/dbv');
-
+console.log(process.env.DATABASE_URL);
 const app = express();
 
 (async () => {

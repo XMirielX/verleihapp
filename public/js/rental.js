@@ -84,7 +84,7 @@ async function loadRentals(event_id) {
                     case 20: statusColor = "#ffc107"; break;
                 }
                 item.style.borderLeft = `6px solid ${statusColor}`;
-                item.innerHTML = `<div>${r.pname} (${r.spezification || "-"})</div><div>Barcode: ${r.Code}</div>`;
+                item.innerHTML = `<div>${r.pname} (${r.spezification || "-"})</div><div>Barcode: ${r.code}</div>`;
                 if (container) {
                     container.appendChild(item);
                 }

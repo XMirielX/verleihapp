@@ -1,11 +1,9 @@
-// routes/users.js
 const express = require("express");
 const router = express.Router();
 const bcrypt = require("bcryptjs");
-const { db } = require("../models/dbv"); // deine SQLite DB
+const { db } = require("../models/dbv"); // jetzt Postgres
 const saltRounds = 10;
 
-// Standard-Passwort für neue Benutzer
 const STANDARD_PASSWORD = "thwsteinau";
 
 // -----------------------------
@@ -15,13 +13,13 @@ router.post("/register", async (req, res) => {
     const { username, role } = req.body;
     if (!username) return res.status(400).json({ error: "Username benötigt" });
 
-    const existing = await db.getAsync("SELECT id FROM users WHERE username = ?", [username]);
+    const existing = await db.getAsync("SELECT id FROM users WHERE username = $1", [username]);
     if (existing) return res.status(400).json({ error: "Benutzer existiert bereits" });
 
     const hash = await bcrypt.hash(STANDARD_PASSWORD, saltRounds);
     try {
         await db.runAsync(
-            "INSERT INTO users (username, password_hash, role, first_login) VALUES (?, ?, ?, 1)",
+            "INSERT INTO users (username, password_hash, role, first_login) VALUES ($1, $2, $3, true)",
             [username, hash, role || "user"]
         );
         res.json({ message: `Benutzer "${username}" erfolgreich erstellt mit Standardpasswort` });
@@ -31,35 +29,27 @@ router.post("/register", async (req, res) => {
     }
 });
 
-/// LOGIN
+// -----------------------------
+// LOGIN
+// -----------------------------
 router.post("/login", async (req, res) => {
     try {
-                console.log(req.body);
-
         const { username, password } = req.body;
-        if (!username || !password) {
-            return res.status(400).json({ error: "Username und Passwort erforderlich" });
-        }
+        if (!username || !password) return res.status(400).json({ error: "Username und Passwort erforderlich" });
 
-        const user = await db.getAsync("SELECT * FROM users WHERE username = ?", [username]);
-        if (!user) {
-            return res.status(401).json({ error: "Benutzer nicht gefunden" });
-        }
+        const user = await db.getAsync("SELECT * FROM users WHERE username = $1", [username]);
+        if (!user) return res.status(401).json({ error: "Benutzer nicht gefunden" });
 
         const match = await bcrypt.compare(password, user.password_hash);
-        if (!match) {
-            return res.status(401).json({ error: "Falsches Passwort" });
-        }
+        if (!match) return res.status(401).json({ error: "Falsches Passwort" });
 
-        // Session setzen
         req.session.user = {
             id: user.id,
             username: user.username,
             role: user.role,
         };
 
-        // First login prüfen
-        if (user.first_login == 1) {
+        if (user.first_login) {
             return res.json({ firstLogin: true, username: user.username, role: user.role });
         }
 
@@ -67,48 +57,39 @@ router.post("/login", async (req, res) => {
 
     } catch (err) {
         console.error("Login-Fehler:", err);
-        // Immer JSON zurückgeben, auch bei unerwartetem Fehler
         res.status(500).json({ error: "Interner Serverfehler beim Login" });
     }
 });
+
 // -----------------------------
-// PASSWORD CHANGE (nach erstem Login)
+// PASSWORD CHANGE
 // -----------------------------
-// POST /api/users/change-password
 router.post("/change-password", async (req, res) => {
     const { password } = req.body;
-    if (!req.session.user) {
-        return res.status(401).json({ error: "Nicht eingeloggt" });
-    }
-    if (!password || password.length < 3) {
-        return res.status(400).json({ error: "Passwort zu kurz" });
-    }
-    try {
-        // Passwort hashen
-        const hashedPassword = await bcrypt.hash(password, 10);
+    if (!req.session.user) return res.status(401).json({ error: "Nicht eingeloggt" });
+    if (!password || password.length < 3) return res.status(400).json({ error: "Passwort zu kurz" });
 
-        // Passwort + first_login zurücksetzen
+    try {
+        const hashedPassword = await bcrypt.hash(password, saltRounds);
         await db.runAsync(
-            `UPDATE users 
-             SET password_hash = ?, first_login = 0 
-             WHERE id = ?`,
+            "UPDATE users SET password_hash = $1, first_login = false WHERE id = $2",
             [hashedPassword, req.session.user.id]
         );
-        //console.log("Geänderte Zeilen:", result.changes);
         res.json({ message: "Passwort erfolgreich geändert" });
-
     } catch (err) {
         console.error(err);
         res.status(500).json({ error: "Fehler beim Passwort ändern" });
     }
 });
+
+// -----------------------------
+// RESET PASSWORD (Admin)
+// -----------------------------
 router.post("/:id/reset-password", requireLogin, requireAdmin, async (req, res) => {
     try {
-        const hash = await bcrypt.hash("thwsteinau", 10);
+        const hash = await bcrypt.hash(STANDARD_PASSWORD, saltRounds);
         await db.runAsync(
-            `UPDATE users 
-             SET password_hash = ?, first_login = 1 
-             WHERE id = ?`,
+            "UPDATE users SET password_hash = $1, first_login = true WHERE id = $2",
             [hash, req.params.id]
         );
         res.json({ message: "Passwort zurückgesetzt" });
@@ -159,12 +140,12 @@ router.get("/list", requireLogin, requireAdmin, async (req, res) => {
 
 router.put("/:id/role", requireLogin, requireAdmin, async (req, res) => {
     const { role } = req.body;
-    await db.runAsync("UPDATE users SET role = ? WHERE id = ?", [role, req.params.id]);
+    await db.runAsync("UPDATE users SET role = $1 WHERE id = $2", [role, req.params.id]);
     res.json({ message: "Rolle aktualisiert" });
 });
 
 router.delete("/:id", requireLogin, requireAdmin, async (req, res) => {
-    await db.runAsync("DELETE FROM users WHERE id = ?", [req.params.id]);
+    await db.runAsync("DELETE FROM users WHERE id = $1", [req.params.id]);
     res.json({ message: "Benutzer gelöscht" });
 });
 
