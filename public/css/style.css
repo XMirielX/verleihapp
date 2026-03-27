@@ -1,0 +1,348 @@
+/* =====================================================
+   style.css - THW Förderverein Stil
+===================================================== */
+
+/* ===================== Grundlayout ===================== */
+body {
+    font-family: 'Segoe UI', Tahoma, sans-serif;
+    background-color: #f4f4f9;
+    margin: 20px;
+    color: #333;
+}
+
+h1 {
+    font-size: 28px;
+    margin-bottom: 20px;
+    color: #005aa7;
+}
+
+header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 20px;
+}
+
+header img {
+    height: 50px;
+}
+
+/* ===================== Buttons ===================== */
+button {
+    background-color: #005aa7;
+    color: #fff;
+    border: none;
+    padding: 8px 16px;
+    margin: 4px 2px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: 0.2s;
+}
+
+button:hover {
+    background-color: #004080;
+}
+
+button.small {
+    padding: 2px 6px;
+    font-size: 12px;
+    border-radius: 4px;
+}
+
+/* ===================== Form & Inputs ===================== */
+input[type="text"], select, input[type="date"] {
+    padding: 6px;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+    width: 250px;
+}
+
+.form-row {
+    display: grid;
+    grid-template-columns: 150px 1fr;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+label {
+    font-weight: bold;
+}
+
+/* ===================== Desktop-Tabelle ===================== */
+/* Desktop-Tabelle */
+#desktopView {
+    width: 100%;
+    overflow-x: auto;  /* nur horizontal scrollen, kein sticky nötig */
+    margin-bottom: 20px;
+}
+
+#desktopView table {
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: fixed; /* feste Spaltenbreiten */
+}
+
+#desktopView th,
+#desktopView td {
+    border: 1px solid black;
+    padding: 8px;
+    text-align: left;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+#desktopView th {
+    background-color: #e6f0fa;
+    font-weight: bold;
+}
+
+#desktopView tr:hover {
+    background-color: #f0f8ff;
+}
+
+/* Mobile: Tabelle ausblenden, Karten zeigen */
+@media (max-width: 768px) {
+    #desktopView {
+        display: none;
+    }
+    #productTableContainer {
+        display: block;
+    }
+}
+
+table {
+    width: 100%;          /* Tabelle füllt den Container */
+    border-collapse: collapse;
+    table-layout: fixed;   /* sehr wichtig: feste Spaltenbreiten, gleichmäßig verteilt */
+}
+
+th, td {
+    border: 1px solid black;
+    padding: 8px;
+    text-align: left;
+    overflow: hidden;       /* Text, der zu lang ist, wird abgeschnitten */
+    text-overflow: ellipsis; /* fügt ... hinzu */
+    white-space: nowrap;     /* verhindert Zeilenumbruch */
+}
+
+th {
+    background-color: #e6f0fa;
+    cursor: pointer;
+    position: sticky;
+    top: 0;
+}
+
+tr:hover {
+    background-color: #f0f8ff;
+}
+/* Statusfarben */
+.status-frei {
+    color: green;
+    font-weight: bold;
+}
+.status-verliehen {
+    color: red;
+    font-weight: bold;
+}
+.status-fehlt {
+    color: #b96d10;
+    font-weight: bold;
+}
+
+/* ===================== Mobile-Karten ===================== */
+.rental-item {
+    border-radius: 10px;
+    padding: 12px;
+    margin-bottom: 12px;
+    background: #fff;
+    box-shadow: 0 3px 6px rgba(0,0,0,0.1);
+}
+
+.rental-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+.status-badge {
+    color: white;
+    padding: 4px 8px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: bold;
+}
+
+.rental-body {
+    font-size: 14px;
+    color: #444;
+}
+
+.rental-body div {
+    margin-bottom: 4px;
+}
+#productTableContainer {
+    display: none;
+}
+
+.product-item {
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    padding: 12px;
+    margin-bottom: 10px;
+    background-color: #fff;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.product-title {
+    font-weight: bold;
+    font-size: 1.1rem;
+    margin-bottom: 6px;
+}
+
+.product-sub {
+    font-size: 0.9rem;
+    color: #555;
+    margin-bottom: 8px;
+}
+
+.product-actions button {
+    margin-right: 5px;
+}
+/* ===================== Event-Karten ===================== */
+.event-item {
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    padding: 12px;
+    margin-bottom: 10px;
+    background-color: #fff;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.event-title {
+    font-size: 1.1rem;
+    font-weight: bold;
+    margin-bottom: 6px;
+}
+
+.event-sub {
+    font-size: 0.95rem;
+    color: #555;
+    margin-bottom: 4px;
+}
+
+.event-actions button {
+    margin-right: 5px;
+    padding: 2px 6px;
+    font-size: 12px;
+    border-radius: 4px;
+    background-color: #005aa7;
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+.event-actions button:hover {
+    background-color: #004080;
+}
+@media (max-width: 768px) {
+    /* Tabelle ausblenden auf Mobile */
+    #userTable {
+        display: none;
+    }
+
+    /* Cards Container einblenden */
+    #userCardContainer {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    .user-card {
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        padding: 12px;
+        background-color: #fff;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    .user-card p {
+        margin: 4px 0;
+        font-size: 0.95rem;
+    }
+
+    .user-card button {
+        margin-top: 6px;
+        padding: 4px 8px;
+        font-size: 0.9rem;
+        border-radius: 4px;
+        background-color: #005aa7;
+        color: #fff;
+        border: none;
+        cursor: pointer;
+    }
+
+    .user-card button:hover {
+        background-color: #004080;
+    }
+}
+/* ===================== Responsive ===================== */
+@media (max-width: 768px) {
+    body {
+        margin: 10px;
+        font-size: 14px;
+    }
+
+    h1 {
+        font-size: 22px;
+    }
+
+    button {
+        width: 100%;
+        font-size: 14px;
+        padding: 10px;
+    }
+
+    input[type="text"],
+    select,
+    input[type="date"] {
+        width: 100%;
+    }
+
+    .top-bar {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 8px;
+    }
+
+    #userBar {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+    }
+
+    table {
+        display: none; /* Tabelle ausblenden auf Mobile */
+    }
+
+    #productTableContainer {
+        display: block;
+    }
+}
+#cameraContainer video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* passt das Bild an Container an */
+    border: 2px solid #005aa7; /* optionaler Rahmen */
+    border-radius: 8px;
+}
+/* Mobile-Karten Detailansicht */
+@media (max-width: 600px) {
+    td::before {
+        content: attr(data-label);
+        font-weight: bold;
+        color: #555;
+        margin-right: 8px;
+    }
+}

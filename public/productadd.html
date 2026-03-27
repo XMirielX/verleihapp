@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="de">
+<link rel="stylesheet" href="css/style.css">
+
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://unpkg.com/@zxing/library@0.19.1/umd/index.min.js"></script>
+    <header>
+        <img src="img/logo.png" alt="THW Logo">
+        <br>
+        <h1>Förderverein THW Steinau </h1>
+    </header>
+
+    <meta charset="UTF-8">
+    <title>Produkt anlegen</title>
+</head>
+
+<body>
+
+    <h1>Produkt anlegen</h1>
+    <form id="productForm">
+
+        <div class="form-row">
+            <label>Name:</label>
+            <input type="text" id="name" placeholder="Name">
+        </div>
+
+        <div class="form-row">
+            <label>Bezeichnung:</label>
+            <input type="text" id="bez" placeholder="Bez">
+        </div>
+
+        <div class="form-row">
+            <label>Barcode:</label>
+            <input type="number" id="Code" placeholder="Barcode">
+        </div>
+
+        <div class="form-row">
+            <label>Kategorie:</label>
+            <select id="categorySelect">
+                <option value="">-- Bitte wählen --</option>
+            </select>
+        </div>
+
+        <div class="form-row">
+            <label>Spezifikation:</label>
+            <select id="spezification">
+                <option value="-">-</option>
+                <option value="Schuko">Schuko</option>
+                <option value="32A">32A</option>
+                <option value="63A">63A</option>
+                <option value="125A">125A</option>
+            </select>
+        </div>
+
+        <div class="form-row">
+            <label>Prüfdatum:</label>
+            <input type="date" id="check_date">
+        </div>
+
+        <br>
+
+        <button type="submit">Speichern</button>
+        <button type="button" onclick="window.location.href='products.html'">Zurück</button>
+
+
+    </form>
+    <p id="result"></p>
+
+    <script src="js/product.js"></script>
+
+</body>
+
+</html>

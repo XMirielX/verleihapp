@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="de">
+<link rel="stylesheet" href="css/style.css">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8">
+    <header>
+        <img src="img/logo.png" alt="THW Logo">
+        <br>
+        <h1>Förderverein THW Steinau</h1>
+    </header>
+    <title>Produkte</title>
+</head>
+
+<body>
+
+
+
+    <h1>Produktliste</h1>
+    <button onclick="window.location.href='productadd.html'">
+        Neues Produkt
+    </button>
+
+    <button class="adminOnly" onclick="window.location.href='productdelete.html'">
+        Produkt löschen
+    </button>
+
+    <button class="adminOnly" onclick="window.location.href='productcheck.html'">
+        Produkt prüfen
+    </button>
+    <button onclick="window.location.href='index.html'">
+        Zurück</button>
+    <br><br>
+    <input type="text" id="searchInput" placeholder="Suche nach Name oder Barcode">
+    <select id="categoryFilter">
+        <option value="">Alle Kategorien</option>
+    </select>
+
+    <select id="specFilter">
+        <option value="">Alle Spezifikationen</option>
+    </select><br><br>
+    <p id="summary"></p>
+
+    <!-- Desktop-Tabelle -->
+    <table border="1" id="productTable">
+        <thead>
+            <tr>
+                <th onclick="sortProducts('name')">Name</th>
+                <th onclick="sortProducts('stat')">Status</th>
+                <th onclick="sortProducts('bez')">Bez</th>
+                <th onclick="sortProducts('Code')">Barcode</th>
+                <th onclick="sortProducts('category_id')">Kategorie</th>
+                <th onclick="sortProducts('spezification')">Spezifikation</th>
+                <th onclick="sortProducts('check_date')">Prüfdatum</th>
+                <th>Aktion</th>
+            </tr>
+        </thead>
+        <tbody id="productTableBody"> </tbody>
+    </table>
+
+    <!-- Mobile-Karten Container -->
+    <div id="productTableContainer">
+        <!-- JS erzeugt hier die Karten -->
+    </div>
+
+    <script src="js/product.js"></script>
+
+</body>
+
+</html>

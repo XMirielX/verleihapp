@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="de">
+<link rel="stylesheet" href="css/style.css">
+
+<head>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <meta charset="UTF-8">
+    <header>
+        <img src="img/logo.png" alt="THW Logo">
+        <br>
+        <h1>Förderverein THW Steinau</h1>
+    </header>
+    <link rel="stylesheet" href="css/style.css">
+
+    <title>Veranstaltung anlegen</title>
+</head>
+
+<body>
+
+    <h1>Veranstaltung anlegen</h1>
+
+    <form id="eventForm">
+
+        <input type="text" id="name" placeholder="Name"><br>
+
+        <input type="hidden" id="stat" value="10">
+
+        <input type="text" id="costumer" placeholder="Kunde"><br>
+
+        <input type="date" id="start" placeholder="von"><br>
+
+
+        <input type="date" id="ende" placeholder="bis"><br><br>
+
+        <button type="submit">Speichern</button>
+
+        <button type="button" onclick="window.location.href='events.html'">
+            Zurück
+        </button>
+
+    </form>
+
+    <p id="result"></p>
+
+    <script src="js/event.js"></script>
+
+</body>
+
+</html>

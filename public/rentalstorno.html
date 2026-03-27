@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="de">
+
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8">
+  <script src="https://unpkg.com/@zxing/library@0.19.1/umd/index.min.js"></script>
+
+  <header>
+    <img src="img/logo.png" alt="THW Logo">
+    <br>
+    <h1>Förderverein THW Steinau</h1>
+  </header>
+  <link rel="stylesheet" href="css/style.css">
+
+  <title>Stornieren</title>
+</head>
+
+<body data-mode="storno">
+  <button type="button" onclick="window.location.href='rentals.html'">
+    Zurück
+  </button>
+  <h1>Event auswählen</h1>
+  <select id="eventSelect"></select>
+
+  <h1>Barcode scannen / eingeben</h1>
+  <input type="text" id="barcodeInput" placeholder="Barcode scannen...">
+  <button id="scanBtn">Kamera</button>
+  <div id="cameraContainer" style="width:300px; height:200px; display:none; position:relative;"></div> <br><br>
+
+  <button id="stornorentButton">Stornieren</button>
+
+  <br><br>
+  <div id="desktopView">
+    <table id="rentalTable">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Spezifikation</th>
+          <th>Kategorie</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </div>
+  <div id="rentalTableContainer"></div>
+
+  <div id="mobileView" style="display:none;"></div>
+  <br><br>
+  </form>
+
+  <p id="result"></p>
+
+  <script src="js/rental.js"></script>
+
+</body>
+
+</html>

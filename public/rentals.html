@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="de">
+
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8">
+    <title>Übersicht Verleihsystem</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+    <header>
+        <img src="img/logo.png" alt="THW Logo">
+        <h1>Förderverein THW Steinau </h1>
+    </header>
+
+    <button onclick="window.location.href='rentaladd.html'">Verleihen</button>
+    <button onclick="window.location.href='rentalback.html'">Zurücknehmen</button>
+    <button onclick="window.location.href='rentalstorno.html'">Stornieren</button>
+    <button type="button" onclick="window.location.href='index.html'">Zurück</button>
+
+    <h1>Event auswählen</h1>
+    <select id="eventSelect"></select>
+    <button id="closeEventButton">Event abschließen</button>
+    <button id="exportCsvButton">CSV Export</button>
+
+    <h1>Verliehene Produkte</h1>
+    <!-- Container nur für horizontales Scrollen -->
+    <div id="desktopView">
+        <table id="rentalTable">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Spezifikation</th>
+                    <th>Kategorie</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+    </div>
+<div id="rentalTableContainer"></div>
+<div id="mobileView" style="display:none;"></div>
+  <br><br>
+    <p id="result"></p>
+
+    <script src="js/rental.js"></script>
+</body>
+
+</html>
