@@ -10,15 +10,14 @@ db.runAsync = promisify(db.run.bind(db));
 db.allAsync = promisify(db.all.bind(db));
 db.getAsync = promisify(db.get.bind(db));
 
-
-module.exports = db;
-(async () => {
-    await db.runAsync(`CREATE TABLE IF NOT EXISTS categories (
+async function initDB() {
+    (async () => {
+        await db.runAsync(`CREATE TABLE IF NOT EXISTS categories (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         name TEXT
     )`);
-    
-    await db.runAsync(`CREATE TABLE IF NOT EXISTS products (
+
+        await db.runAsync(`CREATE TABLE IF NOT EXISTS products (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         name TEXT,
         stat TEXT,
@@ -30,7 +29,7 @@ module.exports = db;
         FOREIGN KEY (category_id) REFERENCES categories(id)
     )`);
 
-    await db.runAsync(`CREATE TABLE IF NOT EXISTS event (
+        await db.runAsync(`CREATE TABLE IF NOT EXISTS event (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         name TEXT,
         stat TEXT,
@@ -38,7 +37,7 @@ module.exports = db;
         start DATE,
         ende DATE
     )`);
-await db.runAsync(`
+        await db.runAsync(`
 CREATE TABLE IF NOT EXISTS users (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     username TEXT NOT NULL UNIQUE,
@@ -48,7 +47,7 @@ CREATE TABLE IF NOT EXISTS users (
     first_login INTEGER 
 )
 `);
-    await db.runAsync(`CREATE TABLE IF NOT EXISTS rental (
+        await db.runAsync(`CREATE TABLE IF NOT EXISTS rental (
         id INTEGER,
         event_id INTEGER,
         product_id INTEGER,
@@ -57,4 +56,6 @@ CREATE TABLE IF NOT EXISTS users (
         FOREIGN KEY (event_id) REFERENCES event(id),
         FOREIGN KEY (product_id) REFERENCES products(id)
     )`);
-})();
+    })();
+};
+module.exports = { db, initDB }; // <-- unbedingt so
