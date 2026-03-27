@@ -8,7 +8,7 @@ const session = require("express-session");
 const fs = require("fs");
 const app = express();
 
-
+require('./backup_persistent'); // stellt sicher, dass DB wiederhergestellt wird und Backup erstellt wird
 
 // -----------------------------
 // Middleware
@@ -27,7 +27,6 @@ app.use(session({
     saveUninitialized: false,
     cookie: { secure: false } // true nur bei HTTPS
 }));
-app.get('/favicon.ico', (req, res) => res.status(204));
 // Statische Dateien (HTML, CSS, JS)
 app.use(express.static(path.join(__dirname, 'public')));
 // Login Seiten direkt verlinken:
@@ -61,9 +60,9 @@ app.listen(PORT, () => {
 });
 
 
-const DB_FILE = path.join(__dirname, "verleih.db");
-const BACKUP_DIR = path.join(__dirname, "backups");
-
+//const DB_FILE = path.join(__dirname, "verleih.db");
+//const BACKUP_DIR = path.join(__dirname, "backups");
+/* 
 // Ordner erstellen, falls nicht vorhanden
 if (!fs.existsSync(BACKUP_DIR)) {
     fs.mkdirSync(BACKUP_DIR);
@@ -114,4 +113,4 @@ setInterval(cleanupBackups, 1000 * 60 * 60 * 24);
 
 // Optional: direkt beim Start ein Backup machen
 cleanupBackups();
-backupDatabase();
+backupDatabase(); */
