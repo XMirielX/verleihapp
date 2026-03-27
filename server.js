@@ -54,9 +54,12 @@ app.use("/api/rentals", rentalRoutes);
 // Server starten
 // -----------------------------
 const server = http.createServer(app);
-server.listen(3000, "0.0.0.0", () => {
-    console.log("Server läuft auf Port 3000");
+const PORT = process.env.PORT || 3000;
+
+app.listen(PORT, () => {
+    console.log("Server läuft auf Port", PORT);
 });
+
 
 const DB_FILE = path.join(__dirname, "verleih.db");
 const BACKUP_DIR = path.join(__dirname, "backups");
