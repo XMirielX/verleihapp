@@ -1,7 +1,7 @@
 // routes/users.js
 const express = require("express");
 const router = express.Router();
-const bcrypt = require("bcrypt");
+const bcrypt = require("bcryptjs");
 const db = require("../models/dbv"); // deine SQLite DB
 const saltRounds = 10;
 
