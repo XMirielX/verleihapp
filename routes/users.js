@@ -2,7 +2,7 @@
 const express = require("express");
 const router = express.Router();
 const bcrypt = require("bcryptjs");
-const db = require("../models/dbv"); // deine SQLite DB
+const { db } = require("../models/dbv"); // deine SQLite DB
 const saltRounds = 10;
 
 // Standard-Passwort für neue Benutzer
@@ -31,31 +31,46 @@ router.post("/register", async (req, res) => {
     }
 });
 
-// -----------------------------
-// LOGIN
-// -----------------------------
+/// LOGIN
 router.post("/login", async (req, res) => {
-    const { username, password } = req.body;
-    const user = await db.getAsync("SELECT * FROM users WHERE username = ?", [username]);
-    if (!user) return res.status(401).json({ error: "Benutzer nicht gefunden" });
+    try {
+                console.log(req.body);
 
-    const match = await bcrypt.compare(password, user.password_hash);
-    if (!match) return res.status(401).json({ error: "Falsches Passwort" });
+        const { username, password } = req.body;
+        if (!username || !password) {
+            return res.status(400).json({ error: "Username und Passwort erforderlich" });
+        }
 
-    // Setze Session
-    req.session.user = {
-        id: user.id,
-        username: user.username,
-        role: user.role,
-    };
+        const user = await db.getAsync("SELECT * FROM users WHERE username = ?", [username]);
+        if (!user) {
+            return res.status(401).json({ error: "Benutzer nicht gefunden" });
+        }
 
-    if (user.first_login == 1) {
-        return res.json({ firstLogin: true, username: user.username, role: user.role });
+        const match = await bcrypt.compare(password, user.password_hash);
+        if (!match) {
+            return res.status(401).json({ error: "Falsches Passwort" });
+        }
+
+        // Session setzen
+        req.session.user = {
+            id: user.id,
+            username: user.username,
+            role: user.role,
+        };
+
+        // First login prüfen
+        if (user.first_login == 1) {
+            return res.json({ firstLogin: true, username: user.username, role: user.role });
+        }
+
+        res.json({ message: "Login erfolgreich", firstLogin: false, username: user.username, role: user.role });
+
+    } catch (err) {
+        console.error("Login-Fehler:", err);
+        // Immer JSON zurückgeben, auch bei unerwartetem Fehler
+        res.status(500).json({ error: "Interner Serverfehler beim Login" });
     }
-
-    res.json({ message: "Login erfolgreich", firstLogin: false,username: user.username, role: user.role });
 });
-
 // -----------------------------
 // PASSWORD CHANGE (nach erstem Login)
 // -----------------------------

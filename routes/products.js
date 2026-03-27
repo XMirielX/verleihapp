@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const db = require("../models/dbv");
+const { db } = require("../models/dbv");
 
 // GET /api/products
 router.get("/", async (req, res) => {

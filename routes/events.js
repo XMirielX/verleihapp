@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const db = require("../models/dbv");
+const { db } = require("../models/dbv");
 
 // GET /api/event
 router.get("/", async (req, res) => {

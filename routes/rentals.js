@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const db = require("../models/dbv");
+const { db } = require("../models/dbv");
 
 // POST /api/rentals
 // Body: { event_id: 1, codes: [123, 456] }
