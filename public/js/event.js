@@ -152,7 +152,14 @@ async function deleteEvent(id) {
     if (!confirm("Event wirklich löschen?")) return;
 
     try {
-        await fetch(`/api/events/${id}`, { method: "DELETE" });
+        const res = await fetch(`/api/events/${id}`, { method: "DELETE" });
+
+        if (!res.ok) {
+            const err = await res.json();
+            alert(err.message);
+            return;
+        }
+
         const result = await res.json();
         alert(result.message);
         loadEvents();

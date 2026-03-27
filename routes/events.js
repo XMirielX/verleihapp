@@ -58,18 +58,20 @@ router.delete("/:id", async (req, res) => {
         [id]
     );
     if (rent) {
-        console.log("Event schon mit Verleih"); // Debug, um zu prüfe
-        res.json({ message: "Kann nicht gelöscht werden, schon verwendet" });
-
+        if (rent) {
+            console.log("Event schon mit Verleih");
+            return res.json({ message: "Kann nicht gelöscht werden, schon verwendet" });
+        }
     }
-    if (!rent){
-    try {
-        await db.runAsync("DELETE FROM event WHERE id = ?", [id]);
-        res.json({ message: "Event gelöscht" });
-    } catch (err) {
-        console.error(err);
-        res.status(500).json({ error: "Delete failed" });
-    }}
+    if (!rent) {
+        try {
+            await db.runAsync("DELETE FROM event WHERE id = ?", [id]);
+            res.json({ message: "Event gelöscht" });
+        } catch (err) {
+            console.error(err);
+            res.status(500).json({ error: "Delete failed" });
+        }
+    }
 });
 
 // GET /api/products
