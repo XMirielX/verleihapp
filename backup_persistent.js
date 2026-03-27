@@ -3,8 +3,8 @@ const fs = require('fs');
 const path = require('path');
 
 const DB_PATH = path.join(__dirname, 'verleih.db'); // Haupt-DB im Projekt
-const PERSISTENT_DIR = '/opt/render/data';
-//const PERSISTENT_DIR = path.join(__dirname, 'test_data');
+//const PERSISTENT_DIR = '/opt/render/data';
+const PERSISTENT_DIR = path.join(__dirname, 'test_data');
 const BACKUP_PATH = path.join(PERSISTENT_DIR, 'verleihapp_backup.db'); // Persistentes Backup
 
 // Backup erstellen: kopiert Haupt-DB ins persistente Verzeichnis

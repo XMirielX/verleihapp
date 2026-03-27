@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="de">
+<link rel="stylesheet" href="css/style.css">
+
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://unpkg.com/@zxing/library@0.19.1/umd/index.min.js"></script>
+    <header>
+        <img src="img/logo.png" alt="THW Logo">
+        <br>
+        <h1>Förderverein THW Steinau </h1>
+    </header>
+
+    <meta charset="UTF-8">
+    <title>Produkt anlegen</title>
+</head>
+
+<body>
+
+    <h1>Kategorie anlegen</h1>
+    <form id="CatForm">
+
+        <div class="form-row">
+            <label>Name:</label>
+            <input type="text" id="name" placeholder="Name">
+        </div>
+
+        <br>
+
+        <button type="submit">Speichern</button>
+        <button type="button" onclick="window.location.href='products.html'">Zurück</button>
+
+
+    </form>
+    <p id="result"></p>
+    <h2>Vorhandene Kategorien</h2>
+<ul id="categoryList"></ul>
+
+    <script src="js/cat.js"></script>
+
+</body>
+
+</html>

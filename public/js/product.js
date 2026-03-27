@@ -23,6 +23,9 @@ document.addEventListener("DOMContentLoaded", async () => {
     setupFilterListeners();
     setDefaultDate();
     checkLogin();
+    loadCategories();
+    loadCat();
+    addCat()
 });
 
 // =====================================================
@@ -241,6 +244,7 @@ async function loadCategories() {
     }
 }
 
+
 function fillSpecFilter(products) {
     const select = document.getElementById("specFilter");
     if (!select) return;
@@ -298,7 +302,7 @@ async function deleteProduct(id) {
     if (!confirm("Produkt wirklich löschen?")) return;
     await fetch(`/api/products/${id}`, { method: "DELETE" });
     const result = await res.json();
-        if (!res.ok) throw new Error(result.error);
+    if (!res.ok) throw new Error(result.error);
     alert(result.message);
 
     loadProducts();
