@@ -1,0 +1,17 @@
+# Node modules
+node_modules/
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Env-Dateien
+.env
+
+# Datenbanken (lokale SQLite, falls du sie nicht pushen willst)
+*.db
+
+# Betriebssystem-Dateien
+.DS_Store
+Thumbs.db
