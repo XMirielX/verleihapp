@@ -9,7 +9,10 @@ const fs = require("fs");
 const app = express();
 
 require('./backup_persistent'); // stellt sicher, dass DB wiederhergestellt wird und Backup erstellt wird
+const { createInitialAdmin } = require('./init_admin');
 
+// Direkt beim Start prüfen und Admin ggf. anlegen
+createInitialAdmin();
 // -----------------------------
 // Middleware
 // -----------------------------
