@@ -8,8 +8,15 @@ const session = require("express-session");
 const fs = require("fs");
 const app = express();
 
-require('./backup_persistent'); // stellt sicher, dass DB wiederhergestellt wird und Backup erstellt wird
-require('./init_admin');
+const { db, initDB } = require('./models/dbv');
+
+(async () => {
+    await initDB();          // Tabellen sind sicher angelegt
+    require('./init_admin'); // Admin wird erst jetzt angelegt
+    require('./backup_persistent'); // DB Backup/Restore
+
+    // ... jetzt app.use, Routen usw.
+})();
 
 // Direkt beim Start prüfen und Admin ggf. anlegen
 // -----------------------------

@@ -10,6 +10,7 @@ db.runAsync = promisify(db.run.bind(db));
 db.allAsync = promisify(db.all.bind(db));
 db.getAsync = promisify(db.get.bind(db));
 
+
 module.exports = db;
 (async () => {
     await db.runAsync(`CREATE TABLE IF NOT EXISTS categories (
