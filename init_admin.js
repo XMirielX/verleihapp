@@ -16,7 +16,7 @@ async function createAdminIfEmpty() {
       const hash = await bcrypt.hash(INITIAL_ADMIN.password, 10);
 
       await db.runAsync(
-        'INSERT INTO users (username, password_hash, role, first_login) VALUES ($1, $2, $3, 1)',
+        'INSERT INTO users (username, password_hash, role, first_login) VALUES (?, ?, ?, 1)',
         [INITIAL_ADMIN.username, hash, INITIAL_ADMIN.role]
       );
       console.log(`Initialer Admin "${INITIAL_ADMIN.username}" wurde angelegt ✅`);

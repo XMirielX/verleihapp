@@ -18,7 +18,7 @@ const DB_PATH = path.join(BASE_DIR, "verleih.db");
 console.log("📦 DB Pfad:", DB_PATH);
 
 // DB richtig initialisieren
-const db = new sqlite3.Database("verleih.db", (err) => {
+const db = new sqlite3.Database(DB_PATH, (err) => {
     if (err) {
         console.error("Fehler beim Öffnen der DB:", err);
     } else {
