@@ -79,9 +79,9 @@ async function loginUser(username, password) {
             window.location.href = "passwordchange.html";
         }
         else {        // Zur letzten besuchten Seite springen
-        const last = localStorage.getItem("lastPage") || "index.html";
-        localStorage.removeItem("lastPage");
-        window.location.href = last;
+            const last = localStorage.getItem("lastPage") || "index.html";
+            localStorage.removeItem("lastPage");
+            window.location.href = last;
         }
     } catch (err) {
         const el = document.getElementById("loginResult");
@@ -116,7 +116,21 @@ document.addEventListener("DOMContentLoaded", async () => {
     if (adminBtn) {
         adminBtn.style.display = (!user || user.role !== "admin") ? "none" : "inline-block";
     }
+    const backupBtn = document.getElementById("BackupBtn");
+    if (backupBtn) {
+        backupBtn.addEventListener("click", async () => {
+            try {
+                const res = await fetch("/api/main/backup", { method: "POST" });
+                const result = await res.json();
 
+                if (!res.ok) throw new Error(result.error);
+
+                alert("Backup erstellt ✅");
+            } catch (err) {
+                alert("Fehler beim Backup: " + err.message);
+            }
+        });
+    }
     // Login-Button (falls auf Login-Seite)
     const loginBtn = document.getElementById("loginButton");
     if (loginBtn) {

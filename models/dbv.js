@@ -1,11 +1,25 @@
 // models/dbv.js
 const sqlite3 = require("sqlite3").verbose();
 const { promisify } = require("util");
+const path = require("path");
+const fs = require("fs");
 
-// DB richtig initialisieren
-const db = new sqlite3.Database("verleih.db", (err) => {
+// erkennt automatisch Render vs lokal
+
+
+// Basisordner: Render vs lokal
+const BASE_DIR = process.env.RENDER
+  ? "/opt/render/data"     // Render: persistenter Speicher
+  : path.join(__dirname, "..", "data"); // lokal: Projekt-Root/data
+
+const DB_PATH = path.join(BASE_DIR, "verleih.db");
+
+console.log("📦 DB Pfad:", DB_PATH);
+
+// DB verbinden
+const db = new sqlite3.Database(DB_PATH, (err) => {
     if (err) {
-        console.error("Fehler beim Öffnen der DB:", err);
+        console.error("❌ Fehler beim Öffnen der DB:", err);
     } else {
         console.log("✅ DB verbunden");
     }

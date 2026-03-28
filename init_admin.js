@@ -8,7 +8,7 @@ async function createAdminIfEmpty() {
     try {
         // Prüfen, ob schon Benutzer existieren
         const row = await db.getAsync('SELECT COUNT(*) AS count FROM users');
-        console.log('Prüfung Users-Tabelle erfolgreich');
+        console.log('Prüfung Users-Tabelle erfolgreich; ', row.count);
 
         if (row.count === 0) {
             console.log('Tabelle leer – lege Admin an...');
