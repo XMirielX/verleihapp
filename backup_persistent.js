@@ -53,29 +53,34 @@ function restoreDB() {
 }
   const { db } = require('./models/dbv');
 
-// Funktion prüfen, ob DB leer ist
-function isDBEmpty(callback) {
-    db.get("SELECT COUNT(*) as count FROM products", (err, row) => {
-        if (err) {
-            console.log("⚠️ Tabelle fehlt → DB leer");
-            return callback(null, true); // Tabelle existiert nicht = leer
-        }
+function isDBFileEmpty() {
+    if (!fs.existsSync(DB_PATH)) return true;
 
-        console.log("🔍 Anzahl Produkte:", row.count);
-        callback(null, row.count === 0);
-    });
+    const stats = fs.statSync(DB_PATH);
+    return stats.size < 1000; // leere SQLite DB ist sehr klein
 }
-// Automatisch beim Start ausführen
-isDBEmpty((err, empty) => {
-    if (err) {
-        console.error("Fehler beim Prüfen der DB:", err);
+function restoreIfNeeded() {
+    if (!isDBFileEmpty()) {
+        console.log("📦 DB hat Inhalt → kein Restore nötig");
         return;
     }
 
-    if (empty) {
-        console.log("⚠️ DB ist leer, versuche letztes Backup wiederherzustellen...");
-        const restored = restoreDB();
-        if (!restored) console.log("❌ Kein Backup gefunden, DB bleibt leer");
+    if (!fs.existsSync(BACKUP_DIR)) return;
+
+    const files = fs.readdirSync(BACKUP_DIR)
+        .filter(f => f.endsWith(".db"))
+        .sort()
+        .reverse();
+
+    if (files.length === 0) {
+        console.log("❌ Kein Backup gefunden");
+        return;
     }
-});
-module.exports = { backupDB, restoreDB };
+
+    const latest = path.join(BACKUP_DIR, files[0]);
+    fs.copyFileSync(latest, DB_PATH);
+
+    console.log("🔄 DB erfolgreich VOR Start restored:", files[0]);
+}
+restoreIfNeeded() 
+module.exports = { backupDB, restoreIfNeeded };

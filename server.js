@@ -10,12 +10,13 @@ const { db, initDB } = require('./models/dbv');
 const app = express();
 
 (async () => {
-    // Tabellen anlegen
-    await initDB();
 
     // Backupd / ansonsten Admin anlegen
-   require('./backup_persistent');
-   require('./init_admin');
+    require('./backup_persistent');
+
+    await initDB();
+
+    require('./init_admin');
 
     // Middleware
     app.use(bodyParser.json());

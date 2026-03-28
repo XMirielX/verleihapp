@@ -13,7 +13,7 @@ const page = window.location.pathname;
 document.addEventListener("DOMContentLoaded", async () => {
     await loadCategories();
     await loadProducts();
-    user = await checkLogin();
+    const user = await checkLogin();
     const adminBtn = document.getElementById("adminBtn");
     document.querySelectorAll(".adminOnly").forEach(btn => {
         btn.style.display = (user && user.role === "admin") ? "inline-block" : "none";
@@ -300,12 +300,15 @@ function setupForm() {
 // =====================================================
 async function deleteProduct(id) {
     if (!confirm("Produkt wirklich löschen?")) return;
-    await fetch(`/api/products/${id}`, { method: "DELETE" });
-    const result = await res.json();
-    if (!res.ok) throw new Error(result.error);
-    alert(result.message);
-
-    loadProducts();
+    try {
+        const res = await fetch(`/api/products/${id}`, { method: "DELETE" });
+        const result = await res.json();
+        if (!res.ok) throw new Error(result.error);
+        alert(result.message);
+        loadProducts();
+    } catch (err) {
+        alert("Fehler beim Löschen: " + err.message);
+    }
 }
 
 // =====================================================
