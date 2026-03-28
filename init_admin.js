@@ -5,10 +5,11 @@ const { db } = require('./models/dbv'); // dein DB-Wrapper mit getAsync/runAsync
 const INITIAL_ADMIN = { username: 'admin', password: 'thwsteinau', role: 'admin' };
 
 async function createAdminIfEmpty() {
-  try {
+
     // Prüfen, ob schon Benutzer existieren
     const row = await db.getAsync('SELECT COUNT(*) AS count FROM users');
     console.log('Prüfung Users-Tabelle erfolgreich');
+
 
     if (parseInt(row.count) === 0) {
       console.log('Tabelle leer – lege Admin an...');
@@ -22,10 +23,8 @@ async function createAdminIfEmpty() {
     } else {
       console.log('Users-Tabelle enthält bereits Einträge – nichts zu tun');
     }
-  } catch (err) {
-    console.error('Fehler beim Anlegen des Admins:', err);
-  }
-}
+  } 
+
 
 // Direkt aufrufen
 createAdminIfEmpty();

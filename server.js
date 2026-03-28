@@ -7,29 +7,16 @@ const session = require("express-session");
 const fs = require("fs");
 const env = require("dotenv").config();
 const { db, initDB } = require('./models/dbv');
-console.log(process.env.DATABASE_URL);
 const app = express();
 
 (async () => {
-    // Tabellen anlegen
+
+    // Backupd / ansonsten Admin anlegen
+    require('./backup_persistent');
+
     await initDB();
 
-    // Admin anlegen
     require('./init_admin');
-
-    // Backup prüfen / erstellen
-    const BACKUP_DIR = path.join(__dirname, "test_data");
-    if (!fs.existsSync(BACKUP_DIR)) fs.mkdirSync(BACKUP_DIR);
-
-    const DB_FILE = path.join(__dirname, "verleih.db");
-    const BACKUP_FILE = path.join(BACKUP_DIR, "verleihapp_backup.db");
-
-    if (fs.existsSync(DB_FILE)) {
-        fs.copyFileSync(DB_FILE, BACKUP_FILE);
-        console.log("✅ Backup erstellt");
-    } else {
-        console.log("⚠️ DB existiert noch nicht, Backup übersprungen");
-    }
 
     // Middleware
     app.use(bodyParser.json());
@@ -57,7 +44,9 @@ const app = express();
     const eventRoutes = require('./routes/events');
     const catRoutes = require('./routes/categories');
     const rentalRoutes = require('./routes/rentals');
+    const mainRoutes = require('./routes/main');
 
+    app.use("/api/main", mainRoutes);
     app.use("/api/users", userRoutes);
     app.use("/api/categories", catRoutes);
     app.use("/api/products", productRoutes);
@@ -67,5 +56,18 @@ const app = express();
     // Server starten
     const PORT = process.env.PORT || 3000;
     app.listen(PORT, () => console.log(`Server läuft auf Port ${PORT}`));
+
+    setInterval(() => {
+        console.log("Auto-Backup läuft...");
+        backupDB();
+    }, 1000 * 60 * 60 * 24 * 7); // 7 Tage
+    function cleanupBackups() {
+        const files = fs.readdirSync(BACKUP_DIR).sort();
+
+        while (files.length > 10) {
+            const file = files.shift();
+            fs.unlinkSync(path.join(BACKUP_DIR, file));
+        }
+    }
 
 })();
