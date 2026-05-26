@@ -24,8 +24,6 @@ document.addEventListener("DOMContentLoaded", async () => {
     setDefaultDate();
     checkLogin();
     loadCategories();
-    loadCat();
-    addCat()
 });
 
 // =====================================================

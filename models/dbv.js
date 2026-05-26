@@ -9,9 +9,7 @@ const fs = require("fs");
 // models/dbv.js
 
 // Basisordner: Render vs lokal
-const BASE_DIR = process.env.RENDER
-  ? "/opt/render/data"     // Render: persistenter Speicher
-  : path.join(__dirname, "..", "data"); // lokal: Projekt-Root/data
+const BASE_DIR = process.env.DB_DIR || path.join(__dirname, "..", "data");
 
 const DB_PATH = path.join(BASE_DIR, "verleih.db");
 
@@ -46,7 +44,7 @@ async function initDB() {
         name TEXT,
         stat TEXT,
         bez TEXT,
-        Code INTEGER,
+        code INTEGER,
         category_id INTEGER,
         spezification TEXT,
         check_date DATE,

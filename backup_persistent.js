@@ -1,9 +1,11 @@
 const fs = require('fs');
 const path = require('path');
 
-const BASE_DIR = process.env.RENDER
-  ? "/opt/render/data"
-  : path.join(__dirname, "data");
+const BASE_DIR = process.env.DB_DIR || path.join(__dirname, "..", "data");
+
+if (!fs.existsSync(BASE_DIR)) {
+    fs.mkdirSync(BASE_DIR, { recursive: true });
+}
 
 const DB_PATH = path.join(BASE_DIR, 'verleih.db');
 const BACKUP_DIR = path.join(BASE_DIR, 'backups');

@@ -19,7 +19,7 @@ async function createAdminIfEmpty() {
         'INSERT INTO users (username, password_hash, role, first_login) VALUES (?, ?, ?, 1)',
         [INITIAL_ADMIN.username, hash, INITIAL_ADMIN.role]
       );
-      console.log(`Initialer Admin "${INITIAL_ADMIN.username}" wurde angelegt ✅`);
+      console.log(`Initialer Admin "${INITIAL_ADMIN.username}"/"${INITIAL_ADMIN.password}" wurde angelegt ✅`);
     } else {
       console.log('Users-Tabelle enthält bereits Einträge – nichts zu tun');
     }

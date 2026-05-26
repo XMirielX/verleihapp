@@ -7,7 +7,6 @@ router.get("/", async (req, res) => {
     try {
         const rows = await db.allAsync("SELECT * FROM products");
         res.json(rows);
-        console.log('Lesen Produkttabelle-Tabelle erfolgreich', rows);
 
     } catch (err) {
         console.error(err);
@@ -17,7 +16,7 @@ router.get("/", async (req, res) => {
 
 // POST /api/products
 router.post("/", async (req, res) => {
-    const { name, bez, Code, category_id, spezification, check_date } = req.body;
+    const { name, bez, code, category_id, spezification, check_date } = req.body;
     // eigene runAsync-Funktion für INSERT, damit lastID funktioniert
     const runAsync = (sql, params = []) => {
         return new Promise((resolve, reject) => {
@@ -27,21 +26,21 @@ router.post("/", async (req, res) => {
             });
         });
     };
-    if (!Code || isNaN(Code)) {
-        res.json({ message: `Barcode bereit vergeben` });
-    }
+    if (!code || isNaN(code)) {
+    return res.status(400).json({ error: "Ungültiger Barcode" });
+}
                 console.log('Lesen Produkttabelle-Tabelle erfolgreich');
 
-    const existing = await db.getAsync("SELECT id FROM products WHERE Code = ?", [Code]);
+    const existing = await db.getAsync("SELECT id FROM products WHERE code = ?", [code]);
     if (existing) {
-        res.json({ message: `Barcode bereit vergeben` });
-    }
-    if (Code || !existing) {
+    return res.status(400).json({ error: "Barcode bereits vergeben" });
+}
+    if (code || !existing) {
         try {
             const result = await runAsync(
-                `INSERT INTO products (name, stat, bez, Code, category_id, spezification, check_date)
+                `INSERT INTO products (name, stat, bez, code, category_id, spezification, check_date)
              VALUES (?, ?, ?, ?, ?, ?, ?)`,
-                [name, 10, bez, Code, category_id, spezification, check_date]
+                [name, 10, bez, code, category_id, spezification, check_date]
             );
             res.json({
                 message: `Produkt "${name}" erfolgreich angelegt`,
