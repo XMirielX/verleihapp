@@ -3,6 +3,7 @@
 // =====================================================
 let allEvents = [];
 let sortDirection = 1;
+let endWasManuallyChanged = false;
 
 const form = document.getElementById("eventForm");
 const searchInput = document.getElementById("searchInput");
@@ -112,10 +113,33 @@ window.addEventListener("resize", () => {
 function setupForm() {
     const form = document.getElementById("eventForm");
     if (!form) return;
+    
+    document.getElementById("ende").addEventListener("input", () => {
+        endWasManuallyChanged = true;
+    });
+    document.getElementById("start").addEventListener("change", (e) => {
+        const startValue = e.target.value;
+        if (!startValue) return;
 
+        const startDate = new Date(startValue);
+
+        const endDate = new Date(startDate);
+        endDate.setDate(endDate.getDate() + 2); // = 3 Tage Event
+
+        const formatted = endDate.toISOString().split("T")[0];
+
+        const endInput = document.getElementById("ende");
+
+        // nur überschreiben, wenn User NICHT manuell eingegriffen hat
+        if (!endWasManuallyChanged) {
+            endInput.value = formatted;
+        }
+
+        endInput.min = startValue;
+    });
     form.addEventListener("submit", async (e) => {
         e.preventDefault();
-
+   
         const data = {
             name: document.getElementById("name").value,
             stat: document.getElementById("stat").value,
@@ -136,6 +160,7 @@ function setupForm() {
 
             alert("Event gespeichert (ID: " + result.id + ")");
             form.reset();
+                endWasManuallyChanged = false;
             loadEvents();
 
         } catch (err) {
