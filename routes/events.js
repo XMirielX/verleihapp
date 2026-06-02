@@ -124,12 +124,11 @@ router.get("/:id/export", async (req, res) => {
                 COUNT(*) AS amount
             FROM rental r
             JOIN products p ON r.product_id = p.id
-            JOIN category c ON p.category_id = c.id
+            LEFT JOIN categories c ON p.category_id = c.id
             WHERE r.event_id = ?
             GROUP BY c.name, p.name, p.spezification
             ORDER BY c.name, p.name, p.spezification
         `, [event_id]);
-
         // Nur fehlende Artikel (stat = 20)
         const missingRows = await db.allAsync(`
             SELECT 
@@ -139,12 +138,11 @@ router.get("/:id/export", async (req, res) => {
                 COUNT(*) AS amount
             FROM rental r
             JOIN products p ON r.product_id = p.id
-            JOIN category c ON p.category_id = c.id
+            LEFT JOIN categories c ON p.category_id = c.id
             WHERE r.event_id = ? AND r.stat = 20
             GROUP BY c.name, p.name, p.spezification
             ORDER BY c.name, p.name, p.spezification
         `, [event_id]);
-
         const csvLines = [];
 
         // Eventinfo

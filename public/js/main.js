@@ -99,7 +99,9 @@ async function logout() {
         window.location.href = "login.html";
     }
 }
-
+function toggleDarkMode() {
+    document.body.classList.toggle("dark-mode");
+}
 // =====================================================
 // 🚀 INIT
 // =====================================================

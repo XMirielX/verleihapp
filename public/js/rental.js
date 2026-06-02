@@ -15,12 +15,14 @@ document.addEventListener("DOMContentLoaded", () => {
     setupBarcodeScanner();
     setupCameraButton();
     setupCloseEventButton();
+    setupCsvExportButton();
 });
 
 // -----------------------------
 // EVENTS LADEN
 // -----------------------------
 async function loadEvents(selectId = null) {
+    console.log("loadRentals", selectId);
     const isRentalPage = window.location.pathname.endsWith("rentals.html");
     const url = isRentalPage
         ? "/api/events"
@@ -30,8 +32,9 @@ async function loadEvents(selectId = null) {
     if (!res.ok) throw new Error("Fehler beim Laden der Events");
 
     let events = await res.json();
-    events = sortEventsSmart(events);
+events = sortEventsSmart(events);
 
+console.log("Events:", events);
     if (selectId) {
         const select = document.getElementById(selectId);
         if (select) {
@@ -52,7 +55,8 @@ async function loadEvents(selectId = null) {
             });
         }
     }
-    updateCloseButtonVisibility();
+     
+    updateCloseButtonVisibility(events);
     return events;
 }
 
@@ -65,7 +69,7 @@ async function loadRentals(event_id) {
         const res = await fetch(`/api/rentals/${event_id}`);
         if (!res.ok) throw new Error("Fehler beim Laden der Verleihdaten");
         const rentals = await res.json();
-
+        console.log("Rentals:", rentals);
         const table = document.getElementById("rentalTable");
         const container = document.getElementById("rentalTableContainer");
 
@@ -156,9 +160,28 @@ function setupRentalButtons() {
         if (element) element.addEventListener("click", () => handleRentalAction(btn.url));
     });
 }
+function setupCsvExportButton() {
+    const btn = document.getElementById("exportCsvButton");
+    if (!btn) return;
 
+    btn.addEventListener("click", async () => {
+        try {
+            const eventSelect = document.getElementById("eventSelect");
+            if (!eventSelect) throw new Error("Event-Select nicht gefunden");
+
+            const event_id = parseInt(eventSelect.value, 10);
+            if (!event_id) throw new Error("Kein Event ausgewählt");
+
+            window.location.href = `/api/events/${event_id}/export`;
+
+        } catch (err) {
+            console.error(err);
+            alert(err.message);
+        }
+    });
+}
 // =====================================================
-// BARCODE SCANNER
+// BARcode SCANNER
 // =====================================================
 function setupBarcodeScanner() {
     const barcodeInput = document.getElementById("barcodeInput");
@@ -183,8 +206,8 @@ function setupCameraButton() {
 
     btn.addEventListener("click", async () => {
         try {
-            const scannedCode = await startCameraScan();
-            if (scannedCode) handleScan(scannedCode);
+            const scannedcode = await startCameraScan();
+            if (scannedcode) handleScan(scannedcode);
         } catch (err) {
             console.error("Scan fehlgeschlagen:", err);
             alert("Scan konnte nicht durchgeführt werden");
@@ -323,12 +346,12 @@ function setupCloseEventButton() {
         }
     });
 }
-function updateCloseButtonVisibility() {
+function updateCloseButtonVisibility(allEvents) {
     const btn = document.getElementById("closeEventButton");
     const select = document.getElementById("eventSelect");
 
     if (!btn || !select) return;
-
+   
     const event_id = parseInt(select.value, 10);
     const event = allEvents.find(e => e.id == event_id);
 

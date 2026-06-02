@@ -140,24 +140,27 @@ async function editUser(id) {
     const newRole = prompt("Neue Rolle (admin/user):");
 
     if (!newRole) return;
+    if (newRole !== "admin" && newRole !== "user") {
+        alert("Rollenbezeichnung kann nur admin oder user sein");
+    } else {
+        try {
+            const res = await fetch(`/api/users/${id}/role`, {
+                method: "PUT",
+                headers: { "Content-Type": "application/json" },
+                credentials: "include",
+                body: JSON.stringify({ role: newRole })
+            });
 
-    try {
-        const res = await fetch(`/api/users/${id}/role`, {
-            method: "PUT",
-            headers: { "Content-Type": "application/json" },
-            credentials: "include",
-            body: JSON.stringify({ role: newRole })
-        });
+            const result = await res.json();
+            if (!res.ok) throw new Error(result.error);
 
-        const result = await res.json();
-        if (!res.ok) throw new Error(result.error);
+            alert("Rolle geändert");
+            loadUsers();
+        
 
-        alert("Rolle geändert");
-        loadUsers();
-
-    } catch (err) {
-        alert(err.message);
-    }
+        } catch (err) {
+            alert(err.message);
+    }}
 }
 
 async function resetPass(id) {

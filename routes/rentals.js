@@ -3,17 +3,17 @@ const router = express.Router();
 const { db } = require("../models/dbv");
 
 // POST /api/rentals
-// Body: { event_id: 1, codes: [123, 456] }
+// Body: { event_id: 1, Codes: [123, 456] }
 router.post("/", async (req, res) => {
-    const { event_id, codes } = req.body;
-    if (!event_id || !codes.length) return res.status(400).json({ error: "Missing data" });
+    const { event_id, Codes } = req.body;
+    if (!event_id || !Codes.length) return res.status(400).json({ error: "Missing data" });
     console.log("Aktive Events:", event_id); // Debug, um zu prüfe
     const results = [];
     try {
-        for (const code of codes) {
-            const product = await db.getAsync("SELECT id, name FROM products WHERE Code = ?", [code]);
+        for (const code of Codes) {
+            const product = await db.getAsync("SELECT id, name FROM products WHERE code = ?", [Code]);
             if (!product) {
-                results.push({ code, status: "nicht gefunden" });
+                results.push({ Code, status: "nicht gefunden" });
                 continue;
             }
             const double = await db.getAsync(
@@ -21,7 +21,7 @@ router.post("/", async (req, res) => {
                 [product.id]
             );
             if (double) {
-                results.push({ code, product: product.name, status: "bereits verliehen" });
+                results.push({ Code, product: product.name, status: "bereits verliehen" });
                 continue;
             }
             // eigene runAsync-Funktion für INSERT, damit lastID funktioniert
@@ -40,7 +40,7 @@ router.post("/", async (req, res) => {
                 "UPDATE products SET stat = 90 WHERE id = ?",
                 [product.id]
             );
-            results.push({ code, product: product.name, status: "wird ausgeliehen" });
+            results.push({ Code, product: product.name, status: "wird ausgeliehen" });
         }
         res.json({ message: "Fertig", results });
     } catch (err) {
@@ -51,17 +51,17 @@ router.post("/", async (req, res) => {
 
 
 router.post("/return", async (req, res) => {
-    const { event_id, codes } = req.body;
+    const { event_id, Codes } = req.body;
 
-    if (!event_id || !codes || !codes.length) {
+    if (!event_id || !Codes || !Codes.length) {
         return res.status(400).json({ error: "Missing data" });
     }
     const results = [];
     try {
-        for (const code of codes) {
-            const product = await db.getAsync("SELECT id, name FROM products WHERE Code = ?", [code]);
+        for (const code of Codes) {
+            const product = await db.getAsync("SELECT id, name FROM products WHERE code = ?", [Code]);
             if (!product) {
-                results.push({ code, status: "Produkt nicht gefunden" });
+                results.push({ Code, status: "Produkt nicht gefunden" });
                 continue;
             }
             const rental = await db.getAsync(
@@ -69,7 +69,7 @@ router.post("/return", async (req, res) => {
                 [product.id, event_id]
             );
             if (!rental) {
-                results.push({ code, product: product.name, status: "nicht verliehen" });
+                results.push({ Code, product: product.name, status: "nicht verliehen" });
                 continue;
             }
             // zurückgeben
@@ -79,7 +79,7 @@ router.post("/return", async (req, res) => {
                 "UPDATE products SET stat = 10 WHERE id = ?",
                 [product.id]
             );
-            results.push({ code, product: product.name, status: "zurückgegeben" });
+            results.push({ Code, product: product.name, status: "zurückgegeben" });
         }
         res.json({ message: "Fertig", results });
     } catch (err) {
@@ -90,20 +90,20 @@ router.post("/return", async (req, res) => {
 
 
 router.post("/storno", async (req, res) => {
-    const { event_id, codes } = req.body;
-    if (!event_id || !codes || !codes.length) {
+    const { event_id, Codes } = req.body;
+    if (!event_id || !Codes || !Codes.length) {
         return res.status(400).json({ error: "Missing data" });
     }
     const results = [];
     try {
-        for (const code of codes) {
+        for (const code of Codes) {
             //  Produkt suchen
             const product = await db.getAsync(
-                "SELECT id, name FROM products WHERE Code = ?",
-                [code]
+                "SELECT id, name FROM products WHERE code = ?",
+                [Code]
             );
             if (!product) {
-                results.push({ code, status: "Produkt nicht gefunden" });
+                results.push({ Code, status: "Produkt nicht gefunden" });
                 continue;
             }
             //  offene Ausleihe suchen
@@ -112,7 +112,7 @@ router.post("/storno", async (req, res) => {
                 [product.id, event_id]
             );
             if (!rental) {
-                results.push({ code, product: product.name, status: "nicht verliehen" });
+                results.push({ Code, product: product.name, status: "nicht verliehen" });
                 continue;
             }
             //  Rental löschen (STORNO)
@@ -126,7 +126,7 @@ router.post("/storno", async (req, res) => {
                 [product.id]
             );
             results.push({
-                code,
+                Code,
                 product: product.name,
                 status: "storniert"
             });
@@ -140,14 +140,16 @@ router.post("/storno", async (req, res) => {
 router.get("/:event_id", async (req, res) => {
     const event_id = parseInt(req.params.event_id, 10);
     try {
+
         const products = await db.allAsync(`
             SELECT p.name as pname, p.spezification, c.name as cname, r.stat, p.Code
             FROM products p
             JOIN rental r ON p.id = r.product_id
-            JOIN categories c ON c.id = p.category_id
+            LEFT JOIN categories c ON c.id = p.category_id
             WHERE r.event_id = ?
         `, [event_id]);
         res.json(products);
+
     } catch (err) {
         console.error(err);
         res.status(500).json({ error: "Datenbankfehler" });

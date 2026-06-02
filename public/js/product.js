@@ -22,8 +22,6 @@ document.addEventListener("DOMContentLoaded", async () => {
     setupForm();
     setupFilterListeners();
     setDefaultDate();
-    checkLogin();
-    loadCategories();
 });
 
 // =====================================================
