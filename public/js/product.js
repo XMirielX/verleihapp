@@ -450,4 +450,6 @@ async function checkLogin() {
         return null;
     }
 }
-
+function normalizeCode(code) {
+    return String(Number(code));
+}
