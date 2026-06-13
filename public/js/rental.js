@@ -88,7 +88,7 @@ async function loadRentals(event_id) {
                     case 20: statusColor = "#ffc107"; break;
                 }
                 item.style.borderLeft = `6px solid ${statusColor}`;
-                item.innerHTML = `<div>${r.pname} (${r.spezification || "-"})</div><div>Barcode: ${r.code}</div>`;
+                item.innerHTML = `<div>${r.pname} (${r.spezification || "-"})</div><div>Barcode: ${r.Code}</div>`;
                 if (container) {
                     container.appendChild(item);
                 }
@@ -190,9 +190,9 @@ function setupBarcodeScanner() {
     barcodeInput.addEventListener("keydown", e => {
         if (e.key === "Enter") {
             e.preventDefault();
-            const code = barcodeInput.value.trim();
-            if (!code) return;
-            handleScan(code);
+            const Code = barcodeInput.value.trim();
+            if (!Code) return;
+            handleScan(Code);
             barcodeInput.value = "";
         }
     });
@@ -215,12 +215,12 @@ function setupCameraButton() {
     });
 }
 
-function handleScan(code) {
+function handleScan(Code) {
     const mode = document.body.dataset.mode;
     if (navigator.vibrate) navigator.vibrate(100);
 
     const input = document.getElementById("barcodeInput");
-    if (input) input.value = code;
+    if (input) input.value = Code;
 
     switch (mode) {
         case "rent": handleRentalAction("/api/rentals"); break;
@@ -238,15 +238,15 @@ async function handleRentalAction(url) {
         if (!event_id) throw new Error("Kein Event ausgewählt");
 
         const barcodeInput = document.getElementById("barcodeInput");
-        const code = barcodeInput ? barcodeInput.value.trim() : null;
-        if (!code) {
+        const Code = barcodeInput ? barcodeInput.value.trim() : null;
+        if (!Code) {
             alert("Bitte Barcode eingeben oder scannen");
             return;
         }
 
         const payload = {
             event_id,
-            codes: [code]   // <-- hier als Array
+            Codes: [Code]   // <-- hier als Array
         };
 
         const res = await fetch(url, {
@@ -266,7 +266,7 @@ async function handleRentalAction(url) {
         }
         if (result.results && result.results.length > 0) {
             const messages = result.results.map(r =>
-                `${r.code}: ${r.status}${r.product ? " (" + r.product + ")" : ""}`
+                `${r.Code}: ${r.status}${r.product ? " (" + r.product + ")" : ""}`
             );
 
             alert(messages.join("\n"));

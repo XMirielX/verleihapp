@@ -44,7 +44,7 @@ async function initDB() {
         name TEXT,
         stat TEXT,
         bez TEXT,
-        code INTEGER,
+        Code INTEGER,
         category_id INTEGER,
         spezification TEXT,
         check_date DATE,

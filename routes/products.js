@@ -27,7 +27,7 @@ router.get("/:id", async (req, res) => {
 
 // POST /api/products
 router.post("/", async (req, res) => {
-    const { name, bez, code, category_id, spezification, check_date } = req.body;
+    const { name, bez, Code, category_id, spezification, check_date } = req.body;
 
     const runAsync = (sql, params = []) => {
         return new Promise((resolve, reject) => {
@@ -38,20 +38,20 @@ router.post("/", async (req, res) => {
         });
     };
 
-    if (!code || isNaN(code)) {
-        return res.status(400).json({ error: "Ungueltiger Barcode" });
+    if (!Code || isNaN(Code)) {
+        return res.status(400).json({ error: "Ungueltiger BarCode" });
     }
 
     try {
-        const existing = await db.getAsync("SELECT id FROM products WHERE code = ?", [code]);
+        const existing = await db.getAsync("SELECT id FROM products WHERE Code = ?", [Code]);
         if (existing) {
             return res.status(400).json({ error: "Barcode bereits vergeben" });
         }
 
         const result = await runAsync(
-            `INSERT INTO products (name, stat, bez, code, category_id, spezification, check_date)
+            `INSERT INTO products (name, stat, bez, Code, category_id, spezification, check_date)
              VALUES (?, ?, ?, ?, ?, ?, ?)`,
-            [name, 10, bez, code, category_id, spezification, check_date]
+            [name, 10, bez, Code, category_id, spezification, check_date]
         );
 
         res.json({
@@ -88,7 +88,7 @@ router.delete("/:id", async (req, res) => {
 // PUT /api/products/:id
 router.put("/:id", async (req, res) => {
     const id = req.params.id;
-    const { name, bez, code, category_id, spezification, check_date } = req.body;
+    const { name, bez, Code, category_id, spezification, check_date } = req.body;
 
     try {
         const product = await db.getAsync("SELECT * FROM products WHERE id = ?", [id]);
@@ -109,13 +109,13 @@ router.put("/:id", async (req, res) => {
             return res.json({ message: "Check Date aktualisiert" });
         }
 
-        if (!code || isNaN(code)) {
+        if (!Code || isNaN(Code)) {
             return res.status(400).json({ error: "Ungueltiger Barcode" });
         }
 
         const existing = await db.getAsync(
-            "SELECT id FROM products WHERE code = ? AND id <> ?",
-            [code, id]
+            "SELECT id FROM products WHERE Code = ? AND id <> ?",
+            [Code, id]
         );
         if (existing) {
             return res.status(400).json({ error: "Barcode bereits vergeben" });
@@ -123,9 +123,9 @@ router.put("/:id", async (req, res) => {
 
         await db.runAsync(
             `UPDATE products
-             SET name = ?, bez = ?, code = ?, category_id = ?, spezification = ?, check_date = ?
+             SET name = ?, bez = ?, Code = ?, category_id = ?, spezification = ?, check_date = ?
              WHERE id = ?`,
-            [name, bez, code, category_id, spezification, check_date, id]
+            [name, bez, Code, category_id, spezification, check_date, id]
         );
         res.json({ message: `Produkt "${name}" erfolgreich aktualisiert` });
     } catch (err) {

@@ -105,7 +105,7 @@ function renderProducts(products, showDelete = false, showCheck = false) {
                     ${categoryMap[product.category_id] || "-"} / ${product.bez || "-"}
                     </div>
                     <div class="product-sub">Pruefdatum: ${formatDateDE(product.check_date)}</div>
-                    <div class="product-sub">Barcode: ${product.code}    </div>
+                    <div class="product-sub">Barcode: ${product.Code}    </div>
                     <div class="product-actions">${buttons}</div>
                     `;
             container.appendChild(item);
@@ -128,7 +128,7 @@ function renderProducts(products, showDelete = false, showCheck = false) {
             <td>${product.name}</td>
             <td>${formatStatus(product.stat)}</td>
             <td>${product.bez}</td>
-            <td>${product.code}</td>
+            <td>${product.Code}</td>
             <td>${categoryMap[product.category_id] || "-"}</td>
             <td>${product.spezification || ""}</td>
             <td>${formatDateDE(product.check_date)}</td>
@@ -157,7 +157,7 @@ function filterProducts(products) {
     const spec = document.getElementById("specFilter")?.value.toLowerCase() || "";
 
     return products.filter(p => {
-        const matchSearch = p.name.toLowerCase().includes(search) || String(p.code).includes(search);
+        const matchSearch = p.name.toLowerCase().includes(search) || String(p.Code).includes(search);
         const matchCategory = !category || p.category_id == category;
         const matchSpec = !spec || (p.spezification || "").toLowerCase().includes(spec);
         return matchSearch && matchCategory && matchSpec;
@@ -298,7 +298,7 @@ function setupForm() {
         const data = {
             name: document.getElementById("name").value,
             bez: document.getElementById("bez").value,
-            code: parseInt(document.getElementById("code").value, 10),
+            Code: parseInt(document.getElementById("Code").value, 10),
             category_id: document.getElementById("categorySelect").value,
             spezification: document.getElementById("spezification").value,
             check_date: document.getElementById("check_date").value
@@ -320,7 +320,7 @@ function setupForm() {
                 window.location.href = "products.html";
                 return;
             }
-            document.getElementById("code").value = "";
+            document.getElementById("Code").value = "";
             loadProducts();
         } catch (err) {
             alert(err.message);
@@ -351,7 +351,7 @@ function setupEditMode() {
 
     document.getElementById("name").value = product.name || "";
     document.getElementById("bez").value = product.bez || "";
-    document.getElementById("code").value = product.code || "";
+    document.getElementById("Code").value = product.Code || "";
     document.getElementById("categorySelect").value = product.category_id || "";
 
     const specSelect = document.getElementById("spezification");

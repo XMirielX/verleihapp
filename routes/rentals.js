@@ -10,8 +10,8 @@ router.post("/", async (req, res) => {
     console.log("Aktive Events:", event_id); // Debug, um zu prüfe
     const results = [];
     try {
-        for (const code of Codes) {
-            const product = await db.getAsync("SELECT id, name FROM products WHERE code = ?", [Code]);
+        for (const Code of Codes) {
+            const product = await db.getAsync("SELECT id, name FROM products WHERE Code = ?", [Code]);
             if (!product) {
                 results.push({ Code, status: "nicht gefunden" });
                 continue;
@@ -58,8 +58,8 @@ router.post("/return", async (req, res) => {
     }
     const results = [];
     try {
-        for (const code of Codes) {
-            const product = await db.getAsync("SELECT id, name FROM products WHERE code = ?", [Code]);
+        for (const Code of Codes) {
+            const product = await db.getAsync("SELECT id, name FROM products WHERE Code = ?", [Code]);
             if (!product) {
                 results.push({ Code, status: "Produkt nicht gefunden" });
                 continue;
@@ -99,7 +99,7 @@ router.post("/storno", async (req, res) => {
         for (const code of Codes) {
             //  Produkt suchen
             const product = await db.getAsync(
-                "SELECT id, name FROM products WHERE code = ?",
+                "SELECT id, name FROM products WHERE Code = ?",
                 [Code]
             );
             if (!product) {
