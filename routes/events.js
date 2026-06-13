@@ -82,6 +82,45 @@ router.get("/products", async (req, res) => {
         res.status(500).json({ error: "Database error" });
     }
 });
+
+// GET /api/events/:id
+router.get("/:id", async (req, res) => {
+    try {
+        const event = await db.getAsync("SELECT * FROM event WHERE id = ?", [req.params.id]);
+        if (!event) return res.status(404).json({ error: "Event nicht gefunden" });
+        res.json(event);
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: "Database error" });
+    }
+});
+
+// PUT /api/events/:id
+router.put("/:id", async (req, res) => {
+    const id = req.params.id;
+    const { name, stat, costumer, start, ende } = req.body;
+
+    try {
+        const event = await db.getAsync("SELECT id, stat FROM event WHERE id = ?", [id]);
+        if (!event) return res.status(404).json({ error: "Event nicht gefunden" });
+        if (Number(event.stat) === 90) {
+            return res.status(400).json({ error: "Abgeschlossene Veranstaltungen koennen nicht bearbeitet werden" });
+        }
+
+        await db.runAsync(
+            `UPDATE event
+             SET name = ?, stat = ?, costumer = ?, start = ?, ende = ?
+             WHERE id = ?`,
+            [name, stat, costumer, start, ende, id]
+        );
+
+        res.json({ message: `Veranstaltung "${name}" erfolgreich aktualisiert` });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: "Update failed" });
+    }
+});
+
 // PUT /api/events/:id/close
 router.put("/:id/close", async (req, res) => {
     const event_id = req.params.id;

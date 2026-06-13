@@ -4,6 +4,8 @@
 let allProducts = [];
 let categoryMap = {};
 let sortDirection = 1;
+let editingProductId = null;
+let currentUser = null;
 
 const page = window.location.pathname;
 
@@ -12,13 +14,14 @@ const page = window.location.pathname;
 // =====================================================
 document.addEventListener("DOMContentLoaded", async () => {
     await loadCategories();
+    currentUser = await checkLogin();
     await loadProducts();
-    const user = await checkLogin();
     const adminBtn = document.getElementById("adminBtn");
     document.querySelectorAll(".adminOnly").forEach(btn => {
-        btn.style.display = (user && user.role === "admin") ? "inline-block" : "none";
+        btn.style.display = isAdmin() ? "inline-block" : "none";
     });
     fillSpecFilter(allProducts);
+    setupEditMode();
     setupForm();
     setupFilterListeners();
     setDefaultDate();
@@ -48,6 +51,18 @@ async function loadProducts() {
     }
 }
 
+function isProductOverview(showDelete, showCheck) {
+    return page.includes("products.html") && !showDelete && !showCheck;
+}
+
+function openProductEdit(id) {
+    window.location.href = `productadd.html?id=${encodeURIComponent(id)}`;
+}
+
+function isAdmin() {
+    return currentUser && currentUser.role === "admin";
+}
+
 // =====================================================
 // 🧾 PRODUKTE RENDERN
 // =====================================================
@@ -74,16 +89,22 @@ function renderProducts(products, showDelete = false, showCheck = false) {
             const statusColor = getStatusColor(product.stat);
 
             let buttons = "";
-            if (showDelete) buttons += `<button class="small" onclick="deleteProduct(${product.id})">Löschen</button>`;
-            if (showCheck) buttons += `<button class="small" onclick="checkProduct(${product.id})">prüfen</button>`;
+            if (showDelete) buttons += `<button class="small" onclick="deleteProduct(${product.id})">Loeschen</button>`;
+            if (showCheck) buttons += `<button class="small" onclick="checkProduct(${product.id})">pruefen</button>`;
 
             item.style.borderLeft = `6px solid ${statusColor}`;
+            if (isProductOverview(showDelete, showCheck) && isAdmin()) {
+                item.title = "Produkt bearbeiten";
+                item.addEventListener("click", (event) => {
+                    if (!event.target.closest("button")) openProductEdit(product.id);
+                });
+            }
             item.innerHTML = `
                     <div class="product-title">${product.name}${product.spezification ? " (" + product.spezification + ")" : ""}</div>
                     <div class="product-sub">
                     ${categoryMap[product.category_id] || "-"} / ${product.bez || "-"}
                     </div>
-                    <div class="product-sub">Prüfdatum: ${formatDateDE(product.check_date)}</div>
+                    <div class="product-sub">Pruefdatum: ${formatDateDE(product.check_date)}</div>
                     <div class="product-sub">Barcode: ${product.code}    </div>
                     <div class="product-actions">${buttons}</div>
                     `;
@@ -100,7 +121,7 @@ function renderProducts(products, showDelete = false, showCheck = false) {
         const row = document.createElement("tr");
 
         let buttons = "";
-        if (showDelete) buttons += `<button class="small" onclick="deleteProduct(${product.id})">Löschen</button>`;
+        if (showDelete) buttons += `<button class="small" onclick="deleteProduct(${product.id})">Loeschen</button>`;
         if (showCheck) buttons += `<button class="small" onclick="checkProduct(${product.id})">Check</button>`;
 
         row.innerHTML = `
@@ -113,6 +134,14 @@ function renderProducts(products, showDelete = false, showCheck = false) {
             <td>${formatDateDE(product.check_date)}</td>
             <td>${buttons}</td>
         `;
+        if (isProductOverview(showDelete, showCheck) && isAdmin()) {
+            row.classList.add("clickable-row");
+            row.title = "Produkt bearbeiten";
+            row.addEventListener("click", (event) => {
+                if (!event.target.closest("button")) openProductEdit(product.id);
+            });
+        }
+        if (!showDelete && !showCheck) row.lastElementChild.remove();
         tableBody.appendChild(row);
     });
 
@@ -276,26 +305,73 @@ function setupForm() {
         };
 
         try {
-            const res = await fetch("/api/products", {
-                method: "POST",
+            const url = editingProductId ? `/api/products/${editingProductId}` : "/api/products";
+            const method = editingProductId ? "PUT" : "POST";
+
+            const res = await fetch(url, {
+                method,
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(data)
             });
             const result = await res.json();
             if (!res.ok) throw new Error(result.error);
             alert(result.message);
-            document.getElementById("code").value = ""; loadProducts();
+            if (editingProductId) {
+                window.location.href = "products.html";
+                return;
+            }
+            document.getElementById("code").value = "";
+            loadProducts();
         } catch (err) {
             alert(err.message);
         }
     });
 }
 
+function setupEditMode() {
+    const form = document.getElementById("productForm");
+    if (!form) return;
+
+    const params = new URLSearchParams(window.location.search);
+    editingProductId = params.get("id");
+    if (!editingProductId) return;
+
+    const product = allProducts.find(p => String(p.id) === String(editingProductId));
+    if (!product) {
+        alert("Produkt wurde nicht gefunden.");
+        window.location.href = "products.html";
+        return;
+    }
+
+    document.title = "Produkt bearbeiten";
+    const heading = document.querySelector("body > h1");
+    if (heading) heading.textContent = "Produkt bearbeiten";
+    const submitButton = form.querySelector('button[type="submit"]');
+    if (submitButton) submitButton.textContent = "Aktualisieren";
+
+    document.getElementById("name").value = product.name || "";
+    document.getElementById("bez").value = product.bez || "";
+    document.getElementById("code").value = product.code || "";
+    document.getElementById("categorySelect").value = product.category_id || "";
+
+    const specSelect = document.getElementById("spezification");
+    const specValue = product.spezification || "-";
+    if (specSelect && !Array.from(specSelect.options).some(option => option.value === specValue)) {
+        const option = document.createElement("option");
+        option.value = specValue;
+        option.textContent = specValue;
+        specSelect.appendChild(option);
+    }
+    if (specSelect) specSelect.value = specValue;
+
+    document.getElementById("check_date").value = toDateInputValue(product.check_date);
+}
+
 // =====================================================
 // ❌ PRODUKT LÖSCHEN
 // =====================================================
 async function deleteProduct(id) {
-    if (!confirm("Produkt wirklich löschen?")) return;
+    if (!confirm("Produkt wirklich loeschen?")) return;
     try {
         const res = await fetch(`/api/products/${id}`, { method: "DELETE" });
         const result = await res.json();
@@ -303,7 +379,7 @@ async function deleteProduct(id) {
         alert(result.message);
         loadProducts();
     } catch (err) {
-        alert("Fehler beim Löschen: " + err.message);
+        alert("Fehler beim Loeschen: " + err.message);
     }
 }
 
@@ -332,14 +408,19 @@ async function checkProduct(id) {
 // =====================================================
 function setDefaultDate() {
     const field = document.getElementById("check_date");
-    if (field) field.value = new Date().toISOString().split("T")[0];
+    if (field && !field.value) field.value = new Date().toISOString().split("T")[0];
+}
+
+function toDateInputValue(date) {
+    if (!date) return "";
+    return String(date).split("T")[0];
 }
 
 // =====================================================
 // 🎨 LOGIN CHECK
 // =====================================================
 
-// Prüfen, ob User angemeldet ist
+// Pruefen, ob User angemeldet ist
 async function checkLogin() {
     try {
         const res = await fetch("/api/users/me", { credentials: "include" });
@@ -369,3 +450,4 @@ async function checkLogin() {
         return null;
     }
 }
+

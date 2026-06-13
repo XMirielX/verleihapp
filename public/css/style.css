@@ -26,7 +26,22 @@ header {
 header img {
     height: 50px;
 }
+/* Anklickbare Tabellenzeilen */
+.clickable-row {
+    cursor: pointer;
+    transition: background-color 0.15s ease;
+}
 
+.clickable-row:hover {
+    background-color: #f0f8ff;
+}
+@media (prefers-color-scheme: dark) {
+
+    .clickable-row:hover {
+        background-color: #303030;
+    }
+
+}
 /* ===================== Buttons ===================== */
 button {
     background-color: #005aa7;
@@ -69,38 +84,6 @@ label {
     font-weight: bold;
 }
 
-/* ===================== Desktop-Tabelle ===================== */
-/* Desktop-Tabelle */
-#desktopView {
-    width: 100%;
-    overflow-x: auto;  /* nur horizontal scrollen, kein sticky nötig */
-    margin-bottom: 20px;
-}
-
-#desktopView table {
-    width: 100%;
-    border-collapse: collapse;
-    table-layout: fixed; /* feste Spaltenbreiten */
-}
-
-#desktopView th,
-#desktopView td {
-    border: 1px solid black;
-    padding: 8px;
-    text-align: left;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-}
-
-#desktopView th {
-    background-color: #e6f0fa;
-    font-weight: bold;
-}
-
-#desktopView tr:hover {
-    background-color: #f0f8ff;
-}
 
 /* Mobile: Tabelle ausblenden, Karten zeigen */
 @media (max-width: 768px) {
@@ -286,6 +269,23 @@ tr:hover {
     .user-card button:hover {
         background-color: #004080;
     }
+
+/*------anklickbar------*/
+}
+.product-item,
+.event-item,
+.user-card,
+.rental-item {
+    cursor: pointer;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.product-item:hover,
+.event-item:hover,
+.user-card:hover,
+.rental-item:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.15);
 }
 /* ===================== Responsive ===================== */
 @media (max-width: 768px) {
@@ -457,4 +457,5 @@ tr:hover {
     #cameraContainer video {
         border-color: #1976d2;
     }
+    
 }

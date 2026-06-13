@@ -4,6 +4,7 @@
 let allEvents = [];
 let sortDirection = 1;
 let endWasManuallyChanged = false;
+let editingEventId = null;
 
 const form = document.getElementById("eventForm");
 const searchInput = document.getElementById("searchInput");
@@ -19,7 +20,8 @@ document.addEventListener("DOMContentLoaded", async () => {
     if (adminBtn) {
         adminBtn.style.display = (!user || user.role !== "admin") ? "none" : "inline-block";
     }
-    loadEvents();
+    await loadEvents();
+    setupEditMode();
     setupForm();
     setupSearch();
 });
@@ -33,8 +35,8 @@ async function loadEvents() {
         const res = await fetch("/api/events");
         const events = await res.json();
 
-        allEvents = events;
-        renderEvents(events);
+        allEvents = sortEventsSmart(events);
+        renderEvents(allEvents);
 
     } catch (err) {
         console.error("Fehler beim Laden der Events:", err);
@@ -52,6 +54,7 @@ function renderEvents(events) {
     if (!table || !container) return;
 
     const showDelete = window.location.pathname.includes("eventsdelete.html");
+    const canEdit = window.location.pathname.includes("events.html") && !showDelete;
 
     // Mobile Ansicht
     if (window.innerWidth <= 768) {
@@ -67,6 +70,14 @@ function renderEvents(events) {
             const item = document.createElement("div");
             item.className = "event-item";
             item.style.borderLeft = `6px solid ${color}`;
+            if (canEdit && !isEventClosed(ev)) {
+                item.title = "Veranstaltung bearbeiten";
+                item.addEventListener("click", (event) => {
+                    if (!event.target.closest("button")) openEventEdit(ev.id);
+                });
+            } else if (canEdit) {
+                item.title = "Abgeschlossene Veranstaltungen koennen nicht bearbeitet werden";
+            }
 
             item.innerHTML = `
                 <div class="event-title">${ev.name}</div>
@@ -97,8 +108,22 @@ function renderEvents(events) {
             <td>${formatDateDE(ev.ende)}</td>
             ${showDelete ? `<td><button class="small" onclick="deleteEvent(${ev.id})">🗑️ Löschen</button></td>` : "<td></td>"}
         `;
+        if (!showDelete) row.lastElementChild.remove();
+        if (canEdit && !isEventClosed(ev)) {
+            row.classList.add("clickable-row");
+            row.title = "Veranstaltung bearbeiten";
+            row.addEventListener("click", (event) => {
+                if (!event.target.closest("button")) openEventEdit(ev.id);
+            });
+        } else if (canEdit) {
+            row.title = "Abgeschlossene Veranstaltungen koennen nicht bearbeitet werden";
+        }
         tbody.appendChild(row);
     });
+}
+
+function openEventEdit(id) {
+    window.location.href = `eventadd.html?id=${encodeURIComponent(id)}`;
 }
 // =====================================================
 // Dynamisch neu rendern bei Resize
@@ -149,8 +174,11 @@ function setupForm() {
         };
 
         try {
-            const res = await fetch("/api/events", {
-                method: "POST",
+            const url = editingEventId ? `/api/events/${editingEventId}` : "/api/events";
+            const method = editingEventId ? "PUT" : "POST";
+
+            const res = await fetch(url, {
+                method,
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(data)
             });
@@ -158,7 +186,11 @@ function setupForm() {
             const result = await res.json();
             if (!res.ok) throw new Error(result.error);
 
-            alert("Event gespeichert (ID: " + result.id + ")");
+            alert(result.message || "Event gespeichert (ID: " + result.id + ")");
+            if (editingEventId) {
+                window.location.href = "events.html";
+                return;
+            }
             form.reset();
                 endWasManuallyChanged = false;
             loadEvents();
@@ -167,6 +199,45 @@ function setupForm() {
             alert(err.message);
         }
     });
+}
+
+function setupEditMode() {
+    const form = document.getElementById("eventForm");
+    if (!form) return;
+
+    const params = new URLSearchParams(window.location.search);
+    editingEventId = params.get("id");
+    if (!editingEventId) return;
+
+    const event = allEvents.find(e => String(e.id) === String(editingEventId));
+    if (!event) {
+        alert("Veranstaltung wurde nicht gefunden.");
+        window.location.href = "events.html";
+        return;
+    }
+    if (isEventClosed(event)) {
+        alert("Abgeschlossene Veranstaltungen koennen nicht bearbeitet werden.");
+        window.location.href = "events.html";
+        return;
+    }
+
+    document.title = "Veranstaltung bearbeiten";
+    const heading = document.querySelector("body > h1");
+    if (heading) heading.textContent = "Veranstaltung bearbeiten";
+    const submitButton = form.querySelector('button[type="submit"]');
+    if (submitButton) submitButton.textContent = "Aktualisieren";
+
+    document.getElementById("name").value = event.name || "";
+    document.getElementById("stat").value = event.stat || "10";
+    document.getElementById("costumer").value = event.costumer || "";
+    document.getElementById("start").value = toDateInputValue(event.start);
+    document.getElementById("ende").value = toDateInputValue(event.ende);
+
+    const startInput = document.getElementById("start");
+    const endInput = document.getElementById("ende");
+    if (startInput && endInput && startInput.value) {
+        endInput.min = startInput.value;
+    }
 }
 
 
@@ -208,7 +279,7 @@ function setupSearch() {
             (e.costumer || "").toLowerCase().includes(query)
         );
 
-        renderEvents(filtered);
+        renderEvents(sortEventsSmart(filtered));
     });
 }
 
@@ -220,6 +291,9 @@ function sortEvents(field) {
     sortDirection *= -1;
 
     allEvents.sort((a, b) => {
+        const rankDiff = getEventSortRank(a) - getEventSortRank(b);
+        if (rankDiff !== 0) return rankDiff;
+
         let valA = a[field];
         let valB = b[field];
 
@@ -236,6 +310,39 @@ function sortEvents(field) {
     renderEvents(allEvents);
 }
 
+function sortEventsSmart(events) {
+    return [...events].sort((a, b) => {
+        const rankDiff = getEventSortRank(a) - getEventSortRank(b);
+        if (rankDiff !== 0) return rankDiff;
+
+        const dateA = getEventSortDate(a);
+        const dateB = getEventSortDate(b);
+        return dateA - dateB;
+    });
+}
+
+function getEventSortRank(ev) {
+    if (isEventClosed(ev)) return 3;
+
+    const today = getTodayDate();
+    const start = parseEventDate(ev.start);
+    const end = parseEventDate(ev.ende);
+
+    if (start && end && start <= today && end >= today) return 0;
+    if (start && start > today) return 1;
+    return 2;
+}
+
+function getEventSortDate(ev) {
+    const rank = getEventSortRank(ev);
+    const start = parseEventDate(ev.start);
+    const end = parseEventDate(ev.ende);
+
+    if (rank === 0) return start ? -start.getTime() : 0;
+    if (rank === 1) return start ? start.getTime() : Number.MAX_SAFE_INTEGER;
+    return end ? -end.getTime() : Number.MAX_SAFE_INTEGER;
+}
+
 
 // =====================================================
 // 🎨 FORMATIERUNG
@@ -244,6 +351,27 @@ function formatDateDE(date) {
     if (!date) return "";
     const d = new Date(date);
     return `${String(d.getDate()).padStart(2, "0")}.${String(d.getMonth() + 1).padStart(2, "0")}.${d.getFullYear()}`;
+}
+
+function toDateInputValue(date) {
+    if (!date) return "";
+    return String(date).split("T")[0];
+}
+
+function parseEventDate(date) {
+    if (!date) return null;
+    const [year, month, day] = String(date).split("T")[0].split("-").map(Number);
+    if (!year || !month || !day) return null;
+    return new Date(year, month - 1, day);
+}
+
+function getTodayDate() {
+    const today = new Date();
+    return new Date(today.getFullYear(), today.getMonth(), today.getDate());
+}
+
+function isEventClosed(ev) {
+    return Number(ev.stat) === 90;
 }
 
 function formatStatus(stat) {
@@ -255,6 +383,8 @@ function formatStatus(stat) {
     return stat;
 }
 function getEventStatus(ev) {
+    if (isEventClosed(ev)) return "done";
+
     const today = new Date();
     const start = new Date(ev.start);
     const end = new Date(ev.ende);
