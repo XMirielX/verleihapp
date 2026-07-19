@@ -80,6 +80,11 @@ input[type="text"], select, input[type="date"] {
     margin-bottom: 10px;
 }
 
+.output-col{
+    width:50px;
+    text-align:center;
+}
+
 label {
     font-weight: bold;
 }
@@ -457,5 +462,24 @@ tr:hover {
     #cameraContainer video {
         border-color: #1976d2;
     }
+    /* Desktop */
+#materialTable {
+    display: table;
+}
+
+#materialCardContainer {
+    display: none;
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+    #materialTable {
+        display: none;
+    }
+
+    #materialCardContainer {
+        display: block;
+    }
+}
     
 }

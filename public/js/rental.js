@@ -64,71 +64,62 @@ console.log("Events:", events);
 // RENTALS LADEN & RENDERN
 // =====================================================
 async function loadRentals(event_id) {
+
     if (!event_id) return;
+
     try {
+
         const res = await fetch(`/api/rentals/${event_id}`);
-        if (!res.ok) throw new Error("Fehler beim Laden der Verleihdaten");
-        const rentals = await res.json();
-        console.log("Rentals:", rentals);
+
+        if (!res.ok)
+            throw new Error("Fehler beim Laden der Übersicht");
+
+
+        const materials = await res.json();
+
+        console.log("Event Übersicht:", materials);
+
+
         const table = document.getElementById("rentalTable");
-        const container = document.getElementById("rentalTableContainer");
+        const tbody = table ? table.querySelector("tbody") : null;
 
-        if (window.innerWidth <= 768) {
-            // Mobile View: Karte
-            if (table) table.style.display = "none";
-            if (container) container.innerHTML = "";
 
-            rentals.forEach(r => {
-                const item = document.createElement("div");
-                item.className = "rental-item";
-                let statusColor = "#999";
-                switch (Number(r.stat)) {
-                    case 10: statusColor = "green"; break;
-                    case 90: statusColor = "red"; break;
-                    case 20: statusColor = "#ffc107"; break;
-                }
-                item.style.borderLeft = `6px solid ${statusColor}`;
-                item.innerHTML = `<div>${r.pname} (${r.spezification || "-"})</div><div>Barcode: ${r.Code}</div>`;
-                if (container) {
-                    container.appendChild(item);
-                }
-            });
-        } else {
-            // Desktop View: Tabelle
-            if (table) table.style.display = "table";
+        if (!tbody)
+            return;
 
-            const tbody = table ? table.querySelector("tbody") : null;
-            if (!tbody) {
-                console.warn("Kein tbody gefunden – Tabelle kann nicht gefüllt werden");
-                return;
-            }
-            tbody.innerHTML = "";  // nur tbody leeren, thead bleibt
 
-            rentals.forEach(r => {
-                const row = document.createElement("tr");
+        tbody.innerHTML = "";
 
-                let statusText = "", statusClass = "";
-                switch (Number(r.stat)) {
-                    case 10: statusText = "verliehen"; statusClass = "status-verliehen"; break;
-                    case 20: statusText = "fehlt"; statusClass = "status-fehlt"; break;
-                    case 90: statusText = "zurückgegeben"; statusClass = "status-zurueckgegeben"; break;
-                    default: statusText = "unbekannt"; statusClass = "status-unbekannt"; break;
-                }
 
-                row.innerHTML = `
-                    <td>${r.pname}</td>
-                    <td>${r.spezification || "-"}</td>
-                    <td>${r.cname || "-"}</td>
-                    <td class="${statusClass}">${statusText}</td>
-                `;
-                tbody.appendChild(row);
-            });
-        }
+        materials.forEach(m => {
 
-    } catch (err) {
+
+            const row = document.createElement("tr");
+
+
+            row.innerHTML = `
+                <td>${m.name}</td>
+                <td>${m.spezification || "-"}</td>
+                <td>${m.available}</td>
+                <td>${m.planned}</td>
+                <td>${m.scanned}</td>
+            `;
+
+
+            tbody.appendChild(row);
+
+
+        });
+
+
+    }
+    catch(err){
+
         console.error(err);
         alert(err.message);
+
     }
+
 }
 // -----------------------------
 // EVENTS SORTIEREN

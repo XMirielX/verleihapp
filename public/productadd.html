@@ -17,56 +17,42 @@
 
 <body>
 
-    <h1>Produkt anlegen</h1>
-    <form id="productForm">
+   <h1>Produkt anlegen</h1>
 
-        <div class="form-row">
-            <label>Name:</label>
-            <input type="text" id="name" placeholder="Name">
-        </div>
+<form id="productForm">
 
-        <div class="form-row">
-            <label>Bezeichnung:</label>
-            <input type="text" id="bez" placeholder="Bez">
-        </div>
+    <div class="form-row">
+        <label>Material:</label>
+        <select id="materialTypeSelect">
+            <option value="">-- Bitte wählen --</option>
+        </select>
+    </div>
 
-        <div class="form-row">
-            <label>Barcode:</label>
-            <input type="number" id="Code" placeholder="Barcode">
-        </div>
+    <div class="form-row">
+        <label>Inventarnummer / Bezeichnung:</label>
+        <input type="text" id="bez" placeholder="z.B. Kabel 001">
+    </div>
 
-        <div class="form-row">
-            <label>Kategorie:</label>
-            <select id="categorySelect">
-                <option value="">-- Bitte waehlen --</option>
-            </select>
-        </div>
+    <div class="form-row">
+        <label>Barcode:</label>
+        <input type="number" id="Code" placeholder="Barcode">
+    </div>
 
-        <div class="form-row">
-            <label>Spezifikation:</label>
-            <select id="spezification">
-                <option value="-">-</option>
-                <option value="Schuko">Schuko</option>
-                <option value="32A">32A</option>
-                <option value="63A">63A</option>
-                <option value="125A">125A</option>
-            </select>
-        </div>
+    <div class="form-row">
+        <label>Prüfdatum:</label>
+        <input type="date" id="check_date">
+    </div>
 
-        <div class="form-row">
-            <label>Pruefdatum:</label>
-            <input type="date" id="check_date">
-        </div>
+    <br>
 
-        <br>
+    <button type="submit">Speichern</button>
+    <button type="button" onclick="window.location.href='products.html'">
+        Zurück
+    </button>
 
-        <button type="submit">Speichern</button>
-        <button type="button" onclick="window.location.href='products.html'">Zurueck</button>
+</form>
 
-
-    </form>
-    <p id="result"></p>
-
+<p id="result"></p>
     <script src="js/product.js"></script>
 
 </body>

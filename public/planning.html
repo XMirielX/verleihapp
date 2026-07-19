@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="de">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Materialplanung</title>
+
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+
+<body data-mode="planning">
+
+<header>
+    <img src="img/logo.png" alt="THW Logo">
+    <br>
+    <h1>Förderverein THW Steinau</h1>
+</header>
+
+
+<button type="button" onclick="window.location.href='rentals.html'">
+    Zurück
+</button>
+
+
+<h1>Materialplanung</h1>
+
+
+<div class="planning-header">
+
+    <label for="eventSelect">
+        Veranstaltung:
+    </label>
+
+    <select id="eventSelect">
+        <option value="">Bitte auswählen</option>
+    </select>
+
+
+    <label for="materialSelect">
+        Material:
+    </label>
+    <select id="materialSelect">
+        <option value="">        Alle    </option>
+    </select>
+
+
+    <label for="categorySelect">
+        Kategorie:
+    </label>
+
+    <select id="categorySelect">
+        <option value="">
+            Alle
+        </option>
+    </select>
+
+
+    <br><br>
+
+
+    <label>
+        <input 
+            type="checkbox" 
+            id="onlyPlanned"
+        >
+        Nur geplante anzeigen
+    </label>
+
+</div>
+
+
+<br>
+
+
+<div id="planningTableContainer">
+
+
+    <!-- Wird durch planning.js gefüllt -->
+
+    <table id="planningTable">
+
+        <thead>
+
+            <tr>
+                <th>
+                    Material
+                </th>
+
+                <th>
+                    Kategorie
+                </th>
+
+                <th>
+                    Verfügbar
+                </th>
+
+                <th>
+                    Menge
+                </th>
+
+            </tr>
+
+        </thead>
+
+
+        <tbody id="planningBody">
+
+            <!-- Daten kommen per Javascript -->
+
+        </tbody>
+
+
+    </table>
+
+
+</div>
+
+
+<br>
+
+
+<div id="planningSummary">
+
+    Geplante Positionen:
+    <span id="plannedPositions">
+        0
+    </span>
+
+    <br>
+
+    Geplante Artikel:
+    <span id="plannedQuantity">
+        0
+    </span>
+
+</div>
+
+
+<br>
+
+
+<button id="savePlanningButton">
+    Speichern
+</button>
+
+
+<p id="result"></p>
+
+
+
+<script src="js/planning.js"></script>
+
+
+</body>
+
+</html>

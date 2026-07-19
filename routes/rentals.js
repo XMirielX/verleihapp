@@ -144,20 +144,50 @@ router.post("/storno", async (req, res) => {
 });
 router.get("/:event_id", async (req, res) => {
     const event_id = parseInt(req.params.event_id, 10);
-    try {
 
+    try {
         const products = await db.allAsync(`
-            SELECT p.name as pname, p.spezification, c.name as cname, r.stat, p.Code
-            FROM products p
-            JOIN rental r ON p.id = r.product_id
-            LEFT JOIN categories c ON c.id = p.category_id
-            WHERE r.event_id = ?
-        `, [event_id]);
+            SELECT
+                mt.name as pname,
+                mt.specification as spezification,
+                COUNT(DISTINCT p.id) as available,
+                COALESCE(plan.planned, 0) as planned,
+                COUNT(DISTINCT r.id) as scanned
+            FROM material_typ mt
+
+            LEFT JOIN products p
+                ON p.material_typ_id = mt.id
+
+            LEFT JOIN (
+                SELECT
+                    material_id,
+                    SUM(quantity) as planned
+                FROM event_plan
+                WHERE event_id = ?
+                GROUP BY material_id
+            ) plan
+                ON plan.material_id = mt.id
+
+            LEFT JOIN rental r
+                ON r.product_id = p.id
+                AND r.event_id = ?
+                AND r.stat = 10
+
+            GROUP BY mt.id
+
+            HAVING planned > 0 OR scanned > 0
+
+            ORDER BY mt.category_id, mt.name
+
+        `, [event_id, event_id]);
+
         res.json(products);
 
-    } catch (err) {
+    } catch(err) {
         console.error(err);
-        res.status(500).json({ error: "Datenbankfehler" });
+        res.status(500).json({
+            error:"Datenbankfehler"
+        });
     }
 });
 

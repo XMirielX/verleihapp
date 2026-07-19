@@ -2,53 +2,68 @@
 <html lang="de">
 
 <head>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8">
 <script src="https://unpkg.com/@zxing/library@0.19.1/umd/index.min.js"></script>
-  <header>
+<link rel="stylesheet" href="css/style.css">
+<title>Verleih</title>
+</head>
+
+<body data-mode="rent">
+
+<header>
     <img src="img/logo.png" alt="THW Logo">
     <br>
     <h1>Förderverein THW Steinau</h1>
-  </header>
-  <link rel="stylesheet" href="css/style.css">
-  <title>Zurücknehmen</title>
-</head>
+</header>
 
-
-<body data-mode="rent">
- <button type="button" onclick="window.location.href='rentals.html'">
-  Zurück
+<button type="button" onclick="window.location.href='rentals.html'">
+    Zurück
 </button>
-  <h1>Event auswählen</h1>
-  <select id="eventSelect"></select>
 
-  <h1>Barcode scannen / eingeben</h1>
-  <input type="text" id="barcodeInput" placeholder="Barcode scannen...">
-  <button id="scanBtn">Kamera</button>
-  <div id="cameraContainer" style="width:300px; height:200px; display:none; position:relative;"></div>  <br><br>
-  <button id="rentButton">Ausleihen</button>
-    <br><br>
+<h1>Event auswählen</h1>
+<select id="eventSelect"></select>
 
-    <div id="desktopView">
-        <table id="rentalTable">
-            <thead>
-                <tr>
-                    <th>Name</th>
-                    <th>Spezifikation</th>
-                    <th>Kategorie</th>
-                    <th>Status</th>
-                </tr>
-            </thead>
-            <tbody></tbody>
-        </table>
-    </div>
+<h1>Barcode scannen / eingeben</h1>
+<input type="text" id="barcodeInput" placeholder="Barcode scannen...">
+<button id="scanBtn">Kamera</button>
+
+<div id="cameraContainer" style="width:300px;height:200px;display:none;position:relative;"></div>
+
+<br><br>
+
+<button id="rentButton">Ausleihen</button>
+
+<br><br>
+
+<h2>Materialübersicht</h2>
+
+<div id="desktopView">
+<table id="rentalTable">
+<thead>
+<tr>
+<th>Material</th>
+<th>Spezifikation</th>
+<th>Vorhanden</th>
+<th>Geplant</th>
+<th>Ausgeliehen</th>
+</tr>
+</thead>
+
+<tbody></tbody>
+
+</table>
+</div>
+
 <div id="rentalTableContainer"></div>
 
 <div id="mobileView" style="display:none;"></div>
-  <br><br>
-  <p id="result"></p>
 
-  <script src="js/rental.js"></script>
+<br><br>
+
+<p id="result"></p>
+
+<script src="js/rental.js"></script>
+
 </body>
-
 </html>

@@ -5,15 +5,20 @@ const path = require("path");
 const bodyParser = require("body-parser");
 const session = require("express-session");
 const fs = require("fs");
-const { db, initDB } = require('./models/dbv');
+const { db, initDB, ensureOptionalTables } = require('./models/dbv');
+const { runMigrations } = require("./models/migration");
 const app = express();
+
 
 (async () => {
 
     // Backupd / ansonsten Admin anlegen
     require('./backup_persistent');
 
-    await initDB();
+    
+   // await initDB();
+    await runMigrations();
+    await ensureOptionalTables();
 
     require('./init_admin');
 
@@ -44,13 +49,21 @@ const app = express();
     const catRoutes = require('./routes/categories');
     const rentalRoutes = require('./routes/rentals');
     const mainRoutes = require('./routes/main');
+    const materialRoutes = require("./routes/material");
+    const planningRoutes = require("./routes/event_plan");
+    const distributionsRoutes = require("./routes/distributions");
+    const distributionPlanRoutes = require("./routes/distribution_plan");
 
+    app.use("/api/distributions", distributionsRoutes);
+    app.use("/api/distribution-plan", distributionPlanRoutes);
+    app.use("/api/event_plan", planningRoutes);
     app.use("/api/main", mainRoutes);
     app.use("/api/users", userRoutes);
     app.use("/api/categories", catRoutes);
     app.use("/api/products", productRoutes);
     app.use("/api/events", eventRoutes);
     app.use("/api/rentals", rentalRoutes);
+    app.use("/api/material", materialRoutes);
 
     // Server starten
     const PORT = process.env.PORT || 3000;

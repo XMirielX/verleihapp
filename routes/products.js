@@ -27,7 +27,12 @@ router.get("/:id", async (req, res) => {
 
 // POST /api/products
 router.post("/", async (req, res) => {
-    const { name, bez, Code, category_id, spezification, check_date } = req.body;
+    const {
+        material_typ_id,
+        bez,
+        Code,
+        check_date
+    } = req.body;
 
     const runAsync = (sql, params = []) => {
         return new Promise((resolve, reject) => {
@@ -47,15 +52,35 @@ router.post("/", async (req, res) => {
         if (existing) {
             return res.status(400).json({ error: "Barcode bereits vergeben" });
         }
+        const material = await db.getAsync(
+            `SELECT *
+             FROM material_typ
+             WHERE id = ?`,
+            [material_typ_id]
+        );
+
+        if (!material) {
+            return res.status(400).json({ error: "Materialtyp nicht gefunden" });
+        }
 
         const result = await runAsync(
-            `INSERT INTO products (name, stat, bez, Code, category_id, spezification, check_date)
-             VALUES (?, ?, ?, ?, ?, ?, ?)`,
-            [name, 10, bez, Code, category_id, spezification, check_date]
+            `INSERT INTO products
+             (name, stat, bez, Code, category_id, spezification, check_date, material_typ_id)
+             VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
+            [
+                material.name,
+                10,
+                bez,
+                Code,
+                material.category_id,
+                material.specification,
+                check_date,
+                material_typ_id
+            ]
         );
 
         res.json({
-            message: `Produkt "${name}" erfolgreich angelegt`,
+            message: `Produkt "${material.name}" erfolgreich angelegt`,
             id: result.lastID
         });
     } catch (err) {
@@ -88,7 +113,12 @@ router.delete("/:id", async (req, res) => {
 // PUT /api/products/:id
 router.put("/:id", async (req, res) => {
     const id = req.params.id;
-    const { name, bez, Code, category_id, spezification, check_date } = req.body;
+    const {
+        material_typ_id,
+        bez,
+        Code,
+        check_date
+    } = req.body;
 
     try {
         const product = await db.getAsync("SELECT * FROM products WHERE id = ?", [id]);
@@ -121,13 +151,38 @@ router.put("/:id", async (req, res) => {
             return res.status(400).json({ error: "Barcode bereits vergeben" });
         }
 
+        const material = await db.getAsync(
+            "SELECT * FROM material_typ WHERE id = ?",
+            [material_typ_id]
+        );
+
+        if (!material) {
+            return res.status(400).json({ error: "Materialtyp nicht gefunden" });
+        }
+
         await db.runAsync(
             `UPDATE products
-             SET name = ?, bez = ?, Code = ?, category_id = ?, spezification = ?, check_date = ?
+             SET name = ?,
+                 bez = ?,
+                 Code = ?,
+                 category_id = ?,
+                 spezification = ?,
+                 check_date = ?,
+                 material_typ_id = ?
              WHERE id = ?`,
-            [name, bez, Code, category_id, spezification, check_date, id]
+            [
+                material.name,
+                bez,
+                Code,
+                material.category_id,
+                material.specification,
+                check_date,
+                material_typ_id,
+                id
+            ]
         );
-        res.json({ message: `Produkt "${name}" erfolgreich aktualisiert` });
+
+        res.json({ message: `Produkt "${material.name}" erfolgreich aktualisiert` });
     } catch (err) {
         console.error(err);
         res.status(500).json({ error: "Update failed" });

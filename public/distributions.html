@@ -1,0 +1,155 @@
+public/planning.html<!DOCTYPE html>
+<html lang="de">
+
+<head>
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Distribution Verwaltung</title>
+
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+
+<header>
+    <img src="img/logo.png" alt="THW Logo">
+    <h1>Distribution Verwaltung</h1>
+</header>
+
+
+<main>
+
+<section class="card">
+
+    <h2>Distribution anlegen / bearbeiten</h2>
+
+
+    <input type="hidden" id="distribution_id">
+
+
+    <label>
+        Produkt
+    </label>
+
+    <select id="product_id">
+        <option value="">Bitte auswählen</option>
+    </select>
+   <br>
+
+    <h3>Eingänge</h3>
+       <br>
+
+    <label>
+        Input
+    </label>
+
+    <input type="text" id="input" placeholder="z.B. 125A">
+
+
+    <label>
+        Kabel
+    </label>
+
+    <input type="text" id="cable" placeholder="z.B. 5m">
+
+
+    <h3>Ausgänge</h3>
+
+
+    <div class="grid">
+
+        <div>
+            <label>Schuko</label>
+            <input type="number" id="schuko" value="0" min="0">
+        </div>
+
+
+        <div>
+            <label>CEE16</label>
+            <input type="number" id="cee16" value="0" min="0">
+        </div>
+
+
+        <div>
+            <label>CEE32</label>
+            <input type="number" id="cee32" value="0" min="0">
+        </div>
+
+
+        <div>
+            <label>CEE63</label>
+            <input type="number" id="cee63" value="0" min="0">
+        </div>
+
+        <div>
+            <label>CEE125</label>
+            <input type="number" id="cee125" value="0" min="0">
+        </div>
+
+    </div>
+
+
+    <br>
+
+    <button onclick="saveDistribution()">
+        Speichern
+    </button>
+
+
+    <button onclick="clearForm()">
+        Neu
+    </button>
+
+
+    <button type="button" onclick="window.location.href='products.html'">
+        Zurück
+    </button>
+</section>
+
+
+
+<section class="card">
+
+<h2>Bestehende Distributionen</h2>
+
+
+<table>
+
+<thead>
+
+<tr>
+    <th>Produkt</th>
+    <th>Input</th>
+    <th>Kabel</th>
+    <th>Schuko</th>
+    <th>CEE16</th>
+    <th>CEE32</th>
+    <th>CEE63</th>
+    <th>CEE125</th>
+    <th>Aktion</th>
+</tr>
+
+</thead>
+
+
+<tbody id="distribution_table">
+
+</tbody>
+
+
+</table>
+
+
+</section>
+
+
+</main>
+
+<script src="js/distributions.js"></script>
+
+
+</body>
+
+</html>

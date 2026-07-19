@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="de">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Distribution Planung</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+
+<header>
+    <img src="img/logo.png" alt="THW Logo">
+    <h1>Distribution Planung</h1>
+</header>
+
+<main>
+<section class="card">
+    <h2>Planung auswählen</h2>
+
+    <label for="event_id">Veranstaltung:</label>
+    <select id="event_id" onchange="loadPlan()">
+        <option value="">Bitte auswählen</option>
+    </select>
+
+    <label for="categoryFilter">Kategorie:</label>
+    <select id="categoryFilter">
+        <option value="">Alle</option>
+    </select>
+
+    <label for="distributionFilter">Anzeige:</label>
+    <select id="distributionFilter">
+        <option value="all">Alle</option>
+        <option value="planned">Nur eingeplante</option>
+        <option value="unplanned">Nur nicht eingeplante</option>
+    </select>
+
+    <button type="button" onclick="window.location.href='rentals.html'">
+        Zurück
+    </button>
+</section>
+
+
+<section class="card">
+    <h2>Verteilerplanung</h2>
+
+   <table>
+    <thead>
+        <tr>
+            <th rowspan="2">Einsatz</th>
+            <th rowspan="2">Produkt</th>
+            <th colspan="2">Input</th>
+            <th colspan="5">Output</th>
+            <th rowspan="2">Ort</th>
+        </tr>
+        <tr>
+            <th>Eingang</th>
+            <th>Kabel</th>
+<th class="output-col">Schuko</th>
+<th class="output-col">CEE16</th>
+<th class="output-col">CEE32</th>
+<th class="output-col">CEE63</th>
+<th class="output-col">CEE125</th>
+        </tr>
+    </thead>
+
+    <tbody id="plan_table">
+    </tbody>
+</table>
+
+    <br>
+
+<button onclick="savePlan()">Speichern</button>
+<button onclick="transferToMaterialPlan()">In Materialplanung übernehmen</button></section>
+
+</main>
+
+<script src="js/distributions_plan.js"></script>
+
+</body>
+</html>

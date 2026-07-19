@@ -14,6 +14,7 @@ const page = window.location.pathname;
 // =====================================================
 document.addEventListener("DOMContentLoaded", async () => {
     await loadCategories();
+    await loadMaterialTypes();
     currentUser = await checkLogin();
     await loadProducts();
     const adminBtn = document.getElementById("adminBtn");
@@ -25,6 +26,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     setupForm();
     setupFilterListeners();
     setDefaultDate();
+
 });
 
 // =====================================================
@@ -99,8 +101,11 @@ function renderProducts(products, showDelete = false, showCheck = false) {
                     if (!event.target.closest("button")) openProductEdit(product.id);
                 });
             }
+            const productName = getProductName(product);
+            const productSpec = getProductSpec(product);
+
             item.innerHTML = `
-                    <div class="product-title">${product.name}${product.spezification ? " (" + product.spezification + ")" : ""}</div>
+                    <div class="product-title">${productName}${productSpec ? " (" + productSpec + ")" : ""}</div>
                     <div class="product-sub">
                     ${categoryMap[product.category_id] || "-"} / ${product.bez || "-"}
                     </div>
@@ -125,12 +130,12 @@ function renderProducts(products, showDelete = false, showCheck = false) {
         if (showCheck) buttons += `<button class="small" onclick="checkProduct(${product.id})">Check</button>`;
 
         row.innerHTML = `
-            <td>${product.name}</td>
+            <td>${getProductName(product)}</td>
             <td>${formatStatus(product.stat)}</td>
-            <td>${product.bez}</td>
+            <td>${product.bez || ""}</td>
             <td>${product.Code}</td>
             <td>${categoryMap[product.category_id] || "-"}</td>
-            <td>${product.spezification || ""}</td>
+            <td>${getProductSpec(product)}</td>
             <td>${formatDateDE(product.check_date)}</td>
             <td>${buttons}</td>
         `;
@@ -147,7 +152,43 @@ function renderProducts(products, showDelete = false, showCheck = false) {
 
     updateSummary(filtered);
 }
+let materialTypes = [];
 
+async function loadMaterialTypes() {
+
+    try {
+        const res = await fetch("/api/material");
+        materialTypes = await res.json();
+    } catch (err) {
+        console.error("Fehler beim Laden der Materialtypen:", err);
+        materialTypes = [];
+        return;
+    }
+
+    if (!Array.isArray(materialTypes)) {
+        console.error("Ungueltige Materialtypen-Antwort:", materialTypes);
+        materialTypes = [];
+        return;
+    }
+
+    const select = document.getElementById("materialTypeSelect");
+    if (!select) return;
+
+    select.innerHTML = '<option value="">-- Bitte waehlen --</option>';
+
+    materialTypes.forEach(mat => {
+
+        const option = document.createElement("option");
+
+        option.value = mat.id;
+        option.textContent =
+            `${mat.category_name} - ${mat.name} ${mat.specification ?? ""}`;
+
+        select.appendChild(option);
+
+    });
+
+}
 // =====================================================
 // 🔍 FILTER & SUCHE
 // =====================================================
@@ -157,9 +198,11 @@ function filterProducts(products) {
     const spec = document.getElementById("specFilter")?.value.toLowerCase() || "";
 
     return products.filter(p => {
-        const matchSearch = p.name.toLowerCase().includes(search) || String(p.Code).includes(search);
+        const productName = getProductName(p).toLowerCase();
+        const productSpec = getProductSpec(p).toLowerCase();
+        const matchSearch = productName.includes(search) || String(p.Code).includes(search);
         const matchCategory = !category || p.category_id == category;
-        const matchSpec = !spec || (p.spezification || "").toLowerCase().includes(spec);
+        const matchSpec = !spec || productSpec.includes(spec);
         return matchSearch && matchCategory && matchSpec;
     });
 }
@@ -181,8 +224,8 @@ function sortProducts(field) {
     sortDirection *= -1;
 
     allProducts.sort((a, b) => {
-        let valA = a[field];
-        let valB = b[field];
+        let valA = getSortableProductValue(a, field);
+        let valB = getSortableProductValue(b, field);
 
         if (typeof valA === "string") {
             valA = valA.toLowerCase();
@@ -195,6 +238,26 @@ function sortProducts(field) {
     });
 
     renderProducts(allProducts);
+}
+
+function getSortableProductValue(product, field) {
+    if (field === "name") return getProductName(product);
+    if (field === "spezification") return getProductSpec(product);
+    return product[field] ?? "";
+}
+
+function getProductName(product) {
+    if (product.name) return product.name;
+
+    const material = materialTypes.find(mat => String(mat.id) === String(product.material_typ_id));
+    return material?.name || "Ohne Material";
+}
+
+function getProductSpec(product) {
+    if (product.spezification) return product.spezification;
+
+    const material = materialTypes.find(mat => String(mat.id) === String(product.material_typ_id));
+    return material?.specification || "";
 }
 
 // =====================================================
@@ -296,11 +359,9 @@ function setupForm() {
         e.preventDefault();
 
         const data = {
-            name: document.getElementById("name").value,
+            material_typ_id: document.getElementById("materialTypeSelect").value,
             bez: document.getElementById("bez").value,
             Code: parseInt(document.getElementById("Code").value, 10),
-            category_id: document.getElementById("categorySelect").value,
-            spezification: document.getElementById("spezification").value,
             check_date: document.getElementById("check_date").value
         };
 
@@ -349,22 +410,25 @@ function setupEditMode() {
     const submitButton = form.querySelector('button[type="submit"]');
     if (submitButton) submitButton.textContent = "Aktualisieren";
 
-    document.getElementById("name").value = product.name || "";
     document.getElementById("bez").value = product.bez || "";
     document.getElementById("Code").value = product.Code || "";
-    document.getElementById("categorySelect").value = product.category_id || "";
 
-    const specSelect = document.getElementById("spezification");
-    const specValue = product.spezification || "-";
-    if (specSelect && !Array.from(specSelect.options).some(option => option.value === specValue)) {
-        const option = document.createElement("option");
-        option.value = specValue;
-        option.textContent = specValue;
-        specSelect.appendChild(option);
+    const materialSelect = document.getElementById("materialTypeSelect");
+    if (materialSelect) {
+        materialSelect.value = product.material_typ_id || findMaterialTypeId(product) || "";
     }
-    if (specSelect) specSelect.value = specValue;
 
     document.getElementById("check_date").value = toDateInputValue(product.check_date);
+}
+
+function findMaterialTypeId(product) {
+    const material = materialTypes.find(mat =>
+        mat.name === product.name &&
+        String(mat.category_id) === String(product.category_id) &&
+        (mat.specification || "") === (product.spezification || "")
+    );
+
+    return material?.id;
 }
 
 // =====================================================

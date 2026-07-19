@@ -25,20 +25,64 @@ const db = new sqlite3.Database(DB_PATH, (err) => {
 });
 
 
-module.exports = { db, initDB }; // exportiert db und initDB
-
-
 // Promisify Methoden für async/await
-db.runAsync = promisify(db.run.bind(db));
+db.runAsync = (sql, params = []) => {
+    return new Promise((resolve, reject) => {
+        db.run(sql, params, function (err) {
+            if (err) {
+                reject(err);
+                return;
+            }
+
+            resolve({
+                lastID: this.lastID,
+                changes: this.changes
+            });
+        });
+    });
+};
 db.allAsync = promisify(db.all.bind(db));
 db.getAsync = promisify(db.get.bind(db));
+
+async function ensureOptionalTables() {
+    await db.runAsync(`
+        CREATE TABLE IF NOT EXISTS distribution_items (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            product_id INTEGER NOT NULL UNIQUE,
+            input TEXT,
+            cable TEXT,
+            schuko INTEGER NOT NULL DEFAULT 0,
+            cee16 INTEGER NOT NULL DEFAULT 0,
+            cee32 INTEGER NOT NULL DEFAULT 0,
+            cee63 INTEGER NOT NULL DEFAULT 0,
+            cee125 INTEGER NOT NULL DEFAULT 0,
+            active INTEGER NOT NULL DEFAULT 1,
+
+            FOREIGN KEY (product_id) REFERENCES products(id)
+        )
+    `);
+
+    await db.runAsync(`
+        CREATE TABLE IF NOT EXISTS distribution_plan (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            event_id INTEGER NOT NULL,
+            distribution_item_id INTEGER NOT NULL,
+            location TEXT,
+            planned INTEGER NOT NULL DEFAULT 0,
+            FOREIGN KEY (event_id) REFERENCES event(id),
+            FOREIGN KEY (distribution_item_id) REFERENCES distribution_items(id),
+            UNIQUE(event_id, distribution_item_id)
+        )
+    `);
+}
+
+module.exports = { db, initDB, ensureOptionalTables };
 
 async function initDB() {
     await db.runAsync(`CREATE TABLE IF NOT EXISTS categories (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         name TEXT
     )`);
-
     await db.runAsync(`CREATE TABLE IF NOT EXISTS products (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         name TEXT,
@@ -78,5 +122,14 @@ async function initDB() {
         FOREIGN KEY (event_id) REFERENCES event(id),
         FOREIGN KEY (product_id) REFERENCES products(id)
     )`);
+await db.runAsync(`CREATE TABLE IF NOT EXISTS event_plan (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    event_id INTEGER NOT NULL,
+    material_id INTEGER NOT NULL,
+    quantity INTEGER NOT NULL DEFAULT 1,
+    location TEXT,
+    comment TEXT,
+    FOREIGN KEY (event_id) REFERENCES event(id)
+)`);
 }
 
