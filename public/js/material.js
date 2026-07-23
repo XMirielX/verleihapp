@@ -66,6 +66,7 @@ async function loadCategories() {
 
     renderCategorySelect();
     renderCategoryTable();
+    renderCategoryCards();
 }
 
 async function loadMaterialTypes() {
@@ -75,8 +76,9 @@ async function loadMaterialTypes() {
     console.log("RAW RESPONSE:", text);
 
     materialTypes = JSON.parse(text);
+renderMaterialTable();
+renderMaterialCards();
 
-    renderMaterialTable(); // <<< DAS FEHLT
 }
 // ==========================
 // CREATE
@@ -102,7 +104,31 @@ console.log("RAW RESPONSE:", text);
     categoryDialog.close();
     await loadCategories();
 }
+function renderMaterialCards() {
+    materialCardContainer.innerHTML = "";
 
+    for (const m of materialTypes) {
+        const cat = categories.find(c => c.id == m.category_id);
+
+        const card = document.createElement("div");
+        card.className = "material-item";
+
+        card.innerHTML = `
+            <div class="product-title">${m.name}</div>
+            <div class="product-sub"><b>Kategorie:</b> ${cat ? cat.name : "-"}</div>
+            <div class="product-sub"><b>Spezifikation:</b> ${m.specification || "-"}</div>
+    <div class="product-actions">
+        <button class="small">Löschen</button>
+    </div>
+        `;
+
+        card.querySelector("button").addEventListener("click", () => {
+            deleteMaterialType(m.id);
+        });
+
+        materialCardContainer.appendChild(card);
+    }
+}
 async function createMaterialType() {
 
     const payload = {
@@ -224,5 +250,26 @@ function renderCategoryTable() {
         });
 
         categoryTableBody.appendChild(tr);
+    }
+}
+function renderCategoryCards() {
+    categoryTableBody.innerHTML = "";
+
+    for (const c of categories) {
+        const card = document.createElement("div");
+        card.className = "mobile-card";
+
+        card.innerHTML = `
+            <div class="card-content">
+                <div class="card-title">${c.name}</div>
+            </div>
+            <button data-id="${c.id}" class="deleteCategory">Löschen</button>
+        `;
+
+        card.querySelector(".deleteCategory").addEventListener("click", () => {
+            deleteCategory(c.id);
+        });
+
+        categoryTableBody.appendChild(card);
     }
 }

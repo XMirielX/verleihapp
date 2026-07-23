@@ -132,41 +132,44 @@ router.post("/:eventId/generate", async(req,res)=>{
         if (event.stat==90) return res.status(400).json({error:"Event abgeschlossen"});
 
         const items=await db.allAsync(`
-            SELECT p.material_typ_id
+            SELECT p.material_typ_id, COUNT(*) AS quantity
             FROM distribution_plan dp
             JOIN distribution_items di ON di.id=dp.distribution_item_id
             JOIN products p ON p.id=di.product_id
             WHERE dp.event_id=? AND dp.planned=1
+            GROUP BY p.material_typ_id
         `,[eventId]);
 
         const materials={};
 
         items.forEach(i=>{
-            materials[i.material_typ_id]=(materials[i.material_typ_id]||0)+1;
+            if (!i.material_typ_id) return;
+            materials[i.material_typ_id] = (materials[i.material_typ_id] || 0) + Number(i.quantity || 0);
         });
 
         for(const materialId in materials){
+            const quantity = materials[materialId];
 
-            const quantity=materials[materialId];
+            if (!quantity) continue;
 
-            const existing=await db.getAsync(`
-                SELECT id,quantity
+            const existing = await db.getAsync(`
+                SELECT id, quantity
                 FROM event_plan
                 WHERE event_id=? AND material_id=?
-            `,[eventId,materialId]);
+            `, [eventId, materialId]);
 
-            if(existing){
+            if (existing) {
                 await db.runAsync(`
                     UPDATE event_plan
-                    SET quantity=?
-                    WHERE id=?
-                `,[existing.quantity+quantity,existing.id]);
-            }else{
+                    SET quantity = ?
+                    WHERE id = ?
+                `, [Number(existing.quantity || 0) + quantity, existing.id]);
+            } else {
                 await db.runAsync(`
                     INSERT INTO event_plan
-                    (event_id,material_id,quantity)
-                    VALUES (?,?,?)
-                `,[eventId,materialId,quantity]);
+                    (event_id, material_id, quantity)
+                    VALUES (?, ?, ?)
+                `, [eventId, materialId, quantity]);
             }
         }
 

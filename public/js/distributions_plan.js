@@ -7,10 +7,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
     loadEvents();
 
-    if (filterElement) filterElement.addEventListener("change", renderTable);
-    if (categoryElement) categoryElement.addEventListener("change", renderTable);
+    if (filterElement) filterElement.addEventListener("change", renderView);
+    if (categoryElement) categoryElement.addEventListener("change", renderView);
 });
-
+function renderView() {
+    renderTable();
+    renderCards();
+}
 async function loadEvents() {
     const res = await fetch("/api/events");
     const events = await res.json();
@@ -33,6 +36,7 @@ async function loadPlan() {
     plan = await res.json();
     loadCategories();
     renderTable();
+    renderCards();
 
 }
 
@@ -41,40 +45,28 @@ function renderTable() {
     const tbody = document.getElementById("plan_table");
     tbody.innerHTML = "";
 
-    const filter = document.getElementById("distributionFilter").value;
-
-    plan.filter(item => {
-
-    const category = document.getElementById("categoryFilter").value;
-
-    if (category && item.category_name != category)
-        return false;
-
-    if (filter === "planned")
-        return item.planned == 1;
-
-    if (filter === "unplanned")
-        return item.planned == 0;
-
-    return true;
-
-    }).forEach(item => {
+    getFilteredPlan().forEach(item => {
 
         tbody.innerHTML += `
         <tr>
             <td>
-                <input type="checkbox" class="planned" data-id="${item.id}" ${item.planned ? "checked" : ""}>
+                <input type="checkbox" class="planned" 
+                data-id="${item.id}" 
+                ${item.planned ? "checked" : ""}>
             </td>
             <td>${item.product_name}</td>
             <td>${item.input || ""}</td>
             <td>${item.cable || ""}</td>
-            <td>${item.schuko}</td>
-            <td>${item.cee16}</td>
-            <td>${item.cee32}</td>
-            <td>${item.cee63}</td>
-            <td>${item.cee125}</td>
+            <td>${item.schuko || 0}</td>
+            <td>${item.cee16 || 0}</td>
+            <td>${item.cee32 || 0}</td>
+            <td>${item.cee63 || 0}</td>
+            <td>${item.cee125 || 0}</td>
             <td>
-                <input type="text" class="location" data-id="${item.id}" value="${item.location || ""}">
+                <input type="text" 
+                class="location" 
+                data-id="${item.id}" 
+                value="${item.location || ""}">
             </td>
         </tr>`;
     });
@@ -113,6 +105,107 @@ function loadCategories() {
         select.innerHTML += `<option value="${c}">${c}</option>`;
     });
 }
+function renderCards() {
+
+    const container = document.getElementById("distributionCards");
+    container.innerHTML = "";
+
+    getFilteredPlan().forEach(item => {
+
+        const card = document.createElement("div");
+        card.className = "distribution-card";
+
+        card.innerHTML = `
+            <div class="distribution-header">
+                <strong>${item.product_name}</strong>
+
+                <label class="switch">
+                    <input type="checkbox" class="planned"
+                    data-id="${item.id}"
+                    ${item.planned ? "checked" : ""}>
+                    <span>Einsatz</span>
+                </label>
+            </div>
+
+
+            <div class="distribution-info">
+                <div>
+                    <small>Eingang</small>
+                    <strong>${item.input || "-"}</strong>
+                </div>
+
+                <div>
+                    <small>Kabel</small>
+                    <strong>${item.cable || "-"}</strong>
+                </div>
+            </div>
+
+
+            <div class="output-title">
+                Ausgänge
+            </div>
+
+
+            <div class="output-grid">
+                <div>
+                    <small>Schuko</small>
+                    <strong>${item.schuko || 0}</strong>
+                </div>
+
+                <div>
+                    <small>CEE16</small>
+                    <strong>${item.cee16 || 0}</strong>
+                </div>
+
+                <div>
+                    <small>CEE32</small>
+                    <strong>${item.cee32 || 0}</strong>
+                </div>
+
+                <div>
+                    <small>CEE63</small>
+                    <strong>${item.cee63 || 0}</strong>
+                </div>
+
+                <div>
+                    <small>CEE125</small>
+                    <strong>${item.cee125 || 0}</strong>
+                </div>
+            </div>
+
+
+            <label class="location-label">
+                Ort
+                <input type="text"
+                class="location"
+                data-id="${item.id}"
+                value="${item.location || ""}">
+            </label>
+        `;
+
+        container.appendChild(card);
+    });
+}
+
+function getFilteredPlan() {
+
+    const filter = document.getElementById("distributionFilter").value;
+    const category = document.getElementById("categoryFilter").value;
+
+    return plan.filter(item => {
+
+        if (category && item.category_name != category)
+            return false;
+
+        if (filter === "planned" && item.planned != 1)
+            return false;
+
+        if (filter === "unplanned" && item.planned != 0)
+            return false;
+
+        return true;
+    });
+}
 async function savePlan() {
 
     const eventId = document.getElementById("event_id").value;
@@ -123,36 +216,53 @@ async function savePlan() {
     }
 
     const items = [];
+    const handled = new Set();
 
-    document.querySelectorAll("#plan_table tr").forEach(row => {
+    document.querySelectorAll(".planned").forEach(check => {
 
-        const check = row.querySelector(".planned");
-        const location = row.querySelector(".location");
+        const id = Number(check.dataset.id);
+
+        // verhindert doppelte Einträge (Tabelle + Cards)
+        if (handled.has(id))
+            return;
+
+        handled.add(id);
+
+        const location = document.querySelector(
+            `.location[data-id="${id}"]`
+        );
 
         items.push({
-            distribution_item_id: Number(check.dataset.id),
+            distribution_item_id: id,
             planned: check.checked ? 1 : 0,
-            location: location.value
+            location: location ? location.value : ""
         });
 
     });
 
+
     const response = await fetch("/api/distribution-plan", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+            "Content-Type": "application/json"
+        },
         body: JSON.stringify({
             event_id: eventId,
             items: items
         })
     });
 
+
     const result = await response.json();
+
 
     if (result.error) {
         alert(result.error);
         return;
     }
 
+
     alert("Planung gespeichert.");
+
     loadPlan();
 }

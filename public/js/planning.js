@@ -1,34 +1,40 @@
-let allMaterials = [];
+﻿let allMaterials = [];
 let currentPlan = [];
 let selectedEvent = null;
 
-
 // Start
 document.addEventListener("DOMContentLoaded", async () => {
-    loadEvents();
+    await loadEvents();
     await loadMaterials();
     renderCategories();
     renderMaterialsSelect();
-    renderTable();
+    renderView();
 
-    document
-        .getElementById("eventSelect")
-        .addEventListener("change", eventChanged);
-    document
-        .getElementById("materialSelect")
-        .addEventListener("change", renderTable);
-    document
-        .getElementById("categorySelect")
-        .addEventListener("change", renderTable);
-    document
-        .getElementById("onlyPlanned")
-        .addEventListener("change", renderTable);
-    document
-        .getElementById("savePlanningButton")
-        .addEventListener("click", savePlanning);
+    const eventSelect = document.getElementById("eventSelect");
+    if (eventSelect) {
+        eventSelect.addEventListener("change", eventChanged);
+    }
+
+    const materialSelect = document.getElementById("materialSelect");
+    if (materialSelect) {
+        materialSelect.addEventListener("change", renderView);
+    }
+
+    const categorySelect = document.getElementById("categorySelect");
+    if (categorySelect) {
+        categorySelect.addEventListener("change", renderView);
+    }
+
+    const onlyPlanned = document.getElementById("onlyPlanned");
+    if (onlyPlanned) {
+        onlyPlanned.addEventListener("change", renderView);
+    }
+
+    const saveButton = document.getElementById("savePlanningButton");
+    if (saveButton) {
+        saveButton.addEventListener("click", savePlanning);
+    }
 });
-
-
 
 // Veranstaltungen laden
 async function loadEvents() {
@@ -36,19 +42,28 @@ async function loadEvents() {
         const response = await fetch("/api/events");
         const events = await response.json();
         const select = document.getElementById("eventSelect");
+
+        if (!select) {
+            return;
+        }
+
+        select.innerHTML = '<option value="">Bitte auswählen</option>';
+
+        if (!Array.isArray(events)) {
+            console.error("Ungueltige Event-Antwort:", events);
+            return;
+        }
+
         events.forEach(event => {
             const option = document.createElement("option");
             option.value = event.id;
             option.textContent = event.name;
             select.appendChild(option);
         });
-    } catch(error) {
+    } catch (error) {
         console.error("EVENT LOAD ERROR:", error);
     }
-
 }
-
-
 
 // Event geändert
 async function eventChanged() {
@@ -57,16 +72,14 @@ async function eventChanged() {
     renderCategories();
     renderMaterialsSelect();
 
-    if(!selectedEvent) {
-        renderTable();
+    if (!selectedEvent) {
+        renderView();
         return;
     }
 
     await loadPlan();
-    renderTable();
+    renderView();
 }
-
-
 
 // Material laden
 async function loadMaterials() {
@@ -104,12 +117,8 @@ async function loadMaterials() {
                 quantity: 0
             };
         });
-    }
-    catch(error){
-        console.error(
-            "MATERIAL LOAD ERROR:",
-            error
-        );
+    } catch (error) {
+        console.error("MATERIAL LOAD ERROR:", error);
     }
 }
 
@@ -120,82 +129,49 @@ function isProductForMaterial(product, material) {
 
     return product.name === material.name &&
         String(product.category_id) === String(material.category_id) &&
-        (product.spezification || "") === (material.specification || "");
+        (product.spezification || "") === (material.spezification || "");
 }
-
-
 
 // bestehende Planung laden
 async function loadPlan() {
     try {
-        const response =
-            await fetch(
-                `/api/event_plan/${selectedEvent}`
-            );
+        const response = await fetch(`/api/event_plan/${selectedEvent}`);
         currentPlan = await response.json();
+
         if (!Array.isArray(currentPlan)) {
             console.error("Ungueltige Plan-Antwort:", currentPlan);
             currentPlan = [];
         }
 
         allMaterials.forEach(material => {
-            const planned =
-                currentPlan.find(
-                    p =>
-                    Number(p.material_id) === Number(material.id)
-                );
-            if(planned){
-                material.quantity =
-                    planned.quantity;
-            }
-            else {
-                material.quantity = 0;
-            }
+            const planned = currentPlan.find(p => Number(p.material_id) === Number(material.id));
+            material.quantity = planned ? planned.quantity : 0;
         });
-    }
-    catch(error){
-        console.error(
-            "PLAN LOAD ERROR:",
-            error
-        );
+    } catch (error) {
+        console.error("PLAN LOAD ERROR:", error);
     }
 }
 
-function renderMaterialsSelect(){
-    const select =
-        document.getElementById(
-            "materialSelect"
-        );
-    select.innerHTML =
-        `
-        <option value="">
-            Alle
-        </option>
-        `;
-    allMaterials
-    .sort(
-        (a,b)=>
-        getMaterialLabel(a).localeCompare(getMaterialLabel(b))
-    )
-    .forEach(material=>{
-        const option =
-            document.createElement(
-                "option"
-            );
-        option.value =
-            material.id;
-        option.textContent =
-            getMaterialLabel(material);
-        select.appendChild(option);
-    });
+function renderMaterialsSelect() {
+    const select = document.getElementById("materialSelect");
+    if (!select) {
+        return;
+    }
 
+    select.innerHTML = '<option value="">Alle</option>';
+
+    allMaterials
+        .sort((a, b) => getMaterialLabel(a).localeCompare(getMaterialLabel(b)))
+        .forEach(material => {
+            const option = document.createElement("option");
+            option.value = material.id;
+            option.textContent = getMaterialLabel(material);
+            select.appendChild(option);
+        });
 }
 
 function getMaterialLabel(material) {
-    const parts = [
-        material.category || "-",
-        material.name || "Ohne Name"
-    ];
+    const parts = [material.category || "-", material.name || "Ohne Name"];
 
     if (material.specification) {
         parts.push(material.specification);
@@ -205,230 +181,199 @@ function getMaterialLabel(material) {
 }
 
 // Kategorien erzeugen
-function renderCategories(){
-    const select =
-        document.getElementById(
-            "categorySelect"
-        );
-    const categories =
-        [
-            ...new Set(
-                allMaterials.map(
-                    m => m.category || "-"
-                )
-            )
-        ].sort();
-    select.innerHTML =
-        `<option value="">Alle</option>`;
+function renderCategories() {
+    const select = document.getElementById("categorySelect");
+    if (!select) {
+        return;
+    }
+
+    const categories = [...new Set(allMaterials.map(m => m.category || "-"))].sort();
+    select.innerHTML = '<option value="">Alle</option>';
+
     categories.forEach(category => {
-        const option =
-            document.createElement("option");
+        const option = document.createElement("option");
         option.value = category;
         option.textContent = category;
         select.appendChild(option);
     });
-
 }
 
+function renderPlanningCards() {
+    const container = document.getElementById("planningCards");
+    if (!container) {
+        return;
+    }
 
+    container.innerHTML = "";
+
+    const selectedMaterial = document.getElementById("materialSelect").value;
+    const category = document.getElementById("categorySelect").value;
+    const onlyPlanned = document.getElementById("onlyPlanned").checked;
+
+    const filtered = allMaterials.filter(material => {
+        const matchesMaterial = !selectedMaterial || material.id == selectedMaterial;
+        const matchesCategory = !category || material.category === category;
+        const matchesPlan = !onlyPlanned || material.quantity > 0;
+        return matchesMaterial && matchesCategory && matchesPlan;
+    });
+
+    filtered.forEach(item => {
+        const card = document.createElement("div");
+        card.className = "planning-card";
+
+        card.innerHTML = `
+            <div class="planning-card-title">${item.name}</div>
+            <div class="planning-row">
+                <span>Kategorie</span>
+                <span>${item.category}</span>
+            </div>
+            <div class="planning-row">
+                <span>Verfügbar</span>
+                <span>${item.available}</span>
+            </div>
+            <div class="planning-qty">
+                <label>Menge</label>
+                <input type="number" min="0" value="${item.quantity}" data-id="${item.id}" class="planningQuantity">
+            </div>
+        `;
+
+        card.querySelector(".planningQuantity").addEventListener("change", e => {
+            updateQuantity(item.id, Number(e.target.value));
+        });
+
+        container.appendChild(card);
+    });
+}
 
 // Tabelle erzeugen
-function renderTable(){
-    const tbody =
-        document.getElementById(
-            "planningBody"
-        );
+function renderTable() {
+    const tbody = document.getElementById("planningBody");
+    if (!tbody) {
+        return;
+    }
+
     tbody.innerHTML = "";
-    const selectedMaterial =
-        document
-        .getElementById("materialSelect")
-        .value;
-    const category =
-        document
-        .getElementById("categorySelect")
-        .value;
-    const onlyPlanned =
-        document
-        .getElementById("onlyPlanned")
-        .checked;
-    let filtered =
-        allMaterials.filter(material => {
-            let matchesMaterial =
-                !selectedMaterial ||
-                material.id == selectedMaterial;
-            let matchesCategory =
-                !category ||
-                material.category === category;
-            let matchesPlan =
-                !onlyPlanned ||
-                material.quantity > 0;
-            return matchesMaterial
-                && matchesCategory
-                && matchesPlan;
-        });
-    // Gruppierung nach Kategorie
+
+    const selectedMaterial = document.getElementById("materialSelect").value;
+    const category = document.getElementById("categorySelect").value;
+    const onlyPlanned = document.getElementById("onlyPlanned").checked;
+
+    const filtered = allMaterials.filter(material => {
+        const matchesMaterial = !selectedMaterial || material.id == selectedMaterial;
+        const matchesCategory = !category || material.category === category;
+        const matchesPlan = !onlyPlanned || material.quantity > 0;
+        return matchesMaterial && matchesCategory && matchesPlan;
+    });
 
     const groups = {};
     filtered.forEach(material => {
         const categoryName = material.category || "-";
-
-        if(!groups[categoryName])
+        if (!groups[categoryName]) {
             groups[categoryName] = [];
-        groups[categoryName]
-            .push(material);
+        }
+        groups[categoryName].push(material);
     });
-    Object.keys(groups)
-    .sort()
-    .forEach(category => {
-        const header =
-            document.createElement("tr");
-        header.innerHTML =
-            `
-            <td colspan="4">
-                <b>${category.toUpperCase()}</b>
-            </td>
-            `;
+
+    Object.keys(groups).sort().forEach(categoryName => {
+        const header = document.createElement("tr");
+        header.innerHTML = `<td colspan="4"><b>${categoryName.toUpperCase()}</b></td>`;
         tbody.appendChild(header);
-        groups[category].forEach(material => {
-            const tr =
-                document.createElement("tr");
-            if(material.quantity > material.available){
-                tr.style.backgroundColor =
-                    "#ffcccc";
+
+        groups[categoryName].forEach(material => {
+            const tr = document.createElement("tr");
+            if (material.quantity > material.available) {
+                tr.style.backgroundColor = "#ffcccc";
             }
-            tr.innerHTML =
-            `
-            <td>
-                ${material.name}
-                ${material.specification ? " (" + material.specification + ")" : ""}
-            </td>
-            <td>
-                ${material.category || "-"}
-            </td>
-            <td>
-                ${material.available ?? 0}
-            </td>
-            <td>
-                <input 
-                    type="number"
-                    min="0"
-                    value="${material.quantity}"
-                    data-id="${material.id}"
-                    class="quantityInput"
-                >
-            </td>
+
+            tr.innerHTML = `
+                <td>${material.name}${material.specification ? " (" + material.specification + ")" : ""}</td>
+                <td>${material.category || "-"}</td>
+                <td>${material.available ?? 0}</td>
+                <td>
+                    <input type="number" min="0" value="${material.quantity}" data-id="${material.id}" class="quantityInput">
+                </td>
             `;
             tbody.appendChild(tr);
         });
     });
-    document
-    .querySelectorAll(".quantityInput")
-    .forEach(input => {
-        input.addEventListener(
-            "change",
-            e => {
-                const id =
-                    Number(
-                        e.target.dataset.id
-                    );
-                const material =
-                    allMaterials.find(
-                        m => m.id === id
-                    );
-                material.quantity =
-                    Number(
-                        e.target.value
-                    );
+
+    document.querySelectorAll(".quantityInput").forEach(input => {
+        input.addEventListener("change", e => {
+            const id = Number(e.target.dataset.id);
+            const material = allMaterials.find(m => m.id === id);
+            if (material) {
+                material.quantity = Number(e.target.value);
                 updateSummary();
-                renderTable();
+                renderView();
             }
-        );
+        });
     });
+
     updateSummary();
-
-}
-// Zusammenfassung
-function updateSummary(){
-    const planned =
-        allMaterials.filter(
-            m => m.quantity > 0
-        );
-    document
-    .getElementById(
-        "plannedPositions"
-    )
-    .textContent =
-        planned.length;
-    document
-    .getElementById(
-        "plannedQuantity"
-    )
-    .textContent =
-        planned.reduce(
-            (sum,m)=>
-                sum + m.quantity,
-            0
-        );
 }
 
+function renderView() {
+    renderTable();
+    renderPlanningCards();
+}
 
+function updateSummary() {
+    const planned = allMaterials.filter(m => m.quantity > 0);
+    const plannedPositions = document.getElementById("plannedPositions");
+    const plannedQuantity = document.getElementById("plannedQuantity");
+
+    if (plannedPositions) {
+        plannedPositions.textContent = planned.length;
+    }
+
+    if (plannedQuantity) {
+        plannedQuantity.textContent = planned.reduce((sum, m) => sum + m.quantity, 0);
+    }
+}
+
+function updateQuantity(id, value) {
+    const material = allMaterials.find(m => Number(m.id) === Number(id));
+    if (material) {
+        material.quantity = Number(value);
+        updateSummary();
+        renderView();
+    }
+}
 
 // Speichern
-async function savePlanning(){
-    if(!selectedEvent){
-        alert(
-            "Bitte Veranstaltung auswählen"
-        );
+async function savePlanning() {
+    if (!selectedEvent) {
+        alert("Bitte Veranstaltung auswählen");
         return;
     }
-    const items =
-        allMaterials
-        .filter(
-            m => m.quantity > 0
-        )
-        .map(
-            m => ({
-                material_id:m.id,
-                quantity:m.quantity
-            })
-        );
+
+    const items = allMaterials
+        .filter(m => m.quantity > 0)
+        .map(m => ({
+            material_id: m.id,
+            quantity: m.quantity
+        }));
+
     try {
-        const response =
-            await fetch(
-                "/api/event_plan",
-                {
+        const response = await fetch("/api/event_plan", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                event_id: selectedEvent,
+                items: items
+            })
+        });
 
-                    method:"POST",
-
-                    headers:{
-                        "Content-Type":
-                        "application/json"
-                    },
-                    body:
-                    JSON.stringify({
-                        event_id:
-                            selectedEvent,
-                        items:
-                            items
-
-                    })
-                }
-            );
-        const result =
-            await response.json();
-        document
-        .getElementById("result")
-        .textContent =
-            "Planung gespeichert";
-    }
-    catch(error){
-        console.error(
-            "SAVE ERROR:",
-            error
-        );
-        document
-        .getElementById("result")
-        .textContent =
-            "Fehler beim Speichern";
+        await response.json();
+        const resultElement = document.getElementById("result");
+        if (resultElement) {
+            resultElement.textContent = "Planung gespeichert";
+        }
+    } catch (error) {
+        console.error("SAVE ERROR:", error);
+        const resultElement = document.getElementById("result");
+        if (resultElement) {
+            resultElement.textContent = "Fehler beim Speichern";
+        }
     }
 }
