@@ -130,9 +130,8 @@ function renderProducts(products, showDelete = false, showCheck = false) {
         if (showCheck) buttons += `<button class="small" onclick="checkProduct(${product.id})">Check</button>`;
 
         row.innerHTML = `
-            <td>${getProductName(product)}</td>
-            <td>${formatStatus(product.stat)}</td>
             <td>${product.bez || ""}</td>
+            <td>${formatStatus(product.stat)}</td>
             <td>${product.Code}</td>
             <td>${categoryMap[product.category_id] || "-"}</td>
             <td>${getProductSpec(product)}</td>

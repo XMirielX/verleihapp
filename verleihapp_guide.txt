@@ -1,0 +1,108 @@
+
+VERLEIHAPP - RELEASE & BACKUP GUIDE (VPS)
+
+Server
+
+ ssh nicole@185.228.136.181
+ Netcup...
+
+========================================
+1. RELEASE (NEUE VERSION AUF SERVER BRINGEN)
+========================================
+
+LOKAL (Entwicklung):
+- App testen: npm start
+- Keine Errors in Console
+- Funktion prüfen (Login, CRUD etc.)
+cmd
+npm start
+http://localhost:3000/login.html
+
+
+GIT UPLOAD:
+git add .
+git commit -m "Feature: Pletzte Bugfixes hoffentlich"
+git push
+
+SERVER UPDATE:
+cd ~/verleihapp
+git pull
+
+Wenn package.json geändert:
+npm install
+
+NEUSTART (PM2):
+pm2 restart verleihapp
+
+
+========================================
+2. BACKUP SYSTEM (SEHR WICHTIG - SQLITE)
+========================================
+
+WICHTIG:
+SQLite = eine Datei = komplette Datenbank
+
+DB PFAD:
+~/verleihapp/data/verleih.db
+
+
+MANUELLES BACKUP:
+cp data/verleih.db backups/verleih_$(date +%F).db
+
+UPLOAD ZU DROPBOX:
+rclone copy backups dropbox_nicole:verleihapp-backups
+
+
+RESTORE FALLS ETWAS KAPUTT GEHT:
+pm2 stop verleihapp
+cp backups/verleih.db data/verleih.db
+pm2 start verleihapp
+
+
+========================================
+3. BACKUP AUF EIGENEN PC
+========================================
+
+Manuell:
+scp user@SERVER_IP:/home/nicole/verleihapp/data/verleih.db ~/Backups/
+
+
+ODER DROPBOX (EMPFOHLEN):
+- Server lädt automatisch Backups hoch
+- PC synchronisiert Dropbox
+
+
+========================================
+4. BETRIEB (TÄGLICH WICHTIG)
+========================================
+
+PM2 STATUS:
+pm2 status
+
+LOGS:
+pm2 logs verleihapp
+
+RESTART:
+pm2 restart verleihapp
+
+
+========================================
+5. WICHTIGE REGELN
+========================================
+
+- NIE direkt auf Server entwickeln
+- GIT = Code Source of Truth
+- DROPBOX = Daten Backups
+- SERVER = nur Ausführung
+
+- IMMER BACKUP vor großen Änderungen
+
+
+========================================
+6. DEPLOY REGEL
+========================================
+
+Code ändern:
+→ Git push
+→ Server pull
+→ pm2 restart

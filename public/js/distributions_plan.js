@@ -57,11 +57,11 @@ function renderTable() {
             <td>${item.product_name}</td>
             <td>${item.input || ""}</td>
             <td>${item.cable || ""}</td>
-            <td>${item.schuko || 0}</td>
-            <td>${item.cee16 || 0}</td>
-            <td>${item.cee32 || 0}</td>
-            <td>${item.cee63 || 0}</td>
-            <td>${item.cee125 || 0}</td>
+            <td>${item.schuko ? item.schuko : ""}</td>
+            <td>${item.cee16 ? item.cee16 : ""}</td>
+            <td>${item.cee32 ? item.cee32 : ""}</td>
+            <td>${item.cee63 ? item.cee63 : ""}</td>
+            <td>${item.cee125 ? item.cee125 : ""}</td>
             <td>
                 <input type="text" 
                 class="location" 

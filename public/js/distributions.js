@@ -43,6 +43,7 @@ async function loadDistributions() {
         const res = await fetch(API.distributions, { credentials: "include" });
         if (!res.ok) throw new Error("Distributionen konnten nicht geladen werden");
         distributions = await res.json();
+        renderProductSelect();
         renderDistributionTable();
     } catch (err) {
         console.error(err);
@@ -55,12 +56,18 @@ function renderProductSelect() {
 
     productSelect.innerHTML = '<option value="">Bitte auswählen</option>';
 
-    products.forEach((product) => {
-        const option = document.createElement("option");
-        option.value = product.id;
-        option.textContent = `${product.name}${product.Code ? ` (${product.Code})` : ""}`;
-        productSelect.appendChild(option);
-    });
+    const usedProducts = distributions
+        .filter(d => !distributionIdInput.value || Number(d.id) !== Number(distributionIdInput.value))
+        .map(d => Number(d.product_id));
+
+    products
+        .filter(p => !usedProducts.includes(Number(p.id)))
+        .forEach(product => {
+            const option = document.createElement("option");
+            option.value = product.id;
+            option.textContent = `${product.name} (${product.bez})`;
+            productSelect.appendChild(option);
+        });
 }
 
 function renderDistributionTable() {
@@ -73,14 +80,14 @@ function renderDistributionTable() {
         const tr = document.createElement("tr");
 
         tr.innerHTML = `
-            <td>${product ? product.name : "-"}</td>
+            <td>${product ? product.bez : "-"}</td>
             <td>${item.input || "-"}</td>
             <td>${item.cable || "-"}</td>
-            <td>${item.schuko ?? 0}</td>
-            <td>${item.cee16 ?? 0}</td>
-            <td>${item.cee32 ?? 0}</td>
-            <td>${item.cee63 ?? 0}</td>
-            <td>${item.cee125 ?? 0}</td>
+            <td>${item.schuko ? item.schuko : ""}</td>
+            <td>${item.cee16 ? item.cee16 : ""}</td>
+            <td>${item.cee32 ? item.cee32 : ""}</td>
+            <td>${item.cee63 ? item.cee63 : ""}</td>
+            <td>${item.cee125 ? item.cee125 : ""}</td>
             <td>
                 <button type="button" onclick="editDistribution(${item.id})">Bearbeiten</button>
                 <button type="button" onclick="deleteDistribution(${item.id})">Löschen</button>
