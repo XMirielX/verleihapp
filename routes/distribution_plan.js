@@ -10,7 +10,7 @@ router.get("/:eventId", async (req, res) => {
             SELECT
                 di.id,
                 di.product_id,
-                p.name AS product_name,
+                p.bez AS product_name,
                 c.name AS category_name,
                 di.input,
                 di.cable,

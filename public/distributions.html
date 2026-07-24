@@ -17,7 +17,6 @@
 
 <main>
 
-<section class="card">
     <h2>Distribution anlegen / bearbeiten</h2>
 
     <input type="hidden" id="distribution_id">
@@ -69,10 +68,9 @@
 </section>
 
 
-<section class="card">
 
     <h2>Bestehende Distributionen</h2>
-
+<div id="distributionTableContainer" class="desktop-only">
     <table>
         <thead>
             <tr>
@@ -90,9 +88,8 @@
 
         <tbody id="distribution_table"></tbody>
     </table>
-
-    <div id="distributionCards"></div>
-
+</div>
+<div id="distributionCards" class="mobile-only"></div>
 </section>
 
 </main>

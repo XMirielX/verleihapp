@@ -52,31 +52,45 @@ async function loadDistributions() {
     }
 }
 
-function renderProductSelect() {
+function renderProductSelect(currentProductId = null) {
     if (!productSelect) return;
 
     productSelect.innerHTML = '<option value="">Bitte auswählen</option>';
 
     const usedProducts = distributions
-        .filter(d => !distributionIdInput.value || Number(d.id) !== Number(distributionIdInput.value))
+        .filter(d => Number(d.product_id) !== Number(currentProductId))
         .map(d => Number(d.product_id));
 
     products
         .filter(p => !usedProducts.includes(Number(p.id)))
+        .sort((a, b) => (a.bez || "").localeCompare(b.bez || "", "de", { numeric: true }))
         .forEach(product => {
             const option = document.createElement("option");
             option.value = product.id;
-            option.textContent = `${product.name} (${product.bez})`;
+            option.textContent = `${product.bez} (${product.name})`;
             productSelect.appendChild(option);
         });
+
+    if (currentProductId) {
+        productSelect.value = currentProductId;
+    }
 }
 function renderDistributionCards() {
     const container = document.getElementById("distributionCards");
     if (!container) return;
 
     container.innerHTML = "";
+distributions
+    .sort((a, b) => {
+        const bezA = products.find(p => p.id == a.product_id)?.bez || "";
+        const bezB = products.find(p => p.id == b.product_id)?.bez || "";
 
-    distributions.forEach(item => {
+        return bezA.localeCompare(bezB, "de", {
+            numeric: true,
+            sensitivity: "base"
+        });
+    })
+    .forEach(item => {
         const product = products.find(p => Number(p.id) === Number(item.product_id));
 
         container.innerHTML += `
@@ -140,6 +154,7 @@ function clearForm() {
     if (cee32Field) cee32Field.value = "0";
     if (cee63Field) cee63Field.value = "0";
     if (cee125Field) cee125Field.value = "0";
+    renderProductSelect();
 }
 
 async function saveDistribution() {
@@ -184,10 +199,8 @@ async function saveDistribution() {
 }
 
 async function editDistribution(id) {
-    const item = distributions.find((entry) => Number(entry.id) === Number(id));
-    if (!item) return;
-
     if (distributionIdInput) distributionIdInput.value = item.id;
+    renderProductSelect(item.product_id);
     if (productSelect) productSelect.value = item.product_id;
     if (inputField) inputField.value = item.input || "";
     if (cableField) cableField.value = item.cable || "";

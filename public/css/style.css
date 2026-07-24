@@ -2,57 +2,102 @@
    style.css - THW Förderverein Stil
 ===================================================== */
 
-/* ===================== Grundlayout ===================== */
+/* =====================================================
+   Variablen
+===================================================== */
+
+:root {
+    --primary: #005aa7;
+    --primary-dark: #004080;
+
+    --background: #f4f4f9;
+    --text: #333;
+
+    --border: #ccc;
+    --table-border: black;
+
+    --card-bg: #fff;
+    --card-shadow: rgba(0,0,0,0.1);
+
+    --text-secondary: #666;
+
+    --table-header: #e6f0fa;
+    --hover: #f0f8ff;
+
+    --input-bg: #fff;
+
+    --space-x:2px;
+    --space-xs:4px;
+    --space-sm:8px;
+    --space-md:12px;
+    --space-mx:16px;
+    --space-lg:20px;
+
+--font-title:28px;
+--font-large:18px;
+--font-normal:16px;
+--font-small:12px;
+
+    --radius-sm:6px;
+    --radius-md:10px;
+
+        --transition-fast:0.15s ease;
+}
+
+/* =====================================================
+   1. Grundlayout & globale Elemente
+===================================================== */
+
 body {
     font-family: 'Segoe UI', Tahoma, sans-serif;
-    background-color: #f4f4f9;
-    margin: 20px;
-    color: #333;
+    background-color: var(--background);
+    margin: var(--space-lg);
+    color: var(--text);
 }
 
 h1 {
-    font-size: 28px;
-    margin-bottom: 20px;
-    color: #005aa7;
+    font-size: var(--font-title);
+    margin-bottom: var(--space-md);
+    color: var(--primary);
 }
 
 header {
     display: flex;
     align-items: center;
-    gap: 12px;
-    margin-bottom: 20px;
+    gap: var(--space-md);
+    margin-bottom: var(--space-lg);
 }
 
 header img {
     height: 50px;
 }
+
+
 /* Anklickbare Tabellenzeilen */
+
 .clickable-row {
     cursor: pointer;
-    transition: background-color 0.15s ease;
-}
+    transition:var(--transition-fast);}
 
 .clickable-row:hover {
-    background-color: #f0f8ff;
+    background-color: var(--hover);
 }
-@media (prefers-color-scheme: dark) {
 
-    .clickable-row:hover {
-        background-color: #303030;
-    }
 
-}
-/* ===================== Buttons ===================== */
+/* =====================================================
+   2. Buttons
+===================================================== */
+
 button {
-    background-color: #005aa7;
+    background-color: var(--primary);
     color: #fff;
     border: none;
-    padding: 8px 16px;
-    margin: 4px 2px;
-    border-radius: 6px;
+    padding: var(--space-sm) var(--space-mx);
+    margin: var(--space-xs) var(--space-x);
+    border-radius: var(--radius-sm);
     cursor: pointer;
     font-weight: bold;
-    transition: 0.2s;
+    transition: var(--transition-fast);
 }
 
 button:hover {
@@ -60,15 +105,19 @@ button:hover {
 }
 
 button.small {
-    padding: 2px 6px;
-    font-size: 12px;
-    border-radius: 4px;
+    padding: var(--space-xs) var(--space-sm);
+    font-size: var(--font-small);
+    border-radius: var(--radius-sm);
 }
+/* =====================================================
+   3. Formulare & Eingaben
+===================================================== */
 
-/* ===================== Form & Inputs ===================== */
-input[type="text"], select, input[type="date"] {
-    padding: 6px;
-    border-radius: 4px;
+input[type="text"],
+select,
+input[type="date"] {
+    padding: var(--space-sm);
+    border-radius: var(--radius-sm);
     border: 1px solid #ccc;
     width: 250px;
 }
@@ -77,478 +126,224 @@ input[type="text"], select, input[type="date"] {
     display: grid;
     grid-template-columns: 150px 1fr;
     align-items: center;
-    margin-bottom: 10px;
+    margin-bottom: var(--space-md);
 }
 
-.output-col{
-    width:50px;
-    text-align:center;
+.output-col {
+    width: 50px;
+    text-align: center;
 }
 
 label {
     font-weight: bold;
 }
-
-
-/* Mobile: Tabelle ausblenden, Karten zeigen */
-@media (max-width: 768px) {
-    #desktopView {
-        display: none;
-    }
-    #productTableContainer {
-        display: block;
-    }
-}
+/* =====================================================
+   4. Tabellen
+===================================================== */
 
 table {
-    width: 100%;          /* Tabelle füllt den Container */
+    width: 100%;
     border-collapse: collapse;
-    table-layout: fixed;   /* sehr wichtig: feste Spaltenbreiten, gleichmäßig verteilt */
+    table-layout: fixed;
 }
 
-th, td {
+th,
+td {
     border: 1px solid black;
-    padding: 8px;
+    padding: var(--space-sm);
     text-align: left;
-    overflow: hidden;       /* Text, der zu lang ist, wird abgeschnitten */
-    text-overflow: ellipsis; /* fügt ... hinzu */
-    white-space: nowrap;     /* verhindert Zeilenumbruch */
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
 th {
-    background-color: #e6f0fa;
+    background-color: var(--table-header);
     cursor: pointer;
     position: sticky;
     top: 0;
 }
 
 tr:hover {
-    background-color: #f0f8ff;
+    background-color: var(--hover);
 }
-/* Statusfarben */
+
+/* =====================================================
+   5. Statusanzeigen
+===================================================== */
+
 .status-frei {
     color: green;
     font-weight: bold;
 }
+
 .status-verliehen {
     color: red;
     font-weight: bold;
 }
+
 .status-fehlt {
     color: #b96d10;
     font-weight: bold;
 }
+/* =====================================================
+   6. Mobile Karten - Allgemein
+===================================================== */
 
-/* ===================== Mobile-Karten ===================== */
+/* =====================================================
+   Karten Basis
+===================================================== */
+
+.card {
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: var(--space-md);
+    background: var(--card-bg);
+    box-shadow: 0 2px 6px var(--card-shadow);
+}
+
+/* =====================================================
+   7. Produktkarten
+===================================================== */
+
+#productTableContainer {
+    display: none;
+}
+
+.product-item {
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: var(--space-md);
+    margin-bottom: var(--space-md);
+    background-color: var(--card-bg);
+    box-shadow: 0 2px var(--space-xs) var(--card-shadow);
+}
+
+.product-title {
+    font-weight: bold;
+    font-size: 1.1rem;
+    margin-bottom: var(--space-xs);
+}
+
+.product-sub {
+    font-size: 0.9rem;
+    color: #555;
+    margin-bottom: var(--space-sm);
+}
+
+.product-actions button {
+    margin-right: 5px;
+}
+/* =====================================================
+   8. Eventkarten
+===================================================== */
+
+.event-item {
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: var(--space-md);
+    margin-bottom: var(--space-md);
+    background-color: var(--card-bg);
+    box-shadow: 0 2px var(--space-xs) var(--card-shadow);
+}
+
+.event-title {
+    font-size: 1.1rem;
+    font-weight: bold;
+    margin-bottom: var(--space-xs);
+}
+
+.event-sub {
+    font-size: 0.95rem;
+    color: #555;
+    margin-bottom: var(--space-xs);
+}
+
+.event-actions button {
+    margin-right: var(--space-xs);
+    padding: var(--space-xs) var(--space-sm);
+    font-size: var(--font-normal);
+    border-radius: var(--radius-sm);
+    background-color: var(--primary);
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+
+.event-actions button:hover {
+    background-color: var(--primary-dark);
+}
+
+/* =====================================================
+   9. Benutzerkarten
+===================================================== */
+
+.user-card {
+    border: 1px solid var(--border);
+    border-radius: var(--space-sm);
+    padding: var(--space-md);
+    background-color: var(--card-bg);
+    box-shadow: 0 2px var(--space-xs) var(--card-shadow);
+}
+
+.user-card p {
+    margin: var(--space-xs) 0;
+    font-size: 0.95rem;
+}
+
+.user-card button {
+    margin-top: var(--space-xs);
+    padding: var(--space-xs) var(--space-sm);
+    font-size: 0.9rem;
+    border-radius: var(--space-xs);
+    background-color: var(--primary);
+    color: #fff;
+    border: none;
+    cursor: pointer;
+}
+
+.user-card button:hover {
+    background-color: var(--primary-dark);
+}/* =====================================================
+   10. Ausleihkarten
+===================================================== */
+
 .rental-item {
-    border-radius: 10px;
-    padding: 12px;
-    margin-bottom: 12px;
-    background: #fff;
-    box-shadow: 0 3px 6px rgba(0,0,0,0.1);
+    border-radius: var(--radius-sm);
+    padding: var(--space-md);
+    margin-bottom: var(--space-md);
+    background: var(--card-bg);
+    box-shadow: 0 3px var(--space-xs)  var(--card-shadow);
 }
 
 .rental-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 8px;
-}
-
-.status-badge {
-    color: white;
-    padding: 4px 8px;
-    border-radius: 6px;
-    font-size: 12px;
-    font-weight: bold;
+    margin-bottom: var(--space-sm);
 }
 
 .rental-body {
-    font-size: 14px;
+    font-size: var(--font-normal);
     color: #444;
 }
 
 .rental-body div {
-    margin-bottom: 4px;
-}
-#productTableContainer {
-    display: none;
+    margin-bottom: var(--space-xs);
 }
 
-.product-item {
-    border: 1px solid #ccc;
-    border-radius: 8px;
-    padding: 12px;
-    margin-bottom: 10px;
-    background-color: #fff;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-}
-
-.product-title {
-    font-weight: bold;
-    font-size: 1.1rem;
-    margin-bottom: 6px;
-}
-
-.product-sub {
-    font-size: 0.9rem;
-    color: #555;
-    margin-bottom: 8px;
-}
-
-.product-actions button {
-    margin-right: 5px;
-}
-/* ===================== Event-Karten ===================== */
-.event-item {
-    border: 1px solid #ccc;
-    border-radius: 8px;
-    padding: 12px;
-    margin-bottom: 10px;
-    background-color: #fff;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-}
-
-.event-title {
-    font-size: 1.1rem;
-    font-weight: bold;
-    margin-bottom: 6px;
-}
-
-.event-sub {
-    font-size: 0.95rem;
-    color: #555;
-    margin-bottom: 4px;
-}
-
-.event-actions button {
-    margin-right: 5px;
-    padding: 2px 6px;
-    font-size: 12px;
-    border-radius: 4px;
-    background-color: #005aa7;
+.status-badge {
     color: white;
-    border: none;
-    cursor: pointer;
-}
-.event-actions button:hover {
-    background-color: #004080;
-}
-@media (max-width: 768px) {
-    /* Tabelle ausblenden auf Mobile */
-    #userTable {
-        display: none;
-    }
-
-    /* Cards Container einblenden */
-    #userCardContainer {
-        display: flex;
-        flex-direction: column;
-        gap: 12px;
-    }
-
-    .user-card {
-        border: 1px solid #ccc;
-        border-radius: 8px;
-        padding: 12px;
-        background-color: #fff;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-    }
-
-    .user-card p {
-        margin: 4px 0;
-        font-size: 0.95rem;
-    }
-
-    .user-card button {
-        margin-top: 6px;
-        padding: 4px 8px;
-        font-size: 0.9rem;
-        border-radius: 4px;
-        background-color: #005aa7;
-        color: #fff;
-        border: none;
-        cursor: pointer;
-    }
-
-    .user-card button:hover {
-        background-color: #004080;
-    }
-
-/*------anklickbar------*/
-}
-.product-item,
-.event-item,
-.user-card,
-.rental-item {
-    cursor: pointer;
-    transition: transform 0.15s ease, box-shadow 0.15s ease;
+    padding: var(--space-xs) var(--space-sm);
+    border-radius: var(--radius-sm);
+    font-size: var(--font-small);
+    font-weight: bold;
 }
 
-.product-item:hover,
-.event-item:hover,
-.user-card:hover,
-.rental-item:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 8px rgba(0,0,0,0.15);
-}
-/* ===================== Responsive ===================== */
-@media (max-width: 768px) {
-    body {
-        margin: 10px;
-        font-size: 14px;
-    }
+/* =====================================================
+   11. Materialkarten
+===================================================== */
 
-    h1 {
-        font-size: 22px;
-    }
-
-    button {
-        width: 100%;
-        font-size: 14px;
-        padding: 10px;
-    }
-
-    input[type="text"],
-    select,
-    input[type="date"] {
-        width: 100%;
-    }
-
-    .top-bar {
-        flex-direction: column;
-        align-items: stretch;
-        gap: 8px;
-    }
-
-    #userBar {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 8px;
-    }
-
-    table {
-        display: none; /* Tabelle ausblenden auf Mobile */
-    }
-
-    #productTableContainer {
-        display: block;
-    }
-}
-#cameraContainer video {
-    width: 100%;
-    height: 100%;
-    object-fit: cover; /* passt das Bild an Container an */
-    border: 2px solid #005aa7; /* optionaler Rahmen */
-    border-radius: 8px;
-}
-/* Mobile-Karten Detailansicht */
-@media (max-width: 600px) {
-    td::before {
-        content: attr(data-label);
-        font-weight: bold;
-        color: #555;
-        margin-right: 8px;
-    }
-}
-/* ===================== Distribution Cards ===================== */
-#distributionCards {
-    display: none;
-}
-
-@media (max-width: 768px) {
-
-    table {
-        display: none;
-    }
-
-    #distributionCards {
-        display: flex;
-        flex-direction: column;
-        gap: 12px;
-    }
-
-    .distribution-card {
-        background: #fff;
-        border: 1px solid #ddd;
-        border-radius: 10px;
-        padding: 14px;
-        box-shadow: 0 2px 6px rgba(0,0,0,.1);
-    }
-
-    .distribution-title {
-        font-size: 18px;
-        font-weight: bold;
-        color: #005aa7;
-        margin-bottom: 12px;
-    }
-
-    .distribution-row {
-        display: flex;
-        justify-content: space-between;
-        margin-bottom: 6px;
-    }
-
-    .distribution-row span:first-child {
-        font-weight: 600;
-        color: #666;
-    }
-
-    .output-grid {
-        display: grid;
-        grid-template-columns: repeat(3, 1fr);
-        gap: 8px;
-        margin-top: 12px;
-    }
-
-    .output-grid div {
-        background: #f4f4f9;
-        border-radius: 6px;
-        padding: 8px;
-        text-align: center;
-        font-weight: bold;
-    }
-
-    .distribution-actions {
-        display: flex;
-        gap: 8px;
-        margin-top: 14px;
-    }
-
-    .distribution-actions button {
-        flex: 1;
-        width: auto;
-    }
-}
-/* ===================== Dark Mode (automatisch nach Betriebssystem) ===================== */
-@media (prefers-color-scheme: dark) {
-.distribution-card {
-    background: #2b2b2b;
-    border-color: #555;
-    color: #e0e0e0;
-}
-
-.distribution-title {
-    color: #5aa9ff;
-}
-
-.distribution-row span:first-child {
-    color: #bfbfbf;
-}
-
-.output-grid div {
-    background: #333;
-    color: #fff;
-}
-    body {
-        background-color: #1e1e1e;
-        color: #e0e0e0;
-    }
-
-    h1 {
-        color: #5aa9ff;
-    }
-
-    /* Formulare */
-    input[type="text"],
-    input[type="date"],
-    select {
-        background-color: #2b2b2b;
-        color: #e0e0e0;
-        border: 1px solid #555;
-    }
-
-    label {
-        color: #e0e0e0;
-    }
-
-    /* Buttons */
-    button {
-        background-color: #1976d2;
-        color: white;
-    }
-
-    button:hover {
-        background-color: #1565c0;
-    }
-
-    /* Tabellen */
-    table {
-        background-color: #252525;
-        color: #e0e0e0;
-    }
-
-    th {
-        background-color: #333;
-        color: #fff;
-        border-color: #555;
-    }
-
-    td {
-        border-color: #555;
-    }
-
-    tr:hover {
-        background-color: #303030;
-    }
-
-    #desktopView th,
-    #desktopView td {
-        border-color: #555;
-    }
-
-    #desktopView th {
-        background-color: #333;
-    }
-
-    #desktopView tr:hover {
-        background-color: #303030;
-    }
-
-    /* Karten */
-    .rental-item,
-    .product-item,
-    .event-item,
-    .user-card {
-        background-color: #2b2b2b;
-        color: #e0e0e0;
-        border-color: #555;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.5);
-    }
-
-    .product-sub,
-    .event-sub,
-    .rental-body {
-        color: #c0c0c0;
-    }
-
-    .user-card p {
-        color: #e0e0e0;
-    }
-
-    /* Statusfarben etwas heller */
-    .status-frei {
-        color: #5fd35f;
-    }
-
-    .status-verliehen {
-        color: #ff6b6b;
-    }
-
-    .status-fehlt {
-        color: #ffb84d;
-    }
-
-    /* Mobile Labels */
-    td::before {
-        color: #b0b0b0;
-    }
-
-    /* Kamera */
-    #cameraContainer video {
-        border-color: #1976d2;
-    }
-    /* Desktop */
 #materialTable {
     display: table;
 }
@@ -557,112 +352,377 @@ tr:hover {
     display: none;
 }
 
-
-
-/* Planning Cards */
-.planning-card{
-    background:#2b2b2b;
-    color:#e0e0e0;
-    border:1px solid #555;
-    box-shadow:0 2px 6px rgba(0,0,0,.45);
+.material-card {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: var(--space-md);
+    margin-bottom: var(--space-md);
+    box-shadow: 0 2px var(--space-xs) var(--card-shadow);
 }
 
-.planning-card-title{
-    color:#fff;
+.material-title {
+    font-size: 1.1rem;
+    font-weight: bold;
+    margin-bottom: var(--space-sm);
 }
 
-.planning-row{
-    color:#e0e0e0;
+.material-sub {
+    font-size: 0.95rem;
+    color: #555;
+}
+/* =====================================================
+   12. Planungskarten
+===================================================== */
+
+#planningCards {
+    display: none;
 }
 
-.planning-row span:first-child{
-    color:#cfcfcf;
+.planning-card {
+    background: var(--card-bg);
+    color: #333;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: var(--space-md);
+    box-shadow: 0 2px 6px var(--card-shadow);
 }
 
-.planning-qty input{
-    background:#333;
-    color:#fff;
-    border:1px solid #555;
-}
-.distribution-card{
-    background:#2b2b2b;
-    color:#e0e0e0;
-    border:1px solid #555;
-    box-shadow:0 2px 6px rgba(0,0,0,.45);
+.planning-card-title {
+    font-size: var(--space-sm);
+    font-weight: bold;
+    margin-bottom: var(--space-md);
+    color: var(--primary);
 }
 
-.distribution-title{
-    color:#fff;
+.planning-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: var(--space-sm);
 }
 
-.distribution-row,
-.distribution-inputs label{
-    color:#e0e0e0;
+.planning-row span:first-child {
+    font-weight: 600;
+    color: var(--text-secondary);
 }
 
-.distribution-inputs input{
-    background:#333;
-    color:#fff;
-    border:1px solid #555;
+.planning-qty {
+    margin-top: var(--space-md);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
-}
-/* Mobile */
-@media (max-width: 768px) {
-    #materialTable {
-        display: none;
-    }
 
-    #materialCardContainer {
-        display: block;
-    }
+.planning-qty input {
+    width: 80px;
+    text-align: center;
 }
-   #planningCards{
+
+
+/* =====================================================
+   13. Distribution-/Verteilerkarten
+===================================================== */
+
+#distributionCards {
+    display: none;
+}
+
+.distribution-card {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: var(--space-md);
+    box-shadow: 0 2px 6px var(--card-shadow);
+}
+
+.distribution-title {
+    font-size: var(--font-normal);
+    font-weight: bold;
+    color: var(--primary);
+    margin-bottom: var(--space-md);
+}
+
+.distribution-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: var(--space-sm);
+}
+
+.distribution-row span:first-child {
+    font-weight: 600;
+    color: var(--text-secondary);
+}
+
+.output-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--space-sm);
+    margin-top: var(--space-md);
+}
+
+.output-grid div {
+    background: var(--card-bg);
+    border-radius: var(--radius-sm);
+    padding: var(--space-sm);
+    text-align: center;
+    font-weight: bold;
+}
+
+.distribution-actions {
+    display: flex;
+    gap: var(--space-sm);
+    margin-top: var(--space-md);
+}
+
+.distribution-actions button {
+    flex: 1;
+    width: auto;
+}
+
+
+/* =====================================================
+   14. Responsive Design
+===================================================== */
+.desktop-only {
+    display:block;
+}
+
+.mobile-only {
     display:none;
 }
 
-@media (max-width:768px){
 
-    #planningTableContainer{
+@media(max-width:768px){
+
+    .desktop-only {
         display:none;
     }
 
-    #planningCards{
-        display:flex;
-        flex-direction:column;
-        gap:12px;
+    .mobile-only {
+        display:block;
     }
 
-    .planning-card{
-        border-radius:10px;
-        padding:12px;
-        box-shadow:0 2px 6px rgba(0,0,0,.15);
+    body {
+        margin:var(--space-md);
     }
 
-    .planning-card-title{
-        font-size:18px;
-        font-weight:bold;
-        margin-bottom:10px;
+}
+
+
+@media (max-width: 600px) {
+
+    /* kleinere Detailansicht */
+
+    td::before {
+        font-size: 13px;
     }
 
-    .planning-row{
-        display:flex;
-        justify-content:space-between;
-        margin-bottom:6px;
+}
+
+/* =====================================================
+   15. Dark Mode
+===================================================== */
+
+@media (prefers-color-scheme: dark) {
+
+    :root {
+        --primary: #5aa9ff;
+        --primary-dark: #1565c0;
+
+        --background: #1e1e1e;
+        --text: #e0e0e0;
+
+        --border: #555;
+        --table-border: #555;
+
+        --card-bg: #2b2b2b;
+        --card-shadow: rgba(0,0,0,0.45);
+
+        --table-header: #333;
+        --hover: #303030;
+
+        --input-bg: #333;
+
+        --status-free: #5fd35f;
+        --status-rented: #ff6b6b;
+        --status-missing: #ffb84d;
+
+        --text-secondary: #bfbfbf;
     }
 
-    .planning-row span:first-child{
-        font-weight:600;
+
+    /* =====================
+       Allgemein
+    ===================== */
+
+    body {
+        background-color: var(--background);
+        color: var(--text);
     }
 
-    .planning-qty{
-        margin-top:10px;
-        display:flex;
-        justify-content:space-between;
-        align-items:center;
+    h1 {
+        color: var(--primary);
     }
 
-    .planning-qty input{
-        width:80px;
-        text-align:center;
+
+    /* =====================
+       Formulare
+    ===================== */
+
+    input[type="text"],
+    input[type="date"],
+    select {
+        background-color: var(--input-bg);
+        color: var(--text);
+        border-color: var(--border);
     }
-} 
+
+    label {
+        color: var(--text);
+    }
+
+
+    /* =====================
+       Buttons
+    ===================== */
+
+    button {
+        background-color: var(--primary-dark);
+        color: white;
+    }
+
+    button:hover {
+        background-color: #1565c0;
+    }
+
+
+    /* =====================
+       Tabellen
+    ===================== */
+
+    table {
+        background-color: #252525;
+        color: var(--text);
+    }
+
+    th {
+        background-color: var(--table-header);
+        color: white;
+        border-color: var(--border);
+    }
+
+    td {
+        border-color: var(--border);
+    }
+
+    tr:hover,
+    .clickable-row:hover {
+        background-color: var(--hover);
+    }
+
+
+    /* =====================
+       Karten
+    ===================== */
+
+    .product-item,
+    .event-item,
+    .user-card,
+    .rental-item,
+    .material-card,
+    .planning-card,
+    .distribution-card {
+
+        background-color: var(--card-bg);
+        color: var(--text);
+        border-color: var(--border);
+        box-shadow: 0 2px 6px var(--card-shadow);
+    }
+
+
+    /* =====================
+       Kartentexte
+    ===================== */
+
+    .product-sub,
+    .event-sub,
+    .rental-body,
+    .material-sub {
+
+        color: #c0c0c0;
+    }
+
+
+    /* =====================
+       Statusfarben
+    ===================== */
+
+    .status-frei {
+        color: var(--status-free);
+    }
+
+    .status-verliehen {
+        color: var(--status-rented);
+    }
+
+    .status-fehlt {
+        color: var(--status-missing);
+    }
+
+
+    /* =====================
+       Planung
+    ===================== */
+
+    .planning-card-title,
+    .distribution-title {
+        color: white;
+    }
+
+    .planning-row,
+    .distribution-row {
+        color: var(--text);
+    }
+
+    .planning-row span:first-child,
+    .distribution-row span:first-child {
+        color: #bfbfbf;
+    }
+
+
+    .planning-qty input,
+    .distribution-inputs input {
+        background-color: var(--input-bg);
+        color: white;
+        border-color: var(--border);
+    }
+
+
+    /* =====================
+       Ausgabe-Felder
+    ===================== */
+
+    .output-grid div {
+        background-color: #333;
+        color: white;
+    }
+
+
+    /* =====================
+       Kamera
+    ===================== */
+
+    #cameraContainer video {
+        border-color: var(--primary-dark);
+    }
+
+
+    /* =====================
+       Mobile Labels
+    ===================== */
+
+    td::before {
+        color: #b0b0b0;
+    }
+
+}
