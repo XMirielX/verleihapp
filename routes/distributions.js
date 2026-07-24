@@ -2,10 +2,10 @@ const express = require("express");
 const router = express.Router();
 
 const { db } = require("../models/dbv");
-
+const { requireLogin, requireAdmin } = require("./users");
 
 // GET alle Distribution Items
-router.get("/", async (req, res) => {
+router.get("/",  requireLogin,async (req, res) => {
     try {
         const rows = await db.allAsync(`
             SELECT 
@@ -30,7 +30,7 @@ router.get("/", async (req, res) => {
 
 
 // GET einzelne Distribution
-router.get("/:id", async (req, res) => {
+router.get("/:id",  requireLogin,async (req, res) => {
 
     try {
 
@@ -64,7 +64,7 @@ router.get("/:id", async (req, res) => {
 
 
 // POST neue Distribution anlegen
-router.post("/", async (req, res) => {
+router.post("/", requireLogin, requireAdmin, async (req, res) => {
 
     try {
 
@@ -139,7 +139,7 @@ router.post("/", async (req, res) => {
 
 
 // PUT Distribution ändern
-router.put("/:id", async (req, res) => {
+router.put("/:id", requireLogin, requireAdmin, async (req, res) => {
 
     try {
 
@@ -198,7 +198,7 @@ router.put("/:id", async (req, res) => {
 
 
 // DELETE Distribution
-router.delete("/:id", async (req, res) => {
+router.delete("/:id", requireLogin, requireAdmin, async (req, res) => {
 
     try {
 

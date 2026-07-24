@@ -18,7 +18,6 @@
         Zurück
     </button>
 <main>
-<section class="card">
     <h2>Planung auswählen</h2>
 
     <label for="event_id">Veranstaltung:</label>
@@ -42,7 +41,6 @@
 </section>
 
 
-<section class="card">
     <h2>Verteilerplanung</h2>
 <div id="planningTableContainer"></div>
    <table>
@@ -73,8 +71,14 @@
 <div id="distributionCards"></div>
     <br>
 
-<button onclick="savePlan()">Speichern</button>
-<button onclick="transferToMaterialPlan()">In Materialplanung übernehmen</button></section>
+<button id="saveButton" onclick="savePlan()">Speichern</button>
+
+<button id="transferButton"
+onclick="transferToMaterialPlan()">
+In Materialplanung übernehmen
+</button>
+
+</section>
 
 </main>
 

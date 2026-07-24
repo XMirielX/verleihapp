@@ -1,11 +1,11 @@
 const express = require("express");
 const router = express.Router();
 const { db } = require("../models/dbv");
-
+const { requireLogin, requireAdmin } = require("./users");
 
 // Planung laden (alle Distributionen + bestehende Eventplanung)
-router.get("/:eventId", async (req, res) => {
-    try {
+router.get("/:eventId", requireLogin, async (req,res)=>{
+        try {
         const rows = await db.allAsync(`
             SELECT
                 di.id,
@@ -41,8 +41,8 @@ router.get("/:eventId", async (req, res) => {
 
 
 // Planung speichern
-router.post("/", async (req,res)=>{
-    try {
+router.post("/", requireLogin, requireAdmin, async (req,res)=>{
+        try {
         const { event_id, items } = req.body;
 
         const event = await db.getAsync(
@@ -82,8 +82,8 @@ router.post("/", async (req,res)=>{
 
 
 // Einzelnen Eintrag ändern
-router.put("/:id", async(req,res)=>{
-    try {
+router.put("/:id", requireLogin, requireAdmin, async(req,res)=>{
+        try {
         const {location,planned}=req.body;
 
         await db.runAsync(`
@@ -102,7 +102,7 @@ router.put("/:id", async(req,res)=>{
 
 
 // Einzelnen Eintrag löschen
-router.delete("/:id", async(req,res)=>{
+router.delete("/:id", requireLogin, requireAdmin, async(req,res)=>{
     try {
         await db.runAsync(
             "DELETE FROM distribution_plan WHERE id=?",
@@ -119,7 +119,7 @@ router.delete("/:id", async(req,res)=>{
 
 
 // Distribution in Materialplanung übernehmen
-router.post("/:eventId/generate", async(req,res)=>{
+router.post("/:eventId/generate", requireLogin, requireAdmin, async(req,res)=>{    
     try {
         const eventId=req.params.eventId;
 

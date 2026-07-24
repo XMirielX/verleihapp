@@ -170,6 +170,7 @@ router.delete("/:id", requireLogin, requireAdmin, async (req, res) => {
 // -----------------------------
 // EXPORT
 // -----------------------------
-module.exports.requireLogin = requireLogin;
-module.exports.requireAdmin = requireAdmin;
+router.requireLogin = requireLogin;
+router.requireAdmin = requireAdmin;
+
 module.exports = router;

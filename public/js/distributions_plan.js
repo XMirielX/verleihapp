@@ -1,18 +1,49 @@
 let plan = [];
 let categories = [];
+let currentUser = null;
+let canEdit = false;
 
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded", async () => {
+
+    await loadCurrentUser();
+
     const filterElement = document.getElementById("distributionFilter");
     const categoryElement = document.getElementById("categoryFilter");
 
     loadEvents();
 
-    if (filterElement) filterElement.addEventListener("change", renderView);
-    if (categoryElement) categoryElement.addEventListener("change", renderView);
+    if (filterElement)
+        filterElement.addEventListener("change", renderView);
+
+    if (categoryElement)
+        categoryElement.addEventListener("change", renderView);
+
+    updateRights();
 });
+function updateRights() {
+
+    document.getElementById("saveButton").style.display =
+        canEdit ? "" : "none";
+
+    document.getElementById("transferButton").style.display =
+        canEdit ? "" : "none";
+}
 function renderView() {
     renderTable();
     renderCards();
+}
+async function loadCurrentUser() {
+    const res = await fetch("/api/users/me", {
+        credentials: "include"
+    });
+
+    if (!res.ok) {
+        location.href = "login.html";
+        return;
+    }
+
+    currentUser = await res.json();
+    canEdit = currentUser.role === "admin";
 }
 async function loadEvents() {
     const res = await fetch("/api/events");
@@ -49,11 +80,11 @@ function renderTable() {
 
         tbody.innerHTML += `
         <tr>
-            <td>
-                <input type="checkbox" class="planned" 
-                data-id="${item.id}" 
-                ${item.planned ? "checked" : ""}>
-            </td>
+        <td>
+            <input type="checkbox" class="planned" 
+            data-id="${item.id}" 
+            ${item.planned ? "checked" : ""}
+            ${!canEdit ? "disabled" : ""}></td>
             <td>${item.product_name}</td>
             <td>${item.input || ""}</td>
             <td>${item.cable || ""}</td>
@@ -122,8 +153,8 @@ function renderCards() {
                 <label class="switch">
                     <input type="checkbox" class="planned"
                     data-id="${item.id}"
-                    ${item.planned ? "checked" : ""}>
-                    <span>Einsatz</span>
+                    ${item.planned ? "checked" : ""}
+                    ${!canEdit ? "disabled" : ""}>
                 </label>
             </div>
 
