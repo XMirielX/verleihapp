@@ -45,6 +45,7 @@ async function loadDistributions() {
         distributions = await res.json();
         renderProductSelect();
         renderDistributionTable();
+        renderDistributionCards();
     } catch (err) {
         console.error(err);
         alert(err.message);
@@ -69,7 +70,38 @@ function renderProductSelect() {
             productSelect.appendChild(option);
         });
 }
+function renderDistributionCards() {
+    const container = document.getElementById("distributionCards");
+    if (!container) return;
 
+    container.innerHTML = "";
+
+    distributions.forEach(item => {
+        const product = products.find(p => Number(p.id) === Number(item.product_id));
+
+        container.innerHTML += `
+            <div class="distribution-card">
+                <div class="distribution-title">${product?.bez ?? "-"}</div>
+
+                <div><strong>Eingang:</strong> ${item.input || "-"}</div>
+                <div><strong>Kabel:</strong> ${item.cable || "-"}</div>
+
+                <div class="output-grid">
+                    ${item.schuko ? `<div>Schuko: ${item.schuko}</div>` : ""}
+                    ${item.cee16 ? `<div>CEE16: ${item.cee16}</div>` : ""}
+                    ${item.cee32 ? `<div>CEE32: ${item.cee32}</div>` : ""}
+                    ${item.cee63 ? `<div>CEE63: ${item.cee63}</div>` : ""}
+                    ${item.cee125 ? `<div>CEE125: ${item.cee125}</div>` : ""}
+                </div>
+
+                <div style="margin-top:10px">
+                    <button onclick="editDistribution(${item.id})">Bearbeiten</button>
+                    <button onclick="deleteDistribution(${item.id})">Löschen</button>
+                </div>
+            </div>
+        `;
+    });
+}
 function renderDistributionTable() {
     if (!tableBody) return;
 

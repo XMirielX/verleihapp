@@ -351,9 +351,95 @@ tr:hover {
         margin-right: 8px;
     }
 }
+/* ===================== Distribution Cards ===================== */
+#distributionCards {
+    display: none;
+}
+
+@media (max-width: 768px) {
+
+    table {
+        display: none;
+    }
+
+    #distributionCards {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    .distribution-card {
+        background: #fff;
+        border: 1px solid #ddd;
+        border-radius: 10px;
+        padding: 14px;
+        box-shadow: 0 2px 6px rgba(0,0,0,.1);
+    }
+
+    .distribution-title {
+        font-size: 18px;
+        font-weight: bold;
+        color: #005aa7;
+        margin-bottom: 12px;
+    }
+
+    .distribution-row {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 6px;
+    }
+
+    .distribution-row span:first-child {
+        font-weight: 600;
+        color: #666;
+    }
+
+    .output-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 8px;
+        margin-top: 12px;
+    }
+
+    .output-grid div {
+        background: #f4f4f9;
+        border-radius: 6px;
+        padding: 8px;
+        text-align: center;
+        font-weight: bold;
+    }
+
+    .distribution-actions {
+        display: flex;
+        gap: 8px;
+        margin-top: 14px;
+    }
+
+    .distribution-actions button {
+        flex: 1;
+        width: auto;
+    }
+}
 /* ===================== Dark Mode (automatisch nach Betriebssystem) ===================== */
 @media (prefers-color-scheme: dark) {
+.distribution-card {
+    background: #2b2b2b;
+    border-color: #555;
+    color: #e0e0e0;
+}
 
+.distribution-title {
+    color: #5aa9ff;
+}
+
+.distribution-row span:first-child {
+    color: #bfbfbf;
+}
+
+.output-grid div {
+    background: #333;
+    color: #fff;
+}
     body {
         background-color: #1e1e1e;
         color: #e0e0e0;
@@ -580,84 +666,3 @@ tr:hover {
         text-align:center;
     }
 } 
-.distribution-card {
-    padding: 15px;
-    border-radius: 12px;
-    margin-bottom: 15px;
-}
-
-
-.distribution-header {
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    font-size:18px;
-    margin-bottom:15px;
-}
-
-
-.distribution-info {
-    display:grid;
-    grid-template-columns:1fr 1fr;
-    gap:10px;
-}
-
-
-.distribution-info div {
-    background:#333;
-    padding:8px;
-    border-radius:8px;
-}
-
-
-.distribution-info small,
-.output-grid small {
-    display:block;
-    opacity:.7;
-}
-
-
-.distribution-info strong {
-    font-size:16px;
-}
-
-
-.output-title {
-    margin-top:15px;
-    margin-bottom:8px;
-    font-weight:bold;
-}
-
-
-.output-grid {
-    display:grid;
-    grid-template-columns:repeat(3,1fr);
-    gap:8px;
-}
-
-
-.output-grid div {
-    text-align:center;
-    padding:8px;
-    border-radius:8px;
-    background:#333;
-}
-
-
-.output-grid strong {
-    display:block;
-    font-size:20px;
-}
-
-
-.location-label {
-    display:block;
-    margin-top:15px;
-    font-weight:bold;
-}
-
-
-.location-label input {
-    width:100%;
-    margin-top:5px;
-}

@@ -29,7 +29,7 @@ router.get("/:eventId", async (req, res) => {
                 ON dp.distribution_item_id = di.id 
                 AND dp.event_id = ?
             WHERE di.active = 1
-            ORDER BY c.name, p.name
+            ORDER BY c.name, p.bez
         `, [req.params.eventId]);
 
         res.json(rows);

@@ -15,7 +15,7 @@ router.get("/", async (req, res) => {
             FROM distribution_items
             JOIN products
                 ON products.id = distribution_items.product_id
-            ORDER BY products.name
+            ORDER BY products.bez
         `);
 
         res.json(rows);
