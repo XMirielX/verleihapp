@@ -58,10 +58,17 @@ async function loadUsers() {
     try {
         const res = await fetch("/api/users/list", { credentials: "include" });
         if (!res.ok) throw new Error("Fehler beim Laden der User");
-
+        const desktopContainer = document.getElementById("desktopTableContainer");
+        const cardContainer = document.getElementById("userCardContainer");
         const users = await res.json();
         const isMobile = window.innerWidth <= 768;
-
+        if (isMobile) {
+            desktopContainer.style.display = "none";
+            cardContainer.style.display = "flex";
+        } else {
+            desktopContainer.style.display = "block";
+            cardContainer.style.display = "none";
+        }
         // Desktop
         if (!isMobile) {
             const tbody = document.querySelector("#userTable tbody");
@@ -73,10 +80,9 @@ async function loadUsers() {
             <td>${user.username}</td>
             <td>${user.role}</td>
             <td>
-                <button onclick="editUser(${user.id})">Bearbeiten</button>
-                <button onclick="deleteUser(${user.id})">Löschen</button>
-                <button onclick="resetPass(${user.id})">Passwort Reset</button>
-
+                <button class="small" onclick="editUser(${user.id})">Bearbeiten</button>
+                <button class="small" onclick="deleteUser(${user.id})">Löschen</button>
+                <button class="small" onclick="resetPass(${user.id})">Passwort Reset</button>
             </td>
         `;
                 tbody.appendChild(tr);

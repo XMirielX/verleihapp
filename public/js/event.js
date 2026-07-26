@@ -68,8 +68,9 @@ function renderEvents(events) {
             else if (status === "active") color = "#007bff";
 
             const item = document.createElement("div");
-            item.className = "event-item";
-            item.style.borderLeft = `6px solid ${color}`;
+            item.className = "card event-card";
+            item.style.borderLeftWidth = "6px";
+            item.style.borderLeftColor = color;
             if (canEdit && !isEventClosed(ev)) {
                 item.title = "Veranstaltung bearbeiten";
                 item.addEventListener("click", (event) => {

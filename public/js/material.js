@@ -65,8 +65,7 @@ async function loadCategories() {
     categories = await res.json();
 
     renderCategorySelect();
-    renderCategoryTable();
-    renderCategoryCards();
+    renderMaterials();
 }
 
 async function loadMaterialTypes() {
@@ -76,8 +75,7 @@ async function loadMaterialTypes() {
     console.log("RAW RESPONSE:", text);
 
     materialTypes = JSON.parse(text);
-renderMaterialTable();
-renderMaterialCards();
+renderMaterials();
 
 }
 // ==========================
@@ -104,31 +102,7 @@ console.log("RAW RESPONSE:", text);
     categoryDialog.close();
     await loadCategories();
 }
-function renderMaterialCards() {
-    materialCardContainer.innerHTML = "";
 
-    for (const m of materialTypes) {
-        const cat = categories.find(c => c.id == m.category_id);
-
-        const card = document.createElement("div");
-        card.className = "material-item";
-
-        card.innerHTML = `
-            <div class="product-title">${m.name}</div>
-            <div class="product-sub"><b>Kategorie:</b> ${cat ? cat.name : "-"}</div>
-            <div class="product-sub"><b>Spezifikation:</b> ${m.specification || "-"}</div>
-    <div class="product-actions">
-        <button class="small">Löschen</button>
-    </div>
-        `;
-
-        card.querySelector("button").addEventListener("click", () => {
-            deleteMaterialType(m.id);
-        });
-
-        materialCardContainer.appendChild(card);
-    }
-}
 async function createMaterialType() {
 
     const payload = {
@@ -206,6 +180,20 @@ function renderCategorySelect() {
         categorySelect.appendChild(opt);
     }
 }
+function renderMaterials() {
+    if (window.innerWidth <= 768) {
+        materialTable.style.display = "none";
+        materialCardContainer.style.display = "flex";
+        renderMaterialCards();
+        renderCategoryCards();
+    } else {
+        materialTable.style.display = "table";
+        materialCardContainer.style.display = "none";
+        renderMaterialTable();
+        renderCategoryTable();
+
+    }
+}
 
 function renderMaterialTable() {
     materialTableBody.innerHTML = "";
@@ -251,6 +239,38 @@ function renderCategoryTable() {
 
         categoryTableBody.appendChild(tr);
     }
+}
+function renderMaterialCards() {
+    materialCardContainer.innerHTML = "";
+
+    materialTypes.forEach(m => {
+        const cat = categories.find(c => c.id == m.category_id);
+
+        const card = document.createElement("div");
+        card.className = "card";
+
+        card.innerHTML = `
+            <div class="card-header">
+                <strong>${m.name}</strong>
+            </div>
+
+            <div class="card-body">
+                <div><strong>Kategorie:</strong> ${cat ? cat.name : "-"}</div>
+                <div><strong>Spezifikation:</strong> ${m.specification || "-"}</div>
+                <div><strong>Beschreibung:</strong> ${m.description || "-"}</div>
+            </div>
+
+            <div class="card-actions">
+                <button class="danger-btn">Löschen</button>
+            </div>
+        `;
+
+        card.querySelector(".danger-btn").addEventListener("click", () => {
+            deleteMaterialType(m.id);
+        });
+
+        materialCardContainer.appendChild(card);
+    });
 }
 function renderCategoryCards() {
     categoryTableBody.innerHTML = "";

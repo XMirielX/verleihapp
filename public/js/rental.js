@@ -5,6 +5,10 @@
 document.addEventListener("DOMContentLoaded", () => {
     console.log("Seite geladen");
 
+
+const rentalTable = document.getElementById("rentalTable");
+const rentalCardContainer = document.getElementById("rentalCardContainer");
+
     loadEvents("eventSelect").then(events => {
         if (events.length > 0 && document.getElementById("rentalTable")) {
             loadRentals(events[0].id);
@@ -61,7 +65,7 @@ console.log("Events:", events);
 }
 
 // =====================================================
-// RENTALS LADEN & RENDERN
+// RENTALS LADEN
 // =====================================================
 async function loadRentals(event_id) {
 
@@ -74,51 +78,106 @@ async function loadRentals(event_id) {
         if (!res.ok)
             throw new Error("Fehler beim Laden der Übersicht");
 
-
         const materials = await res.json();
 
         console.log("Event Übersicht:", materials);
 
+        if (window.innerWidth <= 768)
+            renderRentalCards(materials);
+        else
+            renderRentalTable(materials);
 
-        const table = document.getElementById("rentalTable");
-        const tbody = table ? table.querySelector("tbody") : null;
-
-
-        if (!tbody)
-            return;
-
-
-        tbody.innerHTML = "";
-
-
-        materials.forEach(m => {
-
-
-            const row = document.createElement("tr");
-
-
-            row.innerHTML = `
-                <td>${m.name}</td>
-                <td>${m.spezification || "-"}</td>
-                <td>${m.available}</td>
-                <td>${m.planned}</td>
-                <td>${m.scanned}</td>
-            `;
-
-
-            tbody.appendChild(row);
-
-
-        });
-
-
-    }
-    catch(err){
+    } catch (err) {
 
         console.error(err);
         alert(err.message);
 
     }
+
+}
+// =====================================================
+// TABELLE RENDERN
+// =====================================================
+function renderRentalTable(materials) {
+
+    rentalTable.style.display = "table";
+    rentalCardContainer.style.display = "none";
+
+    const tbody = rentalTable.querySelector("tbody");
+    tbody.innerHTML = "";
+
+    materials.forEach(m => {
+
+        const row = document.createElement("tr");
+
+        row.innerHTML = `
+            <td>${m.name}</td>
+            <td>${m.spezification || "-"}</td>
+            <td>${m.available}</td>
+            <td>${m.planned}</td>
+            <td>${m.scanned}</td>
+        `;
+
+        tbody.appendChild(row);
+
+    });
+
+}
+// =====================================================
+// CARDS RENDERN
+// =====================================================
+function renderRentalCards(materials) {
+
+    const rentalTable = document.getElementById("rentalTable");
+    const rentalCardContainer = document.getElementById("rentalCardContainer");
+
+    rentalTable.style.display = "none";
+    rentalCardContainer.style.display = "flex";
+    rentalCardContainer.innerHTML = "";
+
+    materials.forEach(m => {
+
+        let scanIcon = "⚪";
+
+        if (m.scanned === m.planned && m.planned > 0)
+            scanIcon = "🟢";
+        else if (m.scanned > m.planned)
+            scanIcon = "🔴";
+        else if (m.scanned > 0)
+            scanIcon = "🟡";
+
+        const card = document.createElement("div");
+        card.className = "card";
+
+        card.innerHTML = `
+            <div class="card-header">
+                <strong>${m.name}</strong><br>
+                <small>${m.spezification || "-"}</small>
+            </div>
+
+            <div class="card-body">
+
+                <div class="status-row">
+                    <span>🟢 Vorhanden</span>
+                    <strong>${m.available}</strong>
+                </div>
+
+                <div class="status-row">
+                    <span>🔵 Geplant</span>
+                    <strong>${m.planned}</strong>
+                </div>
+
+                <div class="status-row">
+                    <span>${scanIcon} Ausgeliehen</span>
+                    <strong>${m.scanned}</strong>
+                </div>
+
+            </div>
+        `;
+
+        rentalCardContainer.appendChild(card);
+
+    });
 
 }
 // -----------------------------

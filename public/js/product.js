@@ -86,7 +86,7 @@ function renderProducts(products, showDelete = false, showCheck = false) {
 
         filtered.forEach(product => {
             const item = document.createElement("div");
-            item.className = "product-item";
+            item.className = "card product-card";
 
             const statusColor = getStatusColor(product.stat);
 
@@ -94,7 +94,8 @@ function renderProducts(products, showDelete = false, showCheck = false) {
             if (showDelete) buttons += `<button class="small" onclick="deleteProduct(${product.id})">Loeschen</button>`;
             if (showCheck) buttons += `<button class="small" onclick="checkProduct(${product.id})">pruefen</button>`;
 
-            item.style.borderLeft = `6px solid ${statusColor}`;
+           item.style.borderLeftWidth = "6px";
+item.style.borderLeftColor = statusColor;
             if (isProductOverview(showDelete, showCheck) && isAdmin()) {
                 item.title = "Produkt bearbeiten";
                 item.addEventListener("click", (event) => {

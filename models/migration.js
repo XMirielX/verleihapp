@@ -83,6 +83,24 @@ const migrations = [
         );
     `
 },
+{
+    name: "008_create_distribution_images",
+    sql: `
+        CREATE TABLE IF NOT EXISTS distribution_images (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+
+            distribution_item_id INTEGER NOT NULL,
+
+            filename TEXT NOT NULL,
+
+            created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+            FOREIGN KEY (distribution_item_id)
+                REFERENCES distribution_items(id)
+                ON DELETE CASCADE
+        );
+    `
+},
 ];
 
 async function initMigrationTable() {

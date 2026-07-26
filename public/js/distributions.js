@@ -80,41 +80,42 @@ function renderDistributionCards() {
     if (!container) return;
 
     container.innerHTML = "";
-distributions
-    .sort((a, b) => {
-        const bezA = products.find(p => p.id == a.product_id)?.bez || "";
-        const bezB = products.find(p => p.id == b.product_id)?.bez || "";
 
-        return bezA.localeCompare(bezB, "de", {
-            numeric: true,
-            sensitivity: "base"
+    distributions
+        .sort((a, b) => {
+            const bezA = products.find(p => p.id == a.product_id)?.bez || "";
+            const bezB = products.find(p => p.id == b.product_id)?.bez || "";
+
+            return bezA.localeCompare(bezB, "de", {
+                numeric: true,
+                sensitivity: "base"
+            });
+        })
+        .forEach(item => {
+            const product = products.find(p => Number(p.id) === Number(item.product_id));
+
+            container.insertAdjacentHTML("beforeend", `
+                <div class="distribution-card">
+                    <div class="distribution-title">${product?.bez ?? "-"}</div>
+
+                    <div><strong>Eingang:</strong> ${item.input || "-"}</div>
+                    <div><strong>Kabel:</strong> ${item.cable || "-"}</div>
+
+                    <div class="output-grid">
+                        ${item.schuko ? `<div>Schuko: ${item.schuko}</div>` : ""}
+                        ${item.cee16 ? `<div>CEE16: ${item.cee16}</div>` : ""}
+                        ${item.cee32 ? `<div>CEE32: ${item.cee32}</div>` : ""}
+                        ${item.cee63 ? `<div>CEE63: ${item.cee63}</div>` : ""}
+                        ${item.cee125 ? `<div>CEE125: ${item.cee125}</div>` : ""}
+                    </div>
+
+                    <div style="margin-top:10px">
+                        <button class="small" onclick="editDistribution(${item.id})">Bearbeiten</button>
+                        <button class="small" onclick="deleteDistribution(${item.id})">Löschen</button>
+                    </div>
+                </div>
+            `);
         });
-    })
-    .forEach(item => {
-        const product = products.find(p => Number(p.id) === Number(item.product_id));
-
-        container.innerHTML += `
-            <div class="distribution-card">
-                <div class="distribution-title">${product?.bez ?? "-"}</div>
-
-                <div><strong>Eingang:</strong> ${item.input || "-"}</div>
-                <div><strong>Kabel:</strong> ${item.cable || "-"}</div>
-
-                <div class="output-grid">
-                    ${item.schuko ? `<div>Schuko: ${item.schuko}</div>` : ""}
-                    ${item.cee16 ? `<div>CEE16: ${item.cee16}</div>` : ""}
-                    ${item.cee32 ? `<div>CEE32: ${item.cee32}</div>` : ""}
-                    ${item.cee63 ? `<div>CEE63: ${item.cee63}</div>` : ""}
-                    ${item.cee125 ? `<div>CEE125: ${item.cee125}</div>` : ""}
-                </div>
-
-                <div style="margin-top:10px">
-                    <button onclick="editDistribution(${item.id})">Bearbeiten</button>
-                    <button onclick="deleteDistribution(${item.id})">Löschen</button>
-                </div>
-            </div>
-        `;
-    });
 }
 function renderDistributionTable() {
     if (!tableBody) return;
@@ -199,6 +200,9 @@ async function saveDistribution() {
 }
 
 async function editDistribution(id) {
+    const item = distributions.find(d => Number(d.id) === Number(id));
+    if (!item) return;
+
     if (distributionIdInput) distributionIdInput.value = item.id;
     renderProductSelect(item.product_id);
     if (productSelect) productSelect.value = item.product_id;

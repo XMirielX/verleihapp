@@ -189,150 +189,148 @@ tr:hover {
 /* =====================================================
    6. Mobile Karten - Allgemein
 ===================================================== */
-
 /* =====================================================
-   Karten Basis
+   7. Allgemeine Karten-Komponenten
 ===================================================== */
 
+.card-container {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-md);
+}
+
 .card {
-    border: 1px solid var(--border);
-    border-radius: var(--radius-sm);
-    padding: var(--space-md);
+    width: 100%;
+    box-sizing: border-box;
+
     background: var(--card-bg);
+    color: var(--text);
+
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+
+    padding: var(--space-md);
+
     box-shadow: 0 2px 6px var(--card-shadow);
 }
 
-/* =====================================================
-   7. Produktkarten
-===================================================== */
-
-#productTableContainer {
-    display: none;
-}
-
-.product-item {
-    border: 1px solid var(--border);
-    border-radius: var(--radius-sm);
-    padding: var(--space-md);
-    margin-bottom: var(--space-md);
-    background-color: var(--card-bg);
-    box-shadow: 0 2px var(--space-xs) var(--card-shadow);
-}
-
-.product-title {
+.card-header {
     font-weight: bold;
-    font-size: 1.1rem;
-    margin-bottom: var(--space-xs);
-}
-
-.product-sub {
-    font-size: 0.9rem;
-    color: #555;
+    font-size: var(--font-large);
     margin-bottom: var(--space-sm);
 }
 
-.product-actions button {
-    margin-right: 5px;
+.card-header small {
+    display: block;
+    margin-top: var(--space-xs);
+    font-size: var(--font-small);
+    color: var(--text-secondary);
 }
+
+.card-body {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-xs);
+}
+
+.card-actions {
+    margin-top: var(--space-md);
+}
+
+.status-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    padding: var(--space-sm) 0;
+
+    border-bottom: 1px solid var(--border);
+}
+
+.status-row:last-child {
+    border-bottom: none;
+}
+
+.status-row strong {
+    font-size: var(--font-large);
+}
+
+
 /* =====================================================
-   8. Eventkarten
+   8. Produktkarten
 ===================================================== */
 
-.event-item {
-    border: 1px solid var(--border);
-    border-radius: var(--radius-sm);
-    padding: var(--space-md);
-    margin-bottom: var(--space-md);
-    background-color: var(--card-bg);
-    box-shadow: 0 2px var(--space-xs) var(--card-shadow);
+#productTableContainer {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-md);
 }
 
-.event-title {
-    font-size: 1.1rem;
+.product-card .product-title {
     font-weight: bold;
+    font-size: var(--font-large);
     margin-bottom: var(--space-xs);
 }
 
-.event-sub {
-    font-size: 0.95rem;
-    color: #555;
-    margin-bottom: var(--space-xs);
+.product-card .product-sub {
+    font-size: var(--font-small);
+    color: var(--text-secondary);
+    margin-bottom: var(--space-sm);
 }
 
-.event-actions button {
-    margin-right: var(--space-xs);
-    padding: var(--space-xs) var(--space-sm);
-    font-size: var(--font-normal);
-    border-radius: var(--radius-sm);
-    background-color: var(--primary);
-    color: white;
-    border: none;
-    cursor: pointer;
-}
-
-.event-actions button:hover {
-    background-color: var(--primary-dark);
+.product-card .product-actions {
+    margin-top: var(--space-md);
 }
 
 /* =====================================================
-   9. Benutzerkarten
+   9. Eventkarten
 ===================================================== */
 
-.user-card {
-    border: 1px solid var(--border);
-    border-radius: var(--space-sm);
-    padding: var(--space-md);
-    background-color: var(--card-bg);
-    box-shadow: 0 2px var(--space-xs) var(--card-shadow);
+.event-card .event-title {
+    font-weight: bold;
+    font-size: var(--font-large);
+    margin-bottom: var(--space-xs);
 }
+
+.event-card .event-sub {
+    font-size: var(--font-normal);
+    color: var(--text-secondary);
+    margin-bottom: var(--space-xs);
+}
+
+.event-card .event-actions button {
+    margin-right: var(--space-xs);
+}
+
+
+/* =====================================================
+   10. Benutzerkarten
+===================================================== */
 
 .user-card p {
     margin: var(--space-xs) 0;
-    font-size: 0.95rem;
 }
 
 .user-card button {
     margin-top: var(--space-xs);
-    padding: var(--space-xs) var(--space-sm);
-    font-size: 0.9rem;
-    border-radius: var(--space-xs);
-    background-color: var(--primary);
-    color: #fff;
-    border: none;
-    cursor: pointer;
 }
 
-.user-card button:hover {
-    background-color: var(--primary-dark);
-}/* =====================================================
-   10. Ausleihkarten
+
+/* =====================================================
+   11. Ausleihkarten
 ===================================================== */
 
-.rental-item {
-    border-radius: var(--radius-sm);
-    padding: var(--space-md);
-    margin-bottom: var(--space-md);
-    background: var(--card-bg);
-    box-shadow: 0 3px var(--space-xs)  var(--card-shadow);
+#rentalCardContainer {
+    display: none;
 }
 
-.rental-header {
+.rental-card .rental-status {
     display: flex;
     justify-content: space-between;
-    align-items: center;
-    margin-bottom: var(--space-sm);
+    padding: var(--space-sm) 0;
 }
 
-.rental-body {
-    font-size: var(--font-normal);
-    color: #444;
-}
-
-.rental-body div {
-    margin-bottom: var(--space-xs);
-}
-
-.status-badge {
+.rental-card .status-badge {
     color: white;
     padding: var(--space-xs) var(--space-sm);
     border-radius: var(--radius-sm);
@@ -340,132 +338,89 @@ tr:hover {
     font-weight: bold;
 }
 
-/* =====================================================
-   11. Materialkarten
-===================================================== */
 
-#materialTable {
-    display: table;
-}
+/* =====================================================
+   12. Materialkarten
+===================================================== */
 
 #materialCardContainer {
     display: none;
 }
 
-.material-card {
-    background: var(--card-bg);
-    border: 1px solid var(--border);
-    border-radius: var(--radius-sm);
-    padding: var(--space-md);
-    margin-bottom: var(--space-md);
-    box-shadow: 0 2px var(--space-xs) var(--card-shadow);
-}
-
-.material-title {
-    font-size: 1.1rem;
+.material-card .material-title {
+    font-size: var(--font-large);
     font-weight: bold;
     margin-bottom: var(--space-sm);
 }
 
-.material-sub {
-    font-size: 0.95rem;
-    color: #555;
+.material-card .material-sub {
+    font-size: var(--font-normal);
+    color: var(--text-secondary);
 }
+
+
 /* =====================================================
-   12. Planungskarten
+   13. Planungskarten
 ===================================================== */
 
 #planningCards {
     display: none;
 }
 
-.planning-card {
-    background: var(--card-bg);
-    color: #333;
-    border: 1px solid var(--border);
-    border-radius: var(--radius-sm);
-    padding: var(--space-md);
-    box-shadow: 0 2px 6px var(--card-shadow);
-}
-
-.planning-card-title {
-    font-size: var(--space-sm);
+.planning-card .planning-title {
     font-weight: bold;
-    margin-bottom: var(--space-md);
     color: var(--primary);
+    margin-bottom: var(--space-md);
 }
 
-.planning-row {
+.planning-card .planning-row {
     display: flex;
     justify-content: space-between;
     margin-bottom: var(--space-sm);
 }
 
-.planning-row span:first-child {
-    font-weight: 600;
+.planning-card .planning-row span:first-child {
     color: var(--text-secondary);
+    font-weight: 600;
 }
 
-.planning-qty {
-    margin-top: var(--space-md);
+.planning-card .planning-qty {
     display: flex;
     justify-content: space-between;
     align-items: center;
-}
-
-.planning-qty input {
-    width: 80px;
-    text-align: center;
+    margin-top: var(--space-md);
 }
 
 
 /* =====================================================
-   13. Distribution-/Verteilerkarten
+   14. Distributionkarten
 ===================================================== */
 
 #distributionCards {
     display: none;
 }
 
-.distribution-card {
-    background: var(--card-bg);
-    border: 1px solid var(--border);
-    border-radius: var(--radius-sm);
-    padding: var(--space-md);
-    box-shadow: 0 2px 6px var(--card-shadow);
+@media (max-width: 768px) {
+    #distributionCards {
+        display: block;
+    }
 }
 
-.distribution-title {
-    font-size: var(--font-normal);
+.distribution-card .distribution-title {
     font-weight: bold;
     color: var(--primary);
     margin-bottom: var(--space-md);
 }
 
-.distribution-row {
+.distribution-card .distribution-row {
     display: flex;
     justify-content: space-between;
     margin-bottom: var(--space-sm);
 }
 
-.distribution-row span:first-child {
-    font-weight: 600;
+.distribution-card .distribution-row span:first-child {
     color: var(--text-secondary);
-}
-
-.output-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: var(--space-sm);
-    margin-top: var(--space-md);
-}
-
-.output-grid div {
-    background: var(--card-bg);
-    border-radius: var(--radius-sm);
-    padding: var(--space-sm);
-    text-align: center;
-    font-weight: bold;
+    font-weight: 600;
 }
 
 .distribution-actions {
@@ -473,13 +428,6 @@ tr:hover {
     gap: var(--space-sm);
     margin-top: var(--space-md);
 }
-
-.distribution-actions button {
-    flex: 1;
-    width: auto;
-}
-
-
 /* =====================================================
    14. Responsive Design
 ===================================================== */
