@@ -93,8 +93,40 @@
 </section>
 
 </main>
-
+<script src="js/distribution_image.js"></script>
 <script src="js/distributions.js"></script>
 
+
+<div id="imageModal" class="modal hidden">
+    <div class="modal-content">
+        <h2>Verteiler Bilder</h2>
+        <div id="imageGallery"></div>
+        <div id="imageCounter"></div>
+        <div id="imageAdminButtons">
+            <input 
+                id="distributionImageInput"
+                type="file"
+                accept="image/*"
+                capture="environment">
+            <button onclick="uploadDistributionImage()">
+                Hochladen
+            </button>
+            <button onclick="deleteCurrentDistributionImage()">
+                Löschen
+            </button>
+        </div>
+        <div class="image-navigation">
+            <button onclick="previousImage()">
+                ◀
+            </button>
+            <button onclick="nextImage()">
+                ▶
+            </button>
+        </div>
+        <button onclick="closeImageModal()">
+            Schließen
+        </button>
+    </div>
+</div>
 </body>
 </html>

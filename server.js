@@ -34,6 +34,8 @@ const app = express();
         saveUninitialized: false,
         cookie: { secure: false }
     }));
+    app.use("/uploads",express.static(path.join(__dirname, "public/uploads"))
+    );
 
     app.use(express.static(path.join(__dirname, 'public')));
 
@@ -53,7 +55,9 @@ const app = express();
     const planningRoutes = require("./routes/event_plan");
     const distributionsRoutes = require("./routes/distributions");
     const distributionPlanRoutes = require("./routes/distribution_plan");
+    const distributionImageRoutes = require("./routes/distributions_image");
 
+    app.use("/api/distributions_images", distributionImageRoutes);
     app.use("/api/distributions", distributionsRoutes);
     app.use("/api/distribution-plan", distributionPlanRoutes);
     app.use("/api/event_plan", planningRoutes);

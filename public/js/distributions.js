@@ -4,7 +4,8 @@
 
 const API = {
     products: "/api/products",
-    distributions: "/api/distributions"
+    distributions: "/api/distributions",
+    images: "/api/distributions_images"
 };
 
 const productSelect = document.getElementById("product_id");
@@ -22,8 +23,11 @@ let products = [];
 let distributions = [];
 
 document.addEventListener("DOMContentLoaded", async () => {
+        currentUser = await checkLogin();
+
     await loadProducts();
     await loadDistributions();
+    
 });
 
 async function loadProducts() {
@@ -35,6 +39,42 @@ async function loadProducts() {
     } catch (err) {
         console.error(err);
         alert(err.message);
+    }
+}
+
+
+// =====================================================
+// 🎨 LOGIN CHECK
+// =====================================================
+
+// Pruefen, ob User angemeldet ist
+async function checkLogin() {
+    try {
+        const res = await fetch("/api/users/me", { credentials: "include" });
+
+        if (!res.ok) {
+            // Nur redirect, wenn wir NICHT auf login.html sind
+            if (!window.location.pathname.includes("login.html")) {
+                localStorage.setItem("lastPage", window.location.pathname);
+                window.location.href = "login.html";
+            }
+            return null;
+        }
+
+        const user = await res.json();
+        // User Info auf der Seite anzeigen (falls vorhanden)
+        const el = document.getElementById("userInfo");
+        if (el) el.innerText = `Eingeloggt als: ${user.username} (${user.role})`;
+
+        return user;
+
+    } catch (err) {
+        console.error("Fehler beim Laden des Users:", err);
+        if (!window.location.pathname.includes("login.html")) {
+            localStorage.setItem("lastPage", window.location.pathname);
+            window.location.href = "login.html";
+        }
+        return null;
     }
 }
 
@@ -108,10 +148,18 @@ function renderDistributionCards() {
                         ${item.cee63 ? `<div>CEE63: ${item.cee63}</div>` : ""}
                         ${item.cee125 ? `<div>CEE125: ${item.cee125}</div>` : ""}
                     </div>
-
                     <div style="margin-top:10px">
-                        <button class="small" onclick="editDistribution(${item.id})">Bearbeiten</button>
-                        <button class="small" onclick="deleteDistribution(${item.id})">Löschen</button>
+                        <button class="small" onclick="openDistributionImages(${item.id})">
+                            📷 Bilder
+                        </button>
+
+                        <button class="small" onclick="editDistribution(${item.id})">
+                            Bearbeiten
+                        </button>
+
+                        <button class="small" onclick="deleteDistribution(${item.id})">
+                            Löschen
+                        </button>
                     </div>
                 </div>
             `);
@@ -136,8 +184,16 @@ function renderDistributionTable() {
             <td>${item.cee63 ? item.cee63 : ""}</td>
             <td>${item.cee125 ? item.cee125 : ""}</td>
             <td>
-                <button type="button" onclick="editDistribution(${item.id})">Bearbeiten</button>
-                <button type="button" onclick="deleteDistribution(${item.id})">Löschen</button>
+                <butto<td>
+                <button type="button" onclick="openDistributionImages(${item.id})">
+                    📷
+                </button>
+                <button type="button" onclick="editDistribution(${item.id})">
+                    Bearbeiten
+                </button>
+                <button type="button" onclick="deleteDistribution(${item.id})">
+                    Löschen
+                </button>
             </td>
         `;
 
@@ -229,5 +285,40 @@ async function deleteDistribution(id) {
     } catch (err) {
         console.error(err);
         alert(err.message);
+    }
+}
+
+// =====================================================
+// 🎨 LOGIN CHECK
+// =====================================================
+
+// Pruefen, ob User angemeldet ist
+async function checkLogin() {
+    try {
+        const res = await fetch("/api/users/me", { credentials: "include" });
+
+        if (!res.ok) {
+            // Nur redirect, wenn wir NICHT auf login.html sind
+            if (!window.location.pathname.includes("login.html")) {
+                localStorage.setItem("lastPage", window.location.pathname);
+                window.location.href = "login.html";
+            }
+            return null;
+        }
+
+        const user = await res.json();
+        // User Info auf der Seite anzeigen (falls vorhanden)
+        const el = document.getElementById("userInfo");
+        if (el) el.innerText = `Eingeloggt als: ${user.username} (${user.role})`;
+
+        return user;
+
+    } catch (err) {
+        console.error("Fehler beim Laden des Users:", err);
+        if (!window.location.pathname.includes("login.html")) {
+            localStorage.setItem("lastPage", window.location.pathname);
+            window.location.href = "login.html";
+        }
+        return null;
     }
 }

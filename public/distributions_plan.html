@@ -43,8 +43,7 @@
 
     <h2>Verteilerplanung</h2>
 <div id="planningTableContainer"></div>
-   <table>
-    <thead>
+<table class="desktop-only">    <thead>
         <tr>
             <th rowspan="2">Einsatz</th>
             <th rowspan="2">Produkt</th>
@@ -66,7 +65,6 @@
     <tbody id="plan_table">
     </tbody>
 </table>
-</div>
 
 <div id="distributionCards"></div>
     <br>
@@ -78,10 +76,35 @@ onclick="transferToMaterialPlan()">
 In Materialplanung übernehmen
 </button>
 
-</section>
-
 </main>
 
+<div id="imageModal" class="modal hidden">
+
+    <div class="modal-content">
+
+        <h2>Verteiler Bilder</h2>
+
+        <div id="imageGallery"></div>
+
+        <div id="imageCounter"></div>
+
+        <div class="image-navigation">
+
+            <button onclick="previousImage()">◀</button>
+
+            <button onclick="nextImage()">▶</button>
+
+        </div>
+
+        <button onclick="closeImageModal()">
+            Schließen
+        </button>
+
+    </div>
+
+</div>
+
+<script src="js/distribution_image.js"></script>
 <script src="js/distributions_plan.js"></script>
 
 </body>

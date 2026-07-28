@@ -144,7 +144,6 @@ label {
 table {
     width: 100%;
     border-collapse: collapse;
-    table-layout: fixed;
 }
 
 th,
@@ -189,6 +188,36 @@ tr:hover {
 /* =====================================================
    6. Mobile Karten - Allgemein
 ===================================================== */
+.modal {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.7);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+
+.modal.hidden {
+    display: none;
+}
+
+
+.modal-content {
+    background: var(--card-bg);
+    color: var(--text);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md) ;
+    padding: var(--space-md);
+}
+
+
+.distribution-image {
+    width:100%;
+    max-height:70vh;
+    object-fit:contain;
+}
 /* =====================================================
    7. Allgemeine Karten-Komponenten
 ===================================================== */
@@ -391,7 +420,6 @@ tr:hover {
     margin-top: var(--space-md);
 }
 
-
 /* =====================================================
    14. Distributionkarten
 ===================================================== */
@@ -402,31 +430,136 @@ tr:hover {
 
 @media (max-width: 768px) {
     #distributionCards {
-        display: block;
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-md);
     }
 }
+.distribution-card {
+    position: relative;
+    background: var(--card-bg);
+    color: var(--text);
+    border: 1px solid var(--border);
+    border-left: 8px solid #777;
+    border-radius: var(--radius-md);
+    padding: var(--space-md);
+    box-shadow: 0 2px 6px var(--card-shadow);
+    transition: border-color .2s ease;
+}
+/* eingeplant */
+.distribution-card.planned {
+    border-left-color: #00a000;
+}
+/* nicht eingeplant */
 
-.distribution-card .distribution-title {
-    font-weight: bold;
-    color: var(--primary);
-    margin-bottom: var(--space-md);
+.distribution-card.unplanned {
+    border-left-color: #777;
+}
+.distribution-header {
+    display:flex;
+    align-items:center;
+    gap:var(--space-sm);
+    margin-bottom:var(--space-md);
+}
+.distribution-header strong {
+    flex:1;
+    font-size:var(--font-large);
 }
 
-.distribution-card .distribution-row {
+.image-button {
+    min-width:38px;
+}
+.distribution-info {
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:var(--space-sm);
+    margin-bottom:var(--space-md);
+}
+.distribution-info small,
+.output-grid small {
+    display:block;
+    color:var(--text-secondary);
+}
+.distribution-info strong,
+.output-grid strong {
+    font-size:var(--font-normal);
+}
+.output-title {
+    font-weight:bold;
+    margin-bottom:var(--space-sm);
+}
+.output-grid {
+    display:grid;
+    grid-template-columns:repeat(5,1fr);
+    gap:6px;
+    margin-bottom:var(--space-md);
+}
+.output-grid div {
+    background:rgba(255,255,255,0.05);
+    border-radius:var(--radius-sm);
+    padding:6px;
+    text-align:center;
+}
+.location-label {
+    display:flex;
+    flex-direction:column;
+    gap:var(--space-xs);
+}
+.location {
+    width:100%;
+    box-sizing:border-box;
+}
+.distribution-actions {
+    display:flex;
+    gap:var(--space-sm);
+    margin-top:var(--space-md);
+}
+
+.mobile-cards {
+    display: none;
+}
+/* =====================================================
+   14. Plannungcard
+===================================================== */
+.planning-card {
+    background: var(--card-bg);
+    color: var(--text);
+
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+
+    padding: var(--space-md);
+    margin-bottom: var(--space-md);
+
+    box-shadow: 0 2px 5px rgba(0,0,0,0.15);
+}
+.planning-card.warning {
+    border: 2px solid #d32f2f;
+}
+
+.planning-card-title small {
+    color: var(--text-light);
+    font-weight: normal;
+}
+.planning-card-title {
+    font-weight: bold;
+    font-size: 1.1rem;
+    margin-bottom: 10px;
+}
+
+.planning-row {
     display: flex;
     justify-content: space-between;
-    margin-bottom: var(--space-sm);
+    padding: 5px 0;
 }
 
-.distribution-card .distribution-row span:first-child {
-    color: var(--text-secondary);
-    font-weight: 600;
+.planning-qty {
+    margin-top: 10px;
 }
 
-.distribution-actions {
-    display: flex;
-    gap: var(--space-sm);
-    margin-top: var(--space-md);
+.planning-qty input {
+    width: 100%;
+    padding: 8px;
 }
 /* =====================================================
    14. Responsive Design
