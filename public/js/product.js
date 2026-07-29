@@ -6,8 +6,10 @@ let categoryMap = {};
 let sortDirection = 1;
 let editingProductId = null;
 let currentUser = null;
-
 const page = window.location.pathname;
+
+const isDeletePage = page.includes("productdelete.html");
+const isCheckPage = page.includes("productcheck.html");
 
 // =====================================================
 // 🚀 INIT
@@ -36,17 +38,10 @@ async function loadProducts() {
     try {
         const res = await fetch("/api/products");
         const products = await res.json();
+
         allProducts = products;
 
-        if (page.includes("products.html")) {
-            renderProducts(products);
-        }
-        if (page.includes("productdelete.html")) {
-            renderProducts(products, true);
-        }
-        if (page.includes("productcheck.html")) {
-            renderProducts(products, false, true);
-        }
+        renderProducts(products, isDeletePage, isCheckPage);
 
     } catch (err) {
         console.error("Fehler beim Laden der Produkte:", err);
@@ -212,11 +207,14 @@ function setupFilterListeners() {
     const category = document.getElementById("categoryFilter");
     const spec = document.getElementById("specFilter");
 
-    if (search) search.addEventListener("input", () => renderProducts(allProducts));
-    if (category) category.addEventListener("change", () => renderProducts(allProducts));
-    if (spec) spec.addEventListener("input", () => renderProducts(allProducts));
-}
+    const refreshProducts = () => {
+        renderProducts(allProducts, isDeletePage, isCheckPage);
+    };
 
+    if (search) search.addEventListener("input", refreshProducts);
+    if (category) category.addEventListener("change", refreshProducts);
+    if (spec) spec.addEventListener("input", refreshProducts);
+}
 // =====================================================
 // 🔽 SORTIERUNG
 // =====================================================
