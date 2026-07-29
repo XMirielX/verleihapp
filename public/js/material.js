@@ -107,7 +107,6 @@ async function createMaterialType() {
         const payload = {
             name: document.getElementById("name").value.trim(),
             specification: document.getElementById("specification").value.trim(),
-            description: document.getElementById("description").value.trim(),
             category_id: categorySelect.value
         };
 
@@ -175,8 +174,8 @@ async function updateMaterialType() {
     const payload = {
         name: document.getElementById("name").value.trim(),
         specification: document.getElementById("specification").value.trim(),
-        description: document.getElementById("description").value.trim(),
-        category_id: document.getElementById("category").value
+        category_id: categorySelect.value,
+        active: 1
     };
 
     const res = await fetch(`${API.materialTypes}/${currentMaterialId}`, {
@@ -186,7 +185,7 @@ async function updateMaterialType() {
         },
         body: JSON.stringify(payload)
     });
-
+console.log("UPDATE MATERIAL:", currentMaterialId, payload);
     const data = await res.json();
 
     if (!res.ok) {
@@ -200,6 +199,7 @@ async function updateMaterialType() {
 
     materialForm.reset();
 
+    formTitle.textContent = "Neuen Materialtyp anlegen";
     saveButton.textContent = "Material anlegen";
 
     await loadMaterialTypes();
@@ -328,7 +328,6 @@ function renderMaterialCards() {
             <div class="card-body">
                 <div><strong>Kategorie:</strong> ${cat ? cat.name : "-"}</div>
                 <div><strong>Spezifikation:</strong> ${m.specification || "-"}</div>
-                <div><strong>Beschreibung:</strong> ${m.description || "-"}</div>
             </div>
 
             <div class="card-actions">
