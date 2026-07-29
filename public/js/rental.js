@@ -111,8 +111,8 @@ function renderRentalTable(materials) {
         const row = document.createElement("tr");
 
         row.innerHTML = `
-            <td>${m.name}</td>
-            <td>${m.spezification || "-"}</td>
+            <td>${m.pname}</td>
+            <td>${m.specification || "-"}</td>
             <td>${m.available}</td>
             <td>${m.planned}</td>
             <td>${m.scanned}</td>
@@ -151,8 +151,8 @@ function renderRentalCards(materials) {
 
         card.innerHTML = `
             <div class="card-header">
-                <strong>${m.name}</strong><br>
-                <small>${m.spezification || "-"}</small>
+                <strong>${m.pname}</strong><br>
+                <small>${m.specification || "-"}</small>
             </div>
 
             <div class="card-body">
