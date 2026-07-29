@@ -1,11 +1,10 @@
+```html
 <!DOCTYPE html>
 <html lang="de">
 
 <head>
     <meta charset="UTF-8">
-
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
     <title>Materialverwaltung</title>
 
     <link rel="stylesheet" href="css/style.css">
@@ -24,11 +23,12 @@
 <!-- =========================
      FORMULAR
 ========================= -->
-<h2>Materialtyp anlegen</h2>
+
+<h2 id="formTitle">Materialtyp anlegen</h2>
 
 <form id="materialForm">
 
-    <label>Kategorie</label>
+    <label for="category">Kategorie</label>
     <select id="category"></select>
 
     <button type="button" id="newCategoryBtn">
@@ -37,18 +37,38 @@
 
     <br><br>
 
-    <label>Name</label>
-    <input type="text" id="name" placeholder="z.B. CEE Verlängerung">
+    <label for="name">Name</label>
+    <input
+        type="text"
+        id="name"
+        placeholder="z.B. CEE Verlängerung">
 
-    <label>Spezifikation</label>
-    <input type="text" id="specification" placeholder="z.B. 32A 10m">
+    <label for="specification">Spezifikation</label>
+    <input
+        type="text"
+        id="specification"
+        placeholder="z.B. 32A 10m">
 
-    <br><br>
+    <label for="description">Beschreibung</label>
+    <br>    
 
-    <button type="submit">Speichern</button>
-    <button type="reset">Zurücksetzen</button>
+    <button
+        type="submit"
+        id="saveButton">
+        Material anlegen
+    </button>
 
-    <button type="button" onclick="window.location.href='products.html'">
+    <button
+        type="button"
+        id="cancelButton"
+        onclick="clearForm()"
+        hidden>
+        Abbrechen
+    </button>
+
+    <button
+        type="button"
+        onclick="window.location.href='products.html'">
         Zurück
     </button>
 
@@ -59,9 +79,10 @@
 <hr>
 
 <!-- =========================
-     DESKTOP TABELLE
+     MATERIALTYPEN
 ========================= -->
-<h2>Materialtypen (Desktop)</h2>
+
+<h2>Materialtypen</h2>
 
 <table id="materialTable">
     <thead>
@@ -72,18 +93,22 @@
             <th>Aktionen</th>
         </tr>
     </thead>
+
     <tbody></tbody>
 </table>
 
-<hr>
+<div
+    id="materialCardContainer"
+    class="card-container"
+    style="display:none;">
+</div>
 
-
-<div id="materialCardContainer" class="card-container"></div>
 <hr>
 
 <!-- =========================
      KATEGORIEN
 ========================= -->
+
 <h2>Kategorien</h2>
 
 <table id="categoryTable">
@@ -93,27 +118,45 @@
             <th>Aktionen</th>
         </tr>
     </thead>
+
     <tbody></tbody>
 </table>
+
+<div
+    id="categoryCardContainer"
+    class="card-container"
+    style="display:none;">
+</div>
+
+<hr>
 
 <!-- =========================
      DIALOG
 ========================= -->
+
 <dialog id="categoryDialog">
 
     <h3>Neue Kategorie</h3>
 
-    <label>Name</label>
-    <input type="text" id="newCategoryName">
+    <label for="newCategoryName">Name</label>
+    <input
+        type="text"
+        id="newCategoryName">
 
     <br><br>
 
-    <button id="saveCategoryBtn">Speichern</button>
-    <button id="closeDialogBtn">Abbrechen</button>
+    <button id="saveCategoryBtn">
+        Speichern
+    </button>
+
+    <button id="closeDialogBtn">
+        Abbrechen
+    </button>
 
 </dialog>
 
 <script src="js/material.js"></script>
 
 </body>
+
 </html>

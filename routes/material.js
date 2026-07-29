@@ -23,6 +23,34 @@ router.get("/", async (req, res) => {
 });
 
 //
+// GET single material type
+//
+router.get("/:id", async (req, res) => {
+    try {
+        const material = await db.getAsync(`
+            SELECT mt.*, c.name AS category_name
+            FROM material_typ mt
+            JOIN categories c ON c.id = mt.category_id
+            WHERE mt.id = ?
+        `, [req.params.id]);
+
+        if (!material) {
+            return res.status(404).json({
+                error: "Materialtyp nicht gefunden"
+            });
+        }
+
+        res.json(material);
+
+    } catch (err) {
+        console.error(err);
+
+        res.status(500).json({
+            error: "Fehler beim Laden des Materialtyps"
+        });
+    }
+});
+//
 // CREATE material type
 //
 router.post("/", async (req, res) => {

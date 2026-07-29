@@ -166,6 +166,9 @@ th {
 tr:hover {
     background-color: var(--hover);
 }
+tr.selected {
+    background: var(--primary-light);
+}
 
 /* =====================================================
    5. Statusanzeigen

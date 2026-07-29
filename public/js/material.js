@@ -8,10 +8,13 @@ const API = {
 };
 
 // DOM
+const materialCardContainer = document.getElementById("materialCardContainer");
+const categoryCardContainer = document.getElementById("categoryCardContainer");
 const categorySelect = document.getElementById("category");
 const materialForm = document.getElementById("materialForm");
 const result = document.getElementById("result");
-
+const saveButton = document.getElementById("saveButton");
+const formTitle = document.getElementById("formTitle");
 const materialTableBody = document.querySelector("#materialTable tbody");
 const categoryTableBody = document.querySelector("#categoryTable tbody");
 
@@ -23,7 +26,7 @@ const newCategoryName = document.getElementById("newCategoryName");
 
 let categories = [];
 let materialTypes = [];
-
+let currentMaterialId = null;
 // ==========================
 // INIT
 // ==========================
@@ -40,7 +43,7 @@ function bindEvents() {
 
     materialForm.addEventListener("submit", async (e) => {
         e.preventDefault();
-        await createMaterialType();
+        await saveMaterialType();
     });
 
     newCategoryBtn.addEventListener("click", () => {
@@ -69,14 +72,10 @@ async function loadCategories() {
 }
 
 async function loadMaterialTypes() {
-    const res = await fetch("/api/material");
+    const res = await fetch(API.materialTypes);
+    materialTypes = await res.json();
 
-    const text = await res.text();
-    console.log("RAW RESPONSE:", text);
-
-    materialTypes = JSON.parse(text);
-renderMaterials();
-
+    renderMaterials();
 }
 // ==========================
 // CREATE
@@ -105,11 +104,12 @@ console.log("RAW RESPONSE:", text);
 
 async function createMaterialType() {
 
-    const payload = {
-        name: document.getElementById("name").value.trim(),
-        specification: document.getElementById("specification").value.trim(),
-        category_id: categorySelect.value
-    };
+        const payload = {
+            name: document.getElementById("name").value.trim(),
+            specification: document.getElementById("specification").value.trim(),
+            description: document.getElementById("description").value.trim(),
+            category_id: categorySelect.value
+        };
 
     if (!payload.name || !payload.category_id) {
         result.textContent = "Bitte Name und Kategorie ausfüllen";
@@ -143,11 +143,79 @@ async function createMaterialType() {
 
     // 🟢 SUCCESS
     result.textContent = data?.message || "Gespeichert ✔";
-
+    currentMaterialId = null;
+    formTitle.textContent = "Neuen Materialtyp anlegen";
+    saveButton.textContent = "Material anlegen";
     materialForm.reset();
     await loadMaterialTypes();
 }
+// ==========================
+// Edit
+// ==========================
+function editMaterial(material) {
+    currentMaterialId = material.id;
 
+    document.getElementById("name").value = material.name || "";
+    document.getElementById("specification").value = material.specification || "";
+    categorySelect.value = material.category_id;
+    formTitle.textContent = "Materialtyp bearbeiten";
+    saveButton.textContent = "Änderungen speichern";
+}
+
+async function saveMaterialType() {
+
+    if (currentMaterialId) {
+        await updateMaterialType();
+    } else {
+        await createMaterialType();
+    }
+}
+async function updateMaterialType() {
+
+    const payload = {
+        name: document.getElementById("name").value.trim(),
+        specification: document.getElementById("specification").value.trim(),
+        description: document.getElementById("description").value.trim(),
+        category_id: document.getElementById("category").value
+    };
+
+    const res = await fetch(`${API.materialTypes}/${currentMaterialId}`, {
+        method: "PUT",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify(payload)
+    });
+
+    const data = await res.json();
+
+    if (!res.ok) {
+        result.textContent = data.error;
+        return;
+    }
+
+    result.textContent = data.message;
+
+    currentMaterialId = null;
+
+    materialForm.reset();
+
+    saveButton.textContent = "Material anlegen";
+
+    await loadMaterialTypes();
+}
+function clearForm() {
+
+    currentMaterialId = null;
+
+    materialForm.reset();
+
+    formTitle.textContent = "Neuen Materialtyp anlegen";
+
+    saveButton.textContent = "Material anlegen";
+
+    cancelButton.hidden = true;
+}
 // ==========================
 // DELETE (optional UI)
 // ==========================
@@ -211,9 +279,12 @@ function renderMaterialTable() {
                 <button data-id="${m.id}" class="deleteMaterial">Löschen</button>
             </td>
         `;
-
-        tr.querySelector(".deleteMaterial").addEventListener("click", () => {
-            deleteMaterialType(m.id);
+        tr.addEventListener("click", () => {
+            editMaterial(m);
+        });
+        tr.querySelector(".deleteMaterial").addEventListener("click", (e) => {
+         e.stopPropagation();
+        deleteMaterialType(m.id);
         });
 
         materialTableBody.appendChild(tr);
@@ -265,10 +336,12 @@ function renderMaterialCards() {
             </div>
         `;
 
-        card.querySelector(".danger-btn").addEventListener("click", () => {
+        card.addEventListener("click", () => editMaterial(m));
+
+        card.querySelector(".danger-btn").addEventListener("click", (e) => {
+            e.stopPropagation();
             deleteMaterialType(m.id);
         });
-
         materialCardContainer.appendChild(card);
     });
 }
