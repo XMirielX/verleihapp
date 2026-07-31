@@ -97,11 +97,10 @@ function renderProducts(products, showDelete = false, showCheck = false) {
                     if (!event.target.closest("button")) openProductEdit(product.id);
                 });
             }
-            const productName = getProductName(product);
             const productSpec = getProductSpec(product);
 
             item.innerHTML = `
-                <div class="product-title">${productName}</div>
+                <div class="product-title">${product.bez || ""}</div>
                 <div class="product-sub">${categoryMap[product.category_id] || "-"}${productSpec ? " / " + productSpec : ""}</div>
                 <div class="product-info">Barcode: ${product.Code || "-"}</div>
                 <div class="product-info">Prüfung: ${formatDateDE(product.check_date)}</div>
