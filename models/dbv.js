@@ -134,7 +134,7 @@ await db.runAsync(`CREATE TABLE IF NOT EXISTS event_plan (
 }
 
 
-
+/* 
 Stack:
 Node.js + Express + SQLite
 
@@ -161,4 +161,4 @@ event_plan.material_id -> material_typ.id
 distribution_items.product_id -> products.id
 distribution_plan.event_id -> event.id
 distribution_plan.distribution_item_id -> distribution_items.id
-distribution_images.distribution_item_id -> distribution_items.id
+distribution_images.distribution_item_id -> distribution_items.id */
