@@ -324,12 +324,9 @@ function renderMaterialCards() {
             <div class="card-header">
                 <strong>${m.name}</strong>
             </div>
-
             <div class="card-body">
-                <div><strong>Kategorie:</strong> ${cat ? cat.name : "-"}</div>
-                <div><strong>Spezifikation:</strong> ${m.specification || "-"}</div>
+                ${cat ? cat.name : "-"}${m.specification ? " / " + m.specification : ""}
             </div>
-
             <div class="card-actions">
                 <button class="danger-btn">Löschen</button>
             </div>

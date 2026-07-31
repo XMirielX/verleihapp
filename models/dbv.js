@@ -133,3 +133,32 @@ await db.runAsync(`CREATE TABLE IF NOT EXISTS event_plan (
 )`);
 }
 
+
+
+Stack:
+Node.js + Express + SQLite
+
+Tabellen:
+categories
+products
+material_typ
+event
+rental
+event_plan
+distribution_items
+distribution_plan
+distribution_images
+users
+schema_migrations
+
+Wichtige Beziehungen:
+products.category_id -> categories.id
+products.material_typ_id -> material_typ.id
+rental.event_id -> event.id
+rental.product_id -> products.id
+event_plan.event_id -> event.id
+event_plan.material_id -> material_typ.id
+distribution_items.product_id -> products.id
+distribution_plan.event_id -> event.id
+distribution_plan.distribution_item_id -> distribution_items.id
+distribution_images.distribution_item_id -> distribution_items.id

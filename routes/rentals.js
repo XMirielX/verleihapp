@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const { db } = require("../models/dbv");
+const productDetailCache = {};
 
 // POST /api/rentals
 // Body: { event_id: 1, Codes: [123, 456] }
@@ -148,6 +149,7 @@ router.get("/:event_id", async (req, res) => {
     try {
         const products = await db.allAsync(`
             SELECT
+                mt.id as material_id,
                 mt.name as pname,
                 mt.specification as spezification,
                 COUNT(DISTINCT p.id) as available,
@@ -191,4 +193,40 @@ router.get("/:event_id", async (req, res) => {
     }
 });
 
+router.get("/:event_id/material/:material_id/products", async (req, res) => {
+
+    const event_id = parseInt(req.params.event_id, 10);
+    const material_id = parseInt(req.params.material_id, 10);
+
+    try {
+
+        const products = await db.allAsync(`
+            SELECT
+                p.id,
+                p.name,
+                p.Code,
+                r.stat as rental_stat
+            FROM products p
+
+            LEFT JOIN rental r
+                ON r.product_id = p.id
+                AND r.event_id = ?
+                AND r.stat = 10
+
+            WHERE p.material_typ_id = ?
+
+            ORDER BY p.Code
+        `, [event_id, material_id]);
+
+        res.json(products);
+
+    } catch(err) {
+
+        console.error(err);
+        res.status(500).json({
+            error:"Datenbankfehler"
+        });
+
+    }
+});
 module.exports = router;

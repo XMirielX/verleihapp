@@ -1,3 +1,4 @@
+const productDetailCache = {};
 
 // -----------------------------
 // rental.js – Optimiert für Browser
@@ -108,8 +109,9 @@ function renderRentalTable(materials) {
 
     materials.forEach(m => {
 
-        const row = document.createElement("tr");
-
+   const row = document.createElement("tr");
+        row.dataset.materialId = m.material_id;
+        row.style.cursor = "pointer";
         row.innerHTML = `
             <td>${m.pname}</td>
             <td>${m.specification || "-"}</td>
@@ -119,7 +121,9 @@ function renderRentalTable(materials) {
         `;
 
         tbody.appendChild(row);
-
+        row.addEventListener("click", () => {
+            toggleMaterialProductsTable(row, m);
+        });
     });
 
 }
@@ -145,9 +149,10 @@ function renderRentalCards(materials) {
             scanIcon = "🔴";
         else if (m.scanned > 0)
             scanIcon = "🟡";
-
         const card = document.createElement("div");
         card.className = "card";
+        card.dataset.materialId = m.material_id;
+        card.style.cursor = "pointer";
 
         card.innerHTML = `
             <div class="card-header">
@@ -176,7 +181,9 @@ function renderRentalCards(materials) {
         `;
 
         rentalCardContainer.appendChild(card);
-
+card.addEventListener("click", () => {
+    toggleMaterialProducts(card, m);
+});
     });
 
 }
@@ -194,7 +201,70 @@ function sortEventsSmart(events) {
         return Math.abs(dateA - today) - Math.abs(dateB - today);
     });
 }
+async function toggleMaterialProducts(card, material) {
+    let details = card.querySelector(".product-details");
+    if (details) {
+        details.remove();
+        return;
+    }
+    if (!productDetailCache[material.material_id]) {
+        const event_id = document.getElementById("eventSelect").value;
+        const res = await fetch(
+            `/api/rentals/${event_id}/material/${material.material_id}/products`
+        );
+        productDetailCache[material.material_id] = await res.json();
+    }
+    details = document.createElement("div");
+    details.className = "product-details";
+    productDetailCache[material.material_id].forEach(p => {
+        const status = p.rental_stat === 10
+            ? "🟢 "
+            : "⚪ ";
 
+        details.innerHTML += `
+            <div>
+                 ${status} ${p.name} (${p.Code})
+            </div>
+        `;
+    });
+    card.appendChild(details);
+}
+async function toggleMaterialProductsTable(row, material) {
+
+    const next = row.nextElementSibling;
+
+    if (next && next.classList.contains("product-detail-row")) {
+        next.remove();
+        return;
+    }
+    if (!productDetailCache[material.material_id]) {
+        const event_id = document.getElementById("eventSelect").value;
+
+        const res = await fetch(
+            `/api/rentals/${event_id}/material/${material.material_id}/products`
+        );
+        productDetailCache[material.material_id] = await res.json();
+    }
+    const detailRow = document.createElement("tr");
+    detailRow.className = "product-detail-row";
+    const cell = document.createElement("td");
+    cell.colSpan = 5;
+    cell.innerHTML = `
+        <div class="product-details">
+            ${productDetailCache[material.material_id].map(p => `
+                <div>
+                    ${p.rental_stat === 10 ? "🟢" : "⚪"}
+                   ${p.name} (${p.Code})
+                </div>
+            `).join("")}
+        </div>
+    `;
+    detailRow.appendChild(cell);
+    row.parentNode.insertBefore(
+        detailRow,
+        row.nextSibling
+    );
+}
 // =====================================================
 // BUTTONS
 // =====================================================

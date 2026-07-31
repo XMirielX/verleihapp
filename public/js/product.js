@@ -90,7 +90,7 @@ function renderProducts(products, showDelete = false, showCheck = false) {
             if (showCheck) buttons += `<button class="small" onclick="checkProduct(${product.id})">pruefen</button>`;
 
            item.style.borderLeftWidth = "6px";
-item.style.borderLeftColor = statusColor;
+           item.style.borderLeftColor = statusColor;
             if (isProductOverview(showDelete, showCheck) && isAdmin()) {
                 item.title = "Produkt bearbeiten";
                 item.addEventListener("click", (event) => {
@@ -101,14 +101,12 @@ item.style.borderLeftColor = statusColor;
             const productSpec = getProductSpec(product);
 
             item.innerHTML = `
-                    <div class="product-title">${productName}${productSpec ? " (" + productSpec + ")" : ""}</div>
-                    <div class="product-sub">
-                    ${categoryMap[product.category_id] || "-"} / ${product.bez || "-"}
-                    </div>
-                    <div class="product-sub">Pruefdatum: ${formatDateDE(product.check_date)}</div>
-                    <div class="product-sub">Barcode: ${product.Code}    </div>
-                    <div class="product-actions">${buttons}</div>
-                    `;
+                <div class="product-title">${productName}</div>
+                <div class="product-sub">${categoryMap[product.category_id] || "-"}${productSpec ? " / " + productSpec : ""}</div>
+                <div class="product-info">Barcode: ${product.Code || "-"}</div>
+                <div class="product-info">Prüfung: ${formatDateDE(product.check_date)}</div>
+                ${buttons ? `<div class="product-actions">${buttons}</div>` : ""}
+            `;
             container.appendChild(item);
         });
 

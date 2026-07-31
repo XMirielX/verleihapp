@@ -1,4 +1,4 @@
-```html
+
 <!DOCTYPE html>
 <html lang="de">
 
@@ -23,35 +23,37 @@
 <!-- =========================
      FORMULAR
 ========================= -->
-
+    <button
+        type="button"
+        onclick="window.location.href='products.html'">
+        Zurück
+    </button>
+    <br>  
 <h2 id="formTitle">Materialtyp anlegen</h2>
 
 <form id="materialForm">
-
+    <label for="name">Name</label>
+    <br>  
+    <input
+        type="text"
+        id="name"
+        placeholder="z.B. CEE Verlängerung">
+    <br>      
+    <label for="specification">Spezifikation</label>
+    <br> 
+    <input
+        type="text"
+        id="specification"
+        placeholder="z.B. CEE 32A">
+    <br>    
     <label for="category">Kategorie</label>
+    <br>  
     <select id="category"></select>
 
     <button type="button" id="newCategoryBtn">
         + Kategorie
     </button>
-
-    <br><br>
-
-    <label for="name">Name</label>
-    <input
-        type="text"
-        id="name"
-        placeholder="z.B. CEE Verlängerung">
-
-    <label for="specification">Spezifikation</label>
-    <input
-        type="text"
-        id="specification"
-        placeholder="z.B. 32A 10m">
-
-    <label for="description">Beschreibung</label>
-    <br>    
-
+  <br>  
     <button
         type="submit"
         id="saveButton">
@@ -64,12 +66,6 @@
         onclick="clearForm()"
         hidden>
         Abbrechen
-    </button>
-
-    <button
-        type="button"
-        onclick="window.location.href='products.html'">
-        Zurück
     </button>
 
 </form>
