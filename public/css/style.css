@@ -399,30 +399,64 @@ tr.selected {
     display: none;
 }
 
-.planning-card .planning-title {
-    font-weight: bold;
-    color: var(--primary);
-    margin-bottom: var(--space-md);
-}
+@media (max-width: 768px) {
 
-.planning-card .planning-row {
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: var(--space-sm);
-}
+    #planningTableContainer {
+        display: none;
+    }
 
-.planning-card .planning-row span:first-child {
-    color: var(--text-secondary);
-    font-weight: 600;
-}
+    #planningCards {
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-md);
+    }
 
-.planning-card .planning-qty {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-top: var(--space-md);
-}
+    .planning-card {
+        border-left: 6px solid var(--border);
+    }
 
+    .planning-card.planned {
+        border-left-color: var(--primary);
+    }
+    .planning-card.warning {
+        border-left-color: red;
+    }
+
+    .planning-card-title {
+        font-weight: bold;
+        font-size: var(--font-large);
+        margin-bottom: var(--space-xs);
+    }
+    .planning-card-sub {
+        color: var(--text-secondary);
+        font-size: var(--font-small);
+        margin-bottom: var(--space-md);
+    }
+    .planning-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+
+        padding: var(--space-sm) 0;
+
+        border-bottom: 1px solid var(--border);
+    }
+    .planning-qty {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+
+        margin-top: var(--space-md);
+    }
+    .planning-qty label {
+        font-weight: bold;
+    }
+    .planningQuantity {
+        width: 70px;
+        text-align: center;
+        font-size: var(--font-large);
+    }
+}
 /* =====================================================
    14. Distributionkarten
 ===================================================== */
@@ -564,6 +598,7 @@ tr.selected {
     width: 100%;
     padding: 8px;
 }
+
 /* =====================================================
    14. Responsive Design
 ===================================================== */

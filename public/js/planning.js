@@ -223,24 +223,30 @@ function renderPlanningCards() {
         const card = document.createElement("div");
         card.className = "planning-card";
 
+        if (item.quantity > 0) {
+            card.classList.add("planned");
+        }
+
+        if (item.quantity > item.available) {
+            card.classList.add("warning");
+        }
         if (item.quantity > item.available) {
             card.classList.add("warning");
         }
 
-        card.innerHTML = `
+     card.innerHTML = `
             <div class="planning-card-title">
                 ${item.name}
-                ${item.specification ? `<br><small>${item.specification}</small>` : ""}
             </div>
 
-            <div class="planning-row">
-                <span>Kategorie</span>
-                <span>${item.category}</span>
+            <div class="planning-card-sub">
+                ${item.category || "-"}
+                ${item.specification ? " / " + item.specification : ""}
             </div>
 
             <div class="planning-row">
                 <span>Verfügbar</span>
-                <span>${item.available}</span>
+                <strong>${item.available}</strong>
             </div>
 
             <div class="planning-qty">
@@ -253,11 +259,6 @@ function renderPlanningCards() {
                     class="planningQuantity">
             </div>
         `;
-
-        card.querySelector(".planningQuantity").addEventListener("change", e => {
-            updateQuantity(item.id, Number(e.target.value));
-        });
-
         container.appendChild(card);
     });
 }
