@@ -14,7 +14,7 @@ const container = document.getElementById("eventTableContainer");
 // =====================================================
 // 🚀 INIT
 // =====================================================
-document.addEventListener("DOMContentLoaded", async () => {
+async function initEventPage() {
     user = await checkLogin();
     const adminBtn = document.getElementById("adminBtn");
     if (adminBtn) {
@@ -24,7 +24,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     setupEditMode();
     setupForm();
     setupSearch();
-});
+};
 
 
 // =====================================================

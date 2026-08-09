@@ -1,0 +1,253 @@
+/* =====================================================
+   style.css - THW Förderverein Stil
+===================================================== */
+
+
+/* =====================================================
+   15. Dark Mode
+===================================================== */
+
+@media (prefers-color-scheme: dark) {
+
+    :root {
+        --primary: #5aa9ff;
+        --primary-dark: #1565c0;
+
+        --background: #1e1e1e;
+        --text: #e0e0e0;
+
+        --border: #555;
+        --table-border: #555;
+
+        --card-bg: #2b2b2b;
+        --card-shadow: rgba(0,0,0,0.45);
+
+        --table-header: #333;
+        --hover: #303030;
+
+        --input-bg: #333;
+
+        --status-free: #5fd35f;
+        --status-rented: #ff6b6b;
+        --status-missing: #ffb84d;
+
+        --text-secondary: #bfbfbf;
+    }
+
+
+    /* =====================
+       Allgemein
+    ===================== */
+
+    body {
+        background-color: var(--background);
+        color: var(--text);
+    }
+
+    /* =====================
+       Formulare
+    ===================== */
+
+    input[type="text"],
+    input[type="date"],
+    select {
+        background-color: var(--input-bg);
+        color: var(--text);
+        border-color: var(--border);
+    }
+
+    label {
+        color: var(--text);
+    }
+
+.menu-group .submenu {
+    display: none;
+    padding-left: 15px;
+}
+
+.menu-group.open .submenu {
+    display: flex;
+    flex-direction: column;
+}
+
+
+.menu-parent {
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+}
+
+
+.submenu-item {
+    font-size:14px;
+    padding-left:35px !important;
+}
+
+.sidebar-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 20px;
+    border-bottom: 1px solid var(--border);
+}
+
+.sidebar-header img {
+    width: 50px;
+    height: auto;
+}
+
+.sidebar-header h2 {
+    margin: 0;
+    font-size: 18px;
+}
+.mobile-logo {
+    height: 40px;
+    width: auto;
+}
+.sidebar-header small {
+    color: var(--text-secondary);
+}
+    /* =====================
+       Buttons
+    ===================== */
+
+    button {
+        background-color: var(--primary-dark);
+        color: white;
+    }
+
+    button:hover {
+        background-color: #1565c0;
+    }
+
+
+    /* =====================
+       Tabellen
+    ===================== */
+
+    table {
+        background-color: #252525;
+        color: var(--text);
+    }
+
+    th {
+        background-color: var(--table-header);
+        color: white;
+        border-color: var(--border);
+    }
+
+    td {
+        border-color: var(--border);
+    }
+
+    tr:hover,
+    .clickable-row:hover {
+        background-color: var(--hover);
+    }
+
+
+    /* =====================
+       Karten
+    ===================== */
+
+    .product-item,
+    .event-item,
+    .user-card,
+    .rental-item,
+    .material-card,
+    .planning-card,
+    .distribution-card {
+
+        background-color: var(--card-bg);
+        color: var(--text);
+        border-color: var(--border);
+        box-shadow: 0 2px 6px var(--card-shadow);
+    }
+
+
+    /* =====================
+       Kartentexte
+    ===================== */
+
+    .product-sub,
+    .event-sub,
+    .rental-body,
+    .material-sub {
+
+        color: #c0c0c0;
+    }
+
+
+    /* =====================
+       Statusfarben
+    ===================== */
+
+    .status-frei {
+        color: var(--status-free);
+    }
+
+    .status-verliehen {
+        color: var(--status-rented);
+    }
+
+    .status-fehlt {
+        color: var(--status-missing);
+    }
+
+
+    /* =====================
+       Planung
+    ===================== */
+
+    .planning-card-title,
+    .distribution-title {
+        color: white;
+    }
+
+    .planning-row,
+    .distribution-row {
+        color: var(--text);
+    }
+
+    .planning-row span:first-child,
+    .distribution-row span:first-child {
+        color: #bfbfbf;
+    }
+
+
+    .planning-qty input,
+    .distribution-inputs input {
+        background-color: var(--input-bg);
+        color: white;
+        border-color: var(--border);
+    }
+
+
+    /* =====================
+       Ausgabe-Felder
+    ===================== */
+
+    .output-grid div {
+        background-color: #333;
+        color: white;
+    }
+
+
+    /* =====================
+       Kamera
+    ===================== */
+
+    #cameraContainer video {
+        border-color: var(--primary-dark);
+    }
+
+
+    /* =====================
+       Mobile Labels
+    ===================== */
+
+    td::before {
+        color: #b0b0b0;
+    }
+
+}

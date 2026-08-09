@@ -1,0 +1,126 @@
+
+<h1>Materialverwaltung</h1>
+    <br>  
+<h2 id="formTitle">Materialtyp anlegen</h2>
+
+<form id="materialForm">
+    <label for="name">Name</label>
+    <br>  
+    <input
+        type="text"
+        id="name"
+        placeholder="z.B. CEE Verlängerung">
+    <br>      
+    <label for="specification">Spezifikation</label>
+    <br> 
+    <input
+        type="text"
+        id="specification"
+        placeholder="z.B. CEE 32A">
+    <br>    
+    <label for="category">Kategorie</label>
+    <br>  
+    <select id="category"></select>
+
+    <button type="button" id="newCategoryBtn">
+        + Kategorie
+    </button>
+  <br>  
+    <button
+        type="submit"
+        id="saveButton">
+        Material anlegen
+    </button>
+
+    <button
+        type="button"
+        id="cancelButton"
+        onclick="clearForm()"
+        hidden>
+        Abbrechen
+    </button>
+
+</form>
+
+<p id="result"></p>
+
+<hr>
+
+<!-- =========================
+     MATERIALTYPEN
+========================= -->
+
+<h2>Materialtypen</h2>
+
+<table id="materialTable">
+    <thead>
+        <tr>
+            <th>Kategorie</th>
+            <th>Name</th>
+            <th>Spezifikation</th>
+            <th>Aktionen</th>
+        </tr>
+    </thead>
+
+    <tbody></tbody>
+</table>
+
+<div
+    id="materialCardContainer"
+    class="card-container"
+    style="display:none;">
+</div>
+
+<hr>
+
+<!-- =========================
+     KATEGORIEN
+========================= -->
+
+<h2>Kategorien</h2>
+
+<table id="categoryTable">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Aktionen</th>
+        </tr>
+    </thead>
+
+    <tbody></tbody>
+</table>
+
+<div
+    id="categoryCardContainer"
+    class="card-container"
+    style="display:none;">
+</div>
+
+<hr>
+
+<!-- =========================
+     DIALOG
+========================= -->
+
+<dialog id="categoryDialog">
+
+    <h3>Neue Kategorie</h3>
+
+    <label for="newCategoryName">Name</label>
+    <input
+        type="text"
+        id="newCategoryName">
+
+    <br><br>
+
+    <button id="saveCategoryBtn">
+        Speichern
+    </button>
+
+    <button id="closeDialogBtn">
+        Abbrechen
+    </button>
+
+</dialog>
+
+

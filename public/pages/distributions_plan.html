@@ -1,0 +1,73 @@
+<main>
+   <h2>Verteilerplanung</h2>
+  <h2>Planung auswählen</h2>
+ <div class="filter-container">
+
+    <div class="form-group">
+        <label for="event_id">Veranstaltung:</label>
+        <select id="event_id">
+            <option value="">Bitte auswählen</option>
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label for="categoryFilter">Kategorie:</label>
+        <select id="categoryFilter">
+            <option value="">Alle</option>
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label for="distributionFilter">Anzeige:</label>
+        <select id="distributionFilter">
+            <option value="all">Alle</option>
+            <option value="planned">Nur eingeplante</option>
+            <option value="unplanned">Nur nicht eingeplante</option>
+        </select>
+    </div>
+
+</div>
+
+ 
+  <table class="desktop-only">
+    <thead>
+      <tr>
+        <th rowspan="2">Einsatz</th>
+        <th rowspan="2">Produkt</th>
+        <th colspan="2">Input</th>
+        <th colspan="5">Output</th>
+        <th rowspan="2">Ort</th>
+      </tr>
+      <tr>
+        <th>Eingang</th>
+        <th>Kabel</th>
+        <th class="output-col">Schuko</th>
+        <th class="output-col">CEE16</th>
+        <th class="output-col">CEE32</th>
+        <th class="output-col">CEE63</th>
+        <th class="output-col">CEE125</th>
+      </tr>
+    </thead>
+    <tbody id="plan_table"></tbody>
+  </table>
+
+  <div id="distributionCards"></div>
+
+  <button id="saveButton" onclick="savePlan()">Speichern</button>
+  <button id="transferButton" onclick="transferToMaterialPlan()">
+    In Materialplanung übernehmen
+  </button>
+</main>
+
+<div id="imageModal" class="modal hidden">
+  <div class="modal-content">
+    <h2>Verteiler Bilder</h2>
+    <div id="imageGallery"></div>
+    <div id="imageCounter"></div>
+    <div class="image-navigation">
+      <button onclick="previousImage()">◀</button>
+      <button onclick="nextImage()">▶</button>
+    </div>
+    <button onclick="closeImageModal()">Schließen</button>
+  </div>
+</div>

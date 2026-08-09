@@ -1,0 +1,71 @@
+<h1>Produktliste</h1>
+
+
+<div class="filter-container">
+
+    <div class="form-group">
+        <label for="searchInput">Suche:</label>
+        <input 
+            type="text" 
+            id="searchInput" 
+            placeholder="Suche nach Name oder Barcode"
+        >
+    </div>
+
+
+    <div class="form-group">
+        <label for="categoryFilter">Kategorie:</label>
+        <select id="categoryFilter">
+            <option value="">Alle Kategorien</option>
+        </select>
+    </div>
+
+
+    <div class="form-group">
+        <label for="specFilter">Spezifikation:</label>
+        <select id="specFilter">
+            <option value="">Alle Spezifikationen</option>
+        </select>
+    </div>
+
+</div>
+
+
+<p id="summary"></p>
+
+
+
+<!-- Desktop Tabelle -->
+<div class="desktop-only">
+
+    <table id="productTable">
+
+        <thead>
+            <tr>
+                <th onclick="sortProducts('name')">Name</th>
+                <th onclick="sortProducts('stat')">Status</th>
+                <th onclick="sortProducts('Code')">Barcode</th>
+                <th onclick="sortProducts('category_id')">Kategorie</th>
+                <th onclick="sortProducts('spezification')">
+                    Spezifikation
+                </th>
+                <th onclick="sortProducts('check_date')">
+                    Prüfdatum
+                </th>
+                <th>Aktion</th>
+            </tr>
+        </thead>
+
+        <tbody id="productTableBody"></tbody>
+
+    </table>
+
+</div>
+
+
+
+<!-- Mobile Cards -->
+<div 
+    id="productTableContainer" 
+    class="card-container mobile-only">
+</div>

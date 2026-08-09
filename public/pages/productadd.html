@@ -1,0 +1,45 @@
+<form id="productForm">
+
+    <div class="form-group">
+        <label for="materialTypeSelect">Material:</label>
+        <select id="materialTypeSelect">
+            <option value="">-- Bitte wählen --</option>
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label for="bez">Inventarnummer / Bezeichnung:</label>
+        <input
+            type="text"
+            id="bez"
+            placeholder="z.B. Kabel 001"
+        >
+    </div>
+
+    <div class="form-group">
+        <label for="Code">Barcode:</label>
+        <input
+            type="number"
+            id="Code"
+            placeholder="Barcode"
+        >
+    </div>
+
+    <div class="form-group">
+        <label for="check_date">Prüfdatum:</label>
+        <input
+            type="date"
+            id="check_date"
+        >
+    </div>
+
+    <div class="button-row">
+        <button type="submit">Speichern</button>
+        <button
+            type="button"
+            onclick="window.location.href='products.html'">
+            Zurück
+        </button>
+    </div>
+
+</form>

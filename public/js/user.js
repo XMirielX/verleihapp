@@ -4,10 +4,10 @@
 // -----------------------------
 // Admin JS
 // -----------------------------
-document.addEventListener("DOMContentLoaded", () => {
-    loadUsers();
+async function initUserPage() {
+    await loadUsers();
     setupUserCreation();
-});
+}
 
 function setupUserCreation() {
     const createBtn = document.getElementById("createUserButton");

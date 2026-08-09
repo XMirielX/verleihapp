@@ -3,65 +3,66 @@ const productDetailCache = {};
 // -----------------------------
 // rental.js – Optimiert für Browser
 // -----------------------------
-document.addEventListener("DOMContentLoaded", () => {
-    console.log("Seite geladen");
 
+async function initRentalPage(page) {
 
-const rentalTable = document.getElementById("rentalTable");
-const rentalCardContainer = document.getElementById("rentalCardContainer");
-
-    loadEvents("eventSelect").then(events => {
-        if (events.length > 0 && document.getElementById("rentalTable")) {
-            loadRentals(events[0].id);
+    try {
+        const events = await loadRentalEvents("eventSelect", page);
+        console.log("Geladene Events:", events);
+        if (events.length > 0) {
+            await loadRentals(events[0].id);
         }
-    });
-
+    } catch (err) {
+        console.error("Fehler beim Initialisieren der Rental-Seite:", err);
+        alert(err.message);
+    }
     setupRentalButtons();
     setupBarcodeScanner();
     setupCameraButton();
     setupCloseEventButton();
     setupCsvExportButton();
-});
 
+}
 // -----------------------------
 // EVENTS LADEN
 // -----------------------------
-async function loadEvents(selectId = null) {
-    console.log("loadRentals", selectId);
-    const isRentalPage = window.location.pathname.endsWith("rentals.html");
-    const url = isRentalPage
+async function loadRentalEvents(selectId = null, page = null) {
+    const showAllEvents = page === "rentals";
+    const url = showAllEvents
         ? "/api/events"
         : "/api/events/active";
-
-    const res = await fetch(url, { credentials: "include" });
-    if (!res.ok) throw new Error("Fehler beim Laden der Events");
-
+    const res = await fetch(url, {
+        credentials: "include"
+    });
+    if (!res.ok) {
+        throw new Error("Fehler beim Laden der Events");
+    }
     let events = await res.json();
-events = sortEventsSmart(events);
-
-console.log("Events:", events);
+    events = sortEventsSmart(events);
     if (selectId) {
-        const select = document.getElementById(selectId);
+       const select = document.getElementById(selectId);
         if (select) {
             select.innerHTML = "";
             events.forEach((ev, idx) => {
                 const opt = document.createElement("option");
                 opt.value = ev.id;
-                opt.text = `${ev.name} (${ev.start} - ${ev.ende})`;
-                if (idx === 0) opt.selected = true;
+                opt.textContent = `${ev.name} (${ev.start} - ${ev.ende})`;
+                if (idx === 0) {
+                    opt.selected = true;
+               }
                 select.appendChild(opt);
             });
-
-            select.addEventListener("change", () => {
-                const event_id = parseInt(select.value, 10);
+            select.onchange = () => {
+                updateCloseButtonVisibility(events);
                 if (document.getElementById("rentalTable")) {
-                    loadRentals(event_id);
+                    loadRentals(Number(select.value));
                 }
-            });
+            };
         }
     }
-     
+
     updateCloseButtonVisibility(events);
+
     return events;
 }
 
@@ -83,10 +84,8 @@ async function loadRentals(event_id) {
 
         console.log("Event Übersicht:", materials);
 
-        if (window.innerWidth <= 768)
-            renderRentalCards(materials);
-        else
-            renderRentalTable(materials);
+        renderRentalTable(materials);
+        renderRentalCards(materials);
 
     } catch (err) {
 
@@ -96,22 +95,22 @@ async function loadRentals(event_id) {
     }
 
 }
-// =====================================================
-// TABELLE RENDERN
-// =====================================================
 function renderRentalTable(materials) {
 
-    rentalTable.style.display = "table";
-    rentalCardContainer.style.display = "none";
+    const rentalTable = document.getElementById("rentalTable");
+
+    if (!rentalTable) return;
 
     const tbody = rentalTable.querySelector("tbody");
+
     tbody.innerHTML = "";
 
     materials.forEach(m => {
 
-   const row = document.createElement("tr");
+        const row = document.createElement("tr");
         row.dataset.materialId = m.material_id;
         row.style.cursor = "pointer";
+
         row.innerHTML = `
             <td>${m.pname}</td>
             <td>${m.specification || "-"}</td>
@@ -121,11 +120,11 @@ function renderRentalTable(materials) {
         `;
 
         tbody.appendChild(row);
+
         row.addEventListener("click", () => {
             toggleMaterialProductsTable(row, m);
         });
     });
-
 }
 // =====================================================
 // CARDS RENDERN
@@ -135,8 +134,6 @@ function renderRentalCards(materials) {
     const rentalTable = document.getElementById("rentalTable");
     const rentalCardContainer = document.getElementById("rentalCardContainer");
 
-    rentalTable.style.display = "none";
-    rentalCardContainer.style.display = "flex";
     rentalCardContainer.innerHTML = "";
 
     materials.forEach(m => {
@@ -457,7 +454,7 @@ function setupCloseEventButton() {
             alert(result.message);
 
             // 🔄 UI aktualisieren
-            loadEvents("eventSelect");
+            loadRentalEvents("eventSelect");
             loadRentals(event_id);
 
         } catch (err) {
@@ -493,14 +490,3 @@ function formatDateDE(date) {
     return `${String(d.getDate()).padStart(2, "0")}.${String(d.getMonth() + 1).padStart(2, "0")}.${d.getFullYear()}`;
 }
 
-// =====================================================
-// LOGIN CHECK
-// =====================================================
-async function checkLogin() {
-    const res = await fetch("/api/users/me");
-    if (!res.ok) {
-        localStorage.setItem("lastPage", window.location.pathname);
-        window.location.href = "login.html";
-    }
-}
-checkLogin();

@@ -56,6 +56,8 @@ function renderImageGallery() {
     container.appendChild(img);
     document.getElementById("imageCounter").innerText =
         `${currentImageIndex + 1} / ${distributionImages.length}`;
+        
+
 }
 
 // nächstes Bild

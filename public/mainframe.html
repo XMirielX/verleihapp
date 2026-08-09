@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VerleihApp</title>
+
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+    <!-- Overlay (nur mobil) -->
+    <div id="overlay" class="overlay"></div>
+
+    <div class="layout">
+
+        <!-- Seitenmenü -->
+        <aside id="sidebar" class="sidebar">
+            <div class="sidebar-header">
+
+                <img src="img/logo.png" alt="THW Logo">
+
+                <div>
+                    <h2>Förderverein</h2>
+                    <small>THW Steinau</small>
+                </div>
+
+            </div>
+
+            <nav class="sidebar-menu">
+                <!-- Menü wird durch app.js erzeugt -->
+            </nav>
+
+        </aside>
+
+        <!-- Hauptbereich -->
+<div class="main">
+
+    <header class="mobile-header">
+
+        <button id="menuButton">☰</button>
+
+        <img src="img/logo.png" class="mobile-logo">
+        <div>
+            <strong>Förderverein THW Steinau</strong><br>
+            <span id="pageTitle">Start</span>
+        </div>
+
+    </header>
+
+    <main id="content"></main>
+
+</div>
+
+    </div>
+
+    <!-- Mobile Navigation -->
+    <nav class="bottom-nav">
+
+        <button data-page="eventadd">
+            📅
+            <span>Event</span>
+        </button>
+
+        <button data-page="rentaladd">
+            📦
+            <span>Ausleihe</span>
+        </button>
+
+        <button data-page="rentalback">
+            ↩
+            <span>Rückgabe</span>
+        </button>
+
+        <button data-page="planning">
+            📋
+            <span>Planung</span>
+        </button>
+
+    </nav>
+
+    <script src="js/app.js"></script>
+
+</body>
+</html>

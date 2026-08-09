@@ -1,0 +1,199 @@
+#productTableContainer {
+    display:flex;
+    flex-direction:column;
+    gap:var(--space-md);
+}
+
+
+.product-card .product-title {
+    font-weight:bold;
+    font-size:var(--font-large);
+    margin-bottom:var(--space-xs);
+}
+
+
+.product-card .product-sub {
+    font-size:var(--font-small);
+    color:var(--text-secondary);
+    margin-bottom:var(--space-sm);
+}
+
+
+.product-card .product-actions {
+    margin-top:var(--space-md);
+}
+
+.event-card .event-title {
+    font-weight:bold;
+    font-size:var(--font-large);
+    margin-bottom:var(--space-xs);
+}
+
+
+.event-card .event-sub {
+    font-size:var(--font-normal);
+    color:var(--text-secondary);
+}
+
+
+.event-card .event-actions button {
+    margin-right:var(--space-xs);
+}
+
+
+.user-card p {
+    margin:var(--space-xs) 0;
+}
+
+
+.user-card button {
+    margin-top:var(--space-xs);
+}
+
+#rentalCardContainer {
+    display:none;
+}
+
+
+.rental-card .rental-status {
+    display:flex;
+    justify-content:space-between;
+    padding:var(--space-sm) 0;
+}
+
+
+.rental-card .status-badge {
+    color:white;
+    padding:var(--space-xs) var(--space-sm);
+    border-radius:var(--radius-sm);
+    font-size:var(--font-small);
+    font-weight:bold;
+}
+
+
+#materialCardContainer {
+    display:none;
+}
+
+
+.material-card .material-title {
+    font-size:var(--font-large);
+    font-weight:bold;
+    margin-bottom:var(--space-sm);
+}
+
+
+.material-card .material-sub {
+    font-size:var(--font-normal);
+    color:var(--text-secondary);
+}
+
+#planningCards {
+    display:none;
+}
+
+
+.planning-card {
+    background:var(--card-bg);
+    color:var(--text);
+
+    border:1px solid var(--border);
+    border-radius:var(--radius-md);
+
+    padding:var(--space-md);
+    margin-bottom:var(--space-md);
+
+    box-shadow:0 2px 5px rgba(0,0,0,0.15);
+}
+
+
+.planning-card.warning {
+    border:2px solid #d32f2f;
+}
+
+
+.planning-card-title {
+    font-weight:bold;
+    font-size:1.1rem;
+    margin-bottom:10px;
+}
+
+
+.planning-row {
+    display:flex;
+    justify-content:space-between;
+    padding:5px 0;
+}
+
+
+.planning-qty input {
+    width:100%;
+    padding:8px;
+}
+
+
+#distributionCards {
+    display:none;
+}
+
+
+.distribution-card {
+    position:relative;
+
+    background:var(--card-bg);
+    color:var(--text);
+
+    border:1px solid var(--border);
+    border-left:8px solid #777;
+
+    border-radius:var(--radius-md);
+
+    padding:var(--space-md);
+
+    box-shadow:0 2px 6px var(--card-shadow);
+}
+
+
+.distribution-card.planned {
+    border-left-color:#00a000;
+}
+
+
+.distribution-card.unplanned {
+    border-left-color:#777;
+}
+
+
+.distribution-header {
+    display:flex;
+    align-items:center;
+    gap:var(--space-sm);
+}
+
+
+.distribution-header strong {
+    flex:1;
+    font-size:var(--font-large);
+}
+
+
+.distribution-info {
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:var(--space-sm);
+}
+
+
+.output-grid {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(100px, 1fr));
+    gap: 15px;
+}
+
+
+#planningCards,
+#rentalCardContainer,
+#materialCardContainer,
+#distributionCards {
+    display: none;
+}

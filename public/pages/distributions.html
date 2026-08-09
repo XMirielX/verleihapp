@@ -1,0 +1,129 @@
+<main>
+
+    <h2>Distribution anlegen / bearbeiten</h2>
+
+    <input type="hidden" id="distribution_id">
+
+    <div class="form-group">
+        <label for="product_id">Produkt</label>
+        <select id="product_id">
+            <option value="">Bitte auswählen</option>
+        </select>
+    </div>
+
+
+
+<h3>Eingänge</h3>
+
+<div class="form-group">
+    <label for="input">Input</label>
+    <input
+        type="text"
+        id="input"
+        placeholder="z.B. 125A"
+    >
+</div>
+
+<div class="form-group">
+    <label for="cable">Kabel</label>
+    <input
+        type="text"
+        id="cable"
+        placeholder="z.B. 5m"
+    >
+</div>
+
+<h3>Ausgänge</h3>
+
+<div class="output-grid">
+
+    <div class="form-group">
+        <label for="schuko">Schuko</label>
+        <input type="number" id="schuko" value="0" min="0">
+    </div>
+
+    <div class="form-group">
+        <label for="cee16">CEE16</label>
+        <input type="number" id="cee16" value="0" min="0">
+    </div>
+
+    <div class="form-group">
+        <label for="cee32">CEE32</label>
+        <input type="number" id="cee32" value="0" min="0">
+    </div>
+
+    <div class="form-group">
+        <label for="cee63">CEE63</label>
+        <input type="number" id="cee63" value="0" min="0">
+    </div>
+
+    <div class="form-group">
+        <label for="cee125">CEE125</label>
+        <input type="number" id="cee125" value="0" min="0">
+    </div>
+
+</div>
+
+
+    <button onclick="saveDistribution()">Speichern</button>
+    <button onclick="clearForm()">Neu</button>
+    <button type="button" onclick="window.location.href='products.html'">Zurück</button>
+
+</section>
+
+<section class="card">
+    <h2>Distribution anlegen / bearbeiten</h2>
+<div id="distributionTableContainer" class="desktop-only">
+    <table>
+        <thead>
+            <tr>
+                <th>Produkt</th>
+                <th>Input</th>
+                <th>Kabel</th>
+                <th>Schuko</th>
+                <th>CEE16</th>
+                <th>CEE32</th>
+                <th>CEE63</th>
+                <th>CEE125</th>
+                <th>Aktion</th>
+            </tr>
+        </thead>
+
+        <tbody id="distribution_table"></tbody>
+    </table>
+</div>
+<div id="distributionCards" class="card-container mobile-only"></div>
+</main>
+
+
+
+<div id="imageModal" class="modal hidden">
+    <div class="modal-content">
+        <h2>Verteiler Bilder</h2>
+        <div id="imageGallery"></div>
+        <div id="imageCounter"></div>
+        <div id="imageAdminButtons">
+            <input 
+                id="distributionImageInput"
+                type="file"
+                accept="image/*">
+            <button onclick="uploadDistributionImage()">
+                Hochladen
+            </button>
+            <button onclick="deleteCurrentDistributionImage()">
+                Löschen
+            </button>
+        </div>
+        <div class="image-navigation">
+            <button onclick="previousImage()">
+                ◀
+            </button>
+            <button onclick="nextImage()">
+                ▶
+            </button>
+        </div>
+        <button onclick="closeImageModal()">
+            Schließen
+        </button>
+    </div>
+</div>

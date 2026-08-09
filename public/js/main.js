@@ -55,7 +55,7 @@ async function changePassword() {
         alert("Passwort geändert!");
 
         // 👉 Nach Änderung zurück zur App
-        window.location.href = "index.html";
+        window.location.href = "mainframe.html";
 
     } catch (err) {
         alert(err.message);

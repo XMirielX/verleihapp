@@ -1,0 +1,196 @@
+/* =====================================================
+   Mobile Layout
+===================================================== */
+
+@media (max-width: 768px) {
+
+    /* =====================
+       Header
+    ===================== */
+
+    .mobile-header {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+
+        height: 60px;
+        padding: 0 15px;
+
+        background: var(--card-bg);
+        border-bottom: 1px solid var(--border);
+    }
+
+    .mobile-logo {
+        height: 40px;
+        width: auto;
+    }
+
+    .menu-button,
+    #menuButton {
+        display: block;
+    }
+
+
+    /* =====================
+       Sidebar
+    ===================== */
+
+    .sidebar {
+        position: fixed;
+        top: 0;
+        left: -280px;
+
+        width: 260px;
+        height: 100vh;
+
+        z-index: 1000;
+
+        transition: left .25s;
+        box-shadow: 0 0 20px rgba(0,0,0,.3);
+    }
+
+    .sidebar.open {
+        left: 0;
+    }
+
+
+    /* =====================
+       Overlay
+    ===================== */
+
+    .overlay.show {
+        display: block;
+    }
+
+    .overlay {
+        display: none;
+
+        position: fixed;
+        inset: 0;
+
+        background: rgba(0,0,0,.4);
+
+        z-index: 999;
+    }
+
+
+    /* =====================
+       Bottom Navigation
+    ===================== */
+
+    .bottom-nav {
+        display: flex;
+
+        position: fixed;
+
+        bottom: 0;
+        left: 0;
+        right: 0;
+
+        height: 65px;
+
+        background: var(--card-bg);
+        border-top: 1px solid var(--border);
+    }
+
+    .bottom-nav button {
+        flex: 1;
+
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+
+        gap: 3px;
+
+        border: none;
+        background: transparent;
+    }
+
+
+    /* =====================
+       Content
+    ===================== */
+
+    #content {
+        padding-bottom: 80px;
+    }
+
+
+    /* =====================
+       Desktop / Mobile
+    ===================== */
+
+    .desktop-only {
+        display: none;
+    }
+
+    .mobile-only {
+        display: flex;
+    }
+
+
+    /* =====================
+       Startseite
+    ===================== */
+
+    .quick-actions {
+        grid-template-columns: repeat(2,1fr);
+        gap: 12px;
+    }
+
+    .quick-actions .card {
+        min-height: 110px;
+    }
+
+    #upcomingEvents {
+        display: grid;
+        grid-template-columns: 1fr;
+    }
+
+    .administration {
+        display: grid;
+        grid-template-columns: 1fr;
+    }
+
+
+    /* =====================
+       Mobile Karten
+    ===================== */
+
+    #rentalCardContainer,
+    #materialCardContainer,
+    #planningCards,
+    #distributionCards,
+    .mobile-cards {
+
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-md);
+    }
+
+
+    /* =====================
+       Tabellen ausblenden
+    ===================== */
+
+    #planningTableContainer {
+        display: none;
+    }
+
+
+    /* =====================
+       Kleinere Tabellen
+    ===================== */
+
+    td::before {
+        font-size: 13px;
+    }
+
+    
+    .output-grid {
+        grid-template-columns: 1fr;
+    }
+
+
+}

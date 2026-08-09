@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="de">
+<link rel="stylesheet" href="css/style.css">
+
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8">
+
+    <header>
+        <img src="img/logo.png" alt="THW Logo">
+        <br>
+        <h1>Förderverein THW Steinau</h1>
+    </header>
+</head>
+
+<body class="start-page">
+        <div id="userBar">
+        <span id="userInfo">Nicht eingeloggt</span>
+        <button onclick="logout()">Logout</button>
+    </div>
+
+    <hr>
+
+ <h1>Verleih- und Inventarsystem</h1>
+
+<p>Willkommen</p>
+
+
+<h2>Schnellzugriffe</h2>
+
+<div class="card-container quick-actions">
+    <div class="card" onclick="window.location.href='rentaladd.html'">
+        <div class="card-header">
+            📦 Material ausgeben
+        </div>
+        <div class="card-body">
+            Material einer Veranstaltung zuordnen
+        </div>
+    </div>
+
+
+    <div class="card" onclick="window.location.href='rentalback.html'">
+        <div class="card-header">
+            ↩ Material zurücknehmen
+        </div>
+        <div class="card-body">
+            Rückgabe erfassen und prüfen
+        </div>
+    </div>
+
+
+    <div class="card" onclick="window.location.href='eventadd.html'">
+        <div class="card-header">
+            📅 Neue Veranstaltung
+        </div>
+        <div class="card-body">
+            Veranstaltung anlegen
+        </div>
+    </div>
+
+
+    <div class="card" onclick="window.location.href='planning.html'">
+        <div class="card-header">
+            📋 Planung
+        </div>
+        <div class="card-body">
+            Materialbedarf und Verteilung planen
+        </div>
+    </div>
+
+</div>
+
+
+<h2>Verwaltung</h2>
+
+<div class="administration">
+
+    <button onclick="window.location.href='rentals.html'">
+        Verleih
+    </button>
+
+    <button onclick="window.location.href='products.html'">
+        Produkte
+    </button>
+
+    <button onclick="window.location.href='events.html'">
+        Veranstaltungen
+    </button>
+
+    <button onclick="window.location.href='admin.html'">
+        User
+    </button>
+
+</div>
+</body>
+<script src="js/main.js"></script>
+
+</html>

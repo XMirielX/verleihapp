@@ -1,0 +1,44 @@
+
+<body>
+
+    <!-- Neuer Benutzer -->
+    <h2>Neuen Benutzer erstellen</h2>
+    <div class="form-row">
+        <label for="newUsername">Benutzername:</label>
+        <input type="text" id="newUsername">
+    </div>
+    <div class="form-row">
+        <label for="newRole">Rolle:</label>
+        <select id="newRole">
+            <option value="user">User</option>
+            <option value="admin">Admin</option>
+            <option value="lese">Lesen</option>
+
+        </select>
+    </div>
+    <button id="createUserButton">Benutzer erstellen</button>
+    <p id="createUserResult"></p>
+
+    <button type="button" onclick="window.location.href='index.html'">Zurück</button>
+
+    <!-- Bestehende Benutzer -->
+    <h2>Bestehende Benutzer</h2>
+
+    <!-- Desktop-Tabelle -->
+    <div id="desktopTableContainer" class="desktop-only">
+
+    <table id="userTable">
+            <thead>
+                <tr>
+                    <th>Benutzername</th>
+                    <th>Rolle</th>
+                    <th>Aktionen</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+    </div>
+
+    <!-- Mobile Cards -->
+    <div id="userCardContainer" class="card-container mobile-only"></div>
+

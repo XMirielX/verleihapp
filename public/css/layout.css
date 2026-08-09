@@ -1,0 +1,221 @@
+/* =====================================================
+   THW Förderverein VerleihApp
+   Layout
+===================================================== */
+
+
+/* =====================================================
+   Grundlayout
+===================================================== */
+
+.layout {
+    display: flex;
+    min-height: 100vh;
+}
+
+
+/* =====================================================
+   Sidebar
+===================================================== */
+
+.sidebar {
+    width: 260px;
+
+    background: var(--card-bg);
+    border-right: 1px solid var(--border);
+
+    flex-shrink: 0;
+
+    display: flex;
+    flex-direction: column;
+}
+
+.sidebar-header {
+    padding: 20px;
+    border-bottom: 1px solid var(--border);
+}
+
+
+.sidebar-menu {
+    display: flex;
+    flex-direction: column;
+
+    padding: 10px;
+    gap: 5px;
+}
+
+
+.sidebar-menu button {
+    width: 100%;
+
+    border: none;
+    background: transparent;
+
+    color: var(--text);
+
+    text-align: left;
+    padding: 12px;
+
+    border-radius: var(--radius-sm);
+
+    cursor: pointer;
+    font-size: 15px;
+
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+
+.sidebar-menu button:hover {
+    background: var(--primary);
+    color: white;
+}
+
+
+.sidebar-menu button.active {
+    background: var(--primary);
+    color: white;
+}
+
+
+/* =====================================================
+   Hauptbereich
+===================================================== */
+
+.main {
+    flex: 1;
+
+    display: flex;
+    flex-direction: column;
+
+    min-width: 0;
+}
+
+
+/* =====================================================
+   Desktop Header
+===================================================== */
+
+.header {
+
+    height: 60px;
+
+    display: flex;
+    align-items: center;
+
+    gap: 15px;
+
+    padding: 0 20px;
+
+    border-bottom: 1px solid var(--border);
+
+    background: var(--card-bg);
+}
+
+
+.header-logo {
+    height: 42px;
+    width: auto;
+}
+
+
+.header-title {
+    display: flex;
+    flex-direction: column;
+}
+
+
+.header-title h1 {
+    margin: 0;
+
+    font-size: 20px;
+
+    color: var(--primary);
+}
+
+
+.header-title span {
+    font-size: 13px;
+
+    color: var(--text-secondary);
+}
+
+
+/* =====================================================
+   Mobile Header
+===================================================== */
+
+.mobile-header {
+    display: none;
+}
+
+
+.menu-button {
+
+    display: none;
+
+    border: none;
+    background: none;
+
+    font-size: 24px;
+
+    cursor: pointer;
+
+    color: var(--text);
+}
+
+
+/* =====================================================
+   Inhalt
+===================================================== */
+
+#content {
+
+    flex: 1;
+
+    padding: 20px;
+
+    overflow-y: auto;
+}
+
+
+/* =====================================================
+   Mobile Navigation
+===================================================== */
+
+.bottom-nav {
+    display: none;
+}
+
+
+/* =====================================================
+   Overlay
+===================================================== */
+
+.overlay {
+    display: none;
+}
+
+filter-container {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 20px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    width: clamp(220px, 25vw, 320px);
+}
+
+.form-group label {
+    margin-bottom: 4px;
+    font-weight: 600;
+}
+
+.form-group select {
+    width: 100%;
+    box-sizing: border-box;
+}

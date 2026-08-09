@@ -1,0 +1,80 @@
+<h1>Materialplanung</h1>
+
+<div class="planning-header">
+
+    <div class="form-group">
+        <label for="eventSelect">Veranstaltung:</label>
+        <select id="eventSelect">
+            <option value="">Bitte auswählen</option>
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label for="materialSelect">Material:</label>
+        <select id="materialSelect">
+            <option value="">Alle</option>
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label for="categorySelect">Kategorie:</label>
+        <select id="categorySelect">
+            <option value="">Alle</option>
+        </select>
+    </div>
+
+    <div class="form-group checkbox-group">
+        <label>
+            <input type="checkbox" id="onlyPlanned">
+            Nur geplante anzeigen
+        </label>
+    </div>
+
+</div>
+
+
+<br>
+<div id="planningTableContainer">
+    <!-- Wird durch planning.js gefüllt -->
+    <table id="planningTable">
+        <thead>
+            <tr>
+                <th>
+                    Material
+                </th>
+                <th>
+                    Kategorie
+                </th>
+                <th>
+                    Verfügbar
+                </th>
+                <th>
+                    Menge
+                </th>
+            </tr>
+        </thead>
+        <tbody id="planningBody">
+            <!-- Daten kommen per Javascript -->
+        </tbody>
+    </table>
+</div>
+<div id="planningCards" class="mobile-only"></div>
+<br>
+<div id="planningSummary">
+    Geplante Positionen:
+    <span id="plannedPositions">
+        0
+    </span>
+    <br>
+    Geplante Artikel:
+    <span id="plannedQuantity">
+        0
+    </span>
+</div>
+<br>
+
+<button id="savePlanningButton">
+    Speichern
+</button>
+
+<p id="result"></p>

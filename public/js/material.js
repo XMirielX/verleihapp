@@ -2,10 +2,7 @@
 // Materialverwaltung Frontend
 // ==========================
 
-const API = {
-    categories: "/api/categories",
-    materialTypes: "/api/material"
-};
+
 
 // DOM
 const materialCardContainer = document.getElementById("materialCardContainer");
@@ -30,12 +27,12 @@ let currentMaterialId = null;
 // ==========================
 // INIT
 // ==========================
-document.addEventListener("DOMContentLoaded", async () => {
+async function initMaterialPage() {
     bindEvents();
 
     await loadCategories();
     await loadMaterialTypes();
-});
+}
 // ==========================
 // EVENTS
 // ==========================
@@ -64,7 +61,7 @@ function bindEvents() {
 // LOAD DATA
 // ==========================
 async function loadCategories() {
-    const res = await fetch(API.categories);
+    const res = await fetch("/api/categories");
     categories = await res.json();
 
     renderCategorySelect();
@@ -72,7 +69,7 @@ async function loadCategories() {
 }
 
 async function loadMaterialTypes() {
-    const res = await fetch(API.materialTypes);
+    const res = await fetch("/api/material");
     materialTypes = await res.json();
 
     renderMaterials();
@@ -84,7 +81,7 @@ async function createCategory() {
     const name = newCategoryName.value.trim();
     if (!name) return;
 
-  const res = await fetch(API.categories, {
+  const res = await fetch("/api/categories", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ name })
@@ -115,7 +112,7 @@ async function createMaterialType() {
         return;
     }
 
-    const res = await fetch(API.materialTypes, {
+    const res = await fetch("/api/material", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload)
@@ -178,7 +175,7 @@ async function updateMaterialType() {
         active: 1
     };
 
-    const res = await fetch(`${API.materialTypes}/${currentMaterialId}`, {
+    const res = await fetch(`/api/material/${currentMaterialId}`, {
         method: "PUT",
         headers: {
             "Content-Type": "application/json"
@@ -220,7 +217,7 @@ function clearForm() {
 // DELETE (optional UI)
 // ==========================
 async function deleteMaterialType(id) {
-    await fetch(`${API.materialTypes}/${id}`, {
+    await fetch(`/api/material/${id}`, {
         method: "DELETE"
     });
 
@@ -228,7 +225,7 @@ async function deleteMaterialType(id) {
 }
 
 async function deleteCategory(id) {
-    await fetch(`${API.categories}/${id}`, {
+    await fetch(`/api/categories/${id}`, {
         method: "DELETE"
     });
 

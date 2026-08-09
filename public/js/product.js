@@ -3,9 +3,8 @@
 // =====================================================
 let allProducts = [];
 let categoryMap = {};
-let sortDirection = 1;
+let sortDirectionProducts = 1;
 let editingProductId = null;
-let currentUser = null;
 const page = window.location.pathname;
 
 const isDeletePage = page.includes("productdelete.html");
@@ -14,10 +13,9 @@ const isCheckPage = page.includes("productcheck.html");
 // =====================================================
 // 🚀 INIT
 // =====================================================
-document.addEventListener("DOMContentLoaded", async () => {
+async function initProductPage() {
     await loadCategories();
     await loadMaterialTypes();
-    currentUser = await checkLogin();
     await loadProducts();
     const adminBtn = document.getElementById("adminBtn");
     document.querySelectorAll(".adminOnly").forEach(btn => {
@@ -29,7 +27,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     setupFilterListeners();
     setDefaultDate();
 
-});
+};
 
 // =====================================================
 // 📦 PRODUKTE LERNEN
@@ -76,8 +74,9 @@ function renderProducts(products, showDelete = false, showCheck = false) {
     const filtered = filterProducts(products);
 
     // 📱 Mobile
-    if (window.innerWidth <= 768) {
-        table.style.display = "none"; // Tabelle ausblenden
+   if (window.innerWidth <= 768) {
+    table.style.display = "none";
+    container.style.display = "flex";
 
         filtered.forEach(product => {
             const item = document.createElement("div");
@@ -109,7 +108,7 @@ function renderProducts(products, showDelete = false, showCheck = false) {
             container.appendChild(item);
         });
 
-        return;
+       return;
     }
 
     // 💻 Desktop
@@ -144,7 +143,6 @@ function renderProducts(products, showDelete = false, showCheck = false) {
 
     updateSummary(filtered);
 }
-let materialTypes = [];
 
 async function loadMaterialTypes() {
 
@@ -216,7 +214,7 @@ function setupFilterListeners() {
 // 🔽 SORTIERUNG
 // =====================================================
 function sortProducts(field) {
-    sortDirection *= -1;
+    sortDirectionProducts *= -1;
 
     allProducts.sort((a, b) => {
         let valA = getSortableProductValue(a, field);
@@ -227,8 +225,8 @@ function sortProducts(field) {
             valB = valB.toLowerCase();
         }
 
-        if (valA < valB) return -1 * sortDirection;
-        if (valA > valB) return 1 * sortDirection;
+        if (valA < valB) return -1 * sortDirectionProducts;
+        if (valA > valB) return 1 * sortDirectionProducts;
         return 0;
     });
 
@@ -475,40 +473,6 @@ function toDateInputValue(date) {
     return String(date).split("T")[0];
 }
 
-// =====================================================
-// 🎨 LOGIN CHECK
-// =====================================================
-
-// Pruefen, ob User angemeldet ist
-async function checkLogin() {
-    try {
-        const res = await fetch("/api/users/me", { credentials: "include" });
-
-        if (!res.ok) {
-            // Nur redirect, wenn wir NICHT auf login.html sind
-            if (!window.location.pathname.includes("login.html")) {
-                localStorage.setItem("lastPage", window.location.pathname);
-                window.location.href = "login.html";
-            }
-            return null;
-        }
-
-        const user = await res.json();
-        // User Info auf der Seite anzeigen (falls vorhanden)
-        const el = document.getElementById("userInfo");
-        if (el) el.innerText = `Eingeloggt als: ${user.username} (${user.role})`;
-
-        return user;
-
-    } catch (err) {
-        console.error("Fehler beim Laden des Users:", err);
-        if (!window.location.pathname.includes("login.html")) {
-            localStorage.setItem("lastPage", window.location.pathname);
-            window.location.href = "login.html";
-        }
-        return null;
-    }
-}
 function normalizeCode(code) {
     return String(Number(code));
 }

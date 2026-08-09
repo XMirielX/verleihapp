@@ -1,0 +1,164 @@
+/* =====================================================
+   THW Förderverein VerleihApp
+   Basis
+===================================================== */
+
+
+
+
+/* =====================
+   Buttons
+===================== */
+
+button,
+.btn {
+    background-color: var(--primary-dark);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 0.45rem 0.9rem;
+    min-height: 32px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: var(--transition-fast);
+}
+
+button:hover,
+.btn:hover {
+    background-color: #1565c0;
+}
+
+
+/* kleine Tabellenbuttons */
+
+button.small {
+    padding: 0.3rem 0.6rem;
+    min-height: 28px;
+    font-size: 0.8rem;
+}
+
+
+/* =====================
+   Eingabefelder
+===================== */
+
+input,
+select,
+textarea {
+    width: auto;
+    padding: 0.35rem 0.6rem;
+    min-height: 30px;
+    border-radius: 6px;
+    border: 1px solid var(--border);
+    background: var(--card-bg);
+    color: var(--text);
+    font-size: 0.9rem;
+    box-sizing: border-box;
+}
+
+
+input:focus,
+select:focus,
+textarea:focus {
+    outline: none;
+    border-color: var(--primary);
+}
+
+
+/* =====================
+   Form Layout
+===================== */
+
+label {
+    margin-right: 0.4rem;
+}
+
+
+/* Eingabegruppen nebeneinander */
+
+.form-row {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0.5rem;
+}
+
+
+/* =====================
+   Tabellen
+===================== */
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+
+th {
+    padding: 0.7rem;
+}
+
+
+td {
+    padding: 0.65rem;
+}
+
+
+/* =====================
+   Zahlenfelder
+===================== */
+
+input[type="number"] {
+    width: 150px;
+}
+/* =====================
+   Tabellen
+===================== */
+
+/* =====================
+   Tabellen
+===================== */
+
+.table-container {
+    overflow-x: auto;
+    border-radius: var(--radius);
+}
+
+table {
+    width: 100%;
+    background-color: var(--card-bg);
+    color: var(--text);
+    border-collapse: separate;
+    border-spacing: 0;
+    border-radius: var(--radius);
+    overflow: hidden;
+}
+
+
+th {
+    background-color: var(--table-header);
+    color: var(--text);
+    padding: 1rem;
+    text-align: left;
+    font-weight: 600;
+    border-bottom: 1px solid var(--border);
+}
+
+
+td {
+    padding: 0.9rem 1rem;
+    border-bottom: 1px solid var(--border);
+}
+
+
+tbody tr {
+    transition: background 0.2s ease;
+}
+
+
+tr:hover,
+.clickable-row:hover {
+    background-color: var(--hover);
+}
+
