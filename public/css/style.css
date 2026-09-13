@@ -3,6 +3,7 @@
    CSS Hauptdatei
 ===================================================== */
 
+@import url("https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.0/css/all.min.css");
 @import "variables.css";
 @import "basis.css";
 @import "layout.css";

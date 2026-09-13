@@ -4,40 +4,29 @@
 
 <select id="eventSelect"></select>
 
-<button id="closeEventButton">
-    Event abschließen
-</button>
+<button class="adminOnly" id="closeEventButton">Event abschließen</button>
 
-<button id="exportCsvButton">
-    CSV Export
-</button>
-
+<button class="adminOnly" id="exportCsvButton">CSV Export</button>
 
 <h2>Materialübersicht</h2>
 
-
 <div id="desktopView" class="desktop-only">
+  <table id="rentalTable">
+    <thead>
+      <tr>
+        <th>Material</th>
+        <th>Spezifikation</th>
+        <th>Vorhanden</th>
+        <th>Geplant</th>
+        <th>Ausgeliehen</th>
+        <th>Zurückgegeben</th>
+      </tr>
+    </thead>
 
-    <table id="rentalTable">
-
-        <thead>
-            <tr>
-                <th>Material</th>
-                <th>Spezifikation</th>
-                <th>Vorhanden</th>
-                <th>Geplant</th>
-                <th>Ausgeliehen</th>
-            </tr>
-        </thead>
-
-        <tbody></tbody>
-
-    </table>
-
+    <tbody></tbody>
+  </table>
 </div>
 
-
 <div id="rentalCardContainer" class="card-container mobile-only"></div>
-
 
 <p id="result"></p>

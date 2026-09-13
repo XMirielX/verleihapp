@@ -162,3 +162,22 @@ tr:hover,
     background-color: var(--hover);
 }
 
+    /* =====================
+       Statusfarben
+    ===================== */
+
+    .status-frei {
+        color: var(--status-free);
+    }
+   .status-gestartet {
+        color: var(--status-gestartet);
+    }
+    .status-verliehen {
+        color: var(--status-rented);
+    }
+    .status-inaktiv {
+        color: var(--status-inaktiv);
+    }
+    .status-fehlt {
+        color: var(--status-missing);
+    }

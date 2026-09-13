@@ -16,7 +16,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
                 // Löschen-Button hinzufügen
                 const delBtn = document.createElement("button");
-                delBtn.textContent = "Löschen";
+                delBtn.innerHTML = '<i class="fa-solid fa-trash"></i>';
+                delBtn.setAttribute("aria-label", "Löschen");
+                delBtn.title = "Löschen";
                 delBtn.style.marginLeft = "10px";
                 delBtn.addEventListener("click", async () => {
                     if (!confirm(`Kategorie "${cat.name}" wirklich löschen?`)) return;

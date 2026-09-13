@@ -1,4 +1,5 @@
 const pages = {
+
   // =====================================================
   // VERLEIH
   // =====================================================
@@ -84,13 +85,12 @@ const pages = {
   },
 
   material: {
-    title: "Material",
+    title: "Produktgruppe",
     group: "Produkte",
     roles: ["admin"],
-    scripts: ["js/material.js"],
+    scripts: ["js/material.js", "js/prices.js"],
     init: "initMaterialPage",
   },
-
   // =====================================================
   // EVENTS
   // =====================================================
@@ -110,6 +110,28 @@ const pages = {
     scripts: ["js/event.js"],
     init: "initEventPage",
   },
+  customers: {
+    title: "Übersicht",
+    group: "Kunde",
+    roles: ["admin", "user"],
+    scripts: ["js/customers.js"],
+    init: "initCustomerPage",
+  },
+  customersadd: {
+    title: "Anlegen",
+    group: "Kunde",
+    roles: ["admin"],
+    scripts: ["js/customers.js"],
+    init: "initCustomerPage",
+  },
+
+  invoices: {
+    title: "Rechnungen",
+    roles: ["admin"],
+    scripts: ["js/invoices.js"],
+    init: "initInvoicePage"
+},
+
 
   // =====================================================
   // ADMIN
@@ -126,148 +148,141 @@ const pages = {
   // START
   // =====================================================
 
-  home: {
-    title: "Start",
-    roles: ["admin", "user", "lese"],
-    scripts: [],
-    init: null,
-  },
+
 };
 
 let currentUser = null;
 function renderMenu() {
+  const container = document.querySelector(".sidebar-menu");
+  if (!container) return;
 
-    const container = document.querySelector(".sidebar-menu");
-    if (!container) return;
+  container.innerHTML = "";
 
-    container.innerHTML = "";
+  const groups = {};
 
-    const groups = {};
+  // =====================================================
+  // Nur Seiten sammeln, für die der User berechtigt ist
+  // =====================================================
 
-    // =====================================================
-    // Nur Seiten sammeln, für die der User berechtigt ist
-    // =====================================================
+  Object.entries(pages).forEach(([page, config]) => {
+    const allowedRoles = config.roles || ["admin"];
 
-    Object.entries(pages).forEach(([page, config]) => {
+    if (!currentUser || !allowedRoles.includes(currentUser.role)) {
+      return;
+    }
 
-        const allowedRoles = config.roles || ["admin"];
+    const groupName = config.group || "Einzeln";
 
-        if (!currentUser || !allowedRoles.includes(currentUser.role)) {
-            return;
-        }
+    if (!groups[groupName]) {
+      groups[groupName] = [];
+    }
 
-        const groupName = config.group || "Einzeln";
+    groups[groupName].push({
+      page,
+      title: config.title,
+    });
+  });
 
-        if (!groups[groupName]) {
-            groups[groupName] = [];
-        }
+  // =====================================================
+  // Menü aufbauen
+  // =====================================================
 
-        groups[groupName].push({
-            page,
-            title: config.title
-        });
+  Object.entries(groups).forEach(([groupName, items]) => {
+    // Einzelner Menüpunkt
+    if (groupName === "Einzeln") {
+      items.forEach((item) => {
+        const button = document.createElement("button");
+
+        button.textContent = item.title;
+        button.dataset.page = item.page;
+
+        container.appendChild(button);
+      });
+
+      return;
+    }
+
+    // Menügruppe
+    const menuGroup = document.createElement("div");
+    menuGroup.className = "menu-group";
+
+    const parent = document.createElement("button");
+    parent.className = "menu-parent";
+    parent.textContent = groupName;
+
+    const submenu = document.createElement("div");
+    submenu.className = "submenu";
+
+    // Unterpunkte
+    items.forEach((item) => {
+      const button = document.createElement("button");
+
+      button.className = "submenu-item";
+      button.textContent = item.title;
+      button.dataset.page = item.page;
+
+      submenu.appendChild(button);
     });
 
-
-    // =====================================================
-    // Menü aufbauen
-    // =====================================================
-
-    Object.entries(groups).forEach(([groupName, items]) => {
-
-        // Einzelner Menüpunkt
-        if (groupName === "Einzeln") {
-
-            items.forEach(item => {
-
-                const button = document.createElement("button");
-
-                button.textContent = item.title;
-                button.dataset.page = item.page;
-
-                container.appendChild(button);
-            });
-
-            return;
+    // Gruppe öffnen/schließen
+    parent.addEventListener("click", () => {
+      document.querySelectorAll(".menu-group").forEach((other) => {
+        if (other !== menuGroup) {
+          other.classList.remove("open");
         }
+      });
 
-
-        // Menügruppe
-        const menuGroup = document.createElement("div");
-        menuGroup.className = "menu-group";
-
-        const parent = document.createElement("button");
-        parent.className = "menu-parent";
-        parent.textContent = groupName;
-
-        const submenu = document.createElement("div");
-        submenu.className = "submenu";
-
-
-        // Unterpunkte
-        items.forEach(item => {
-
-            const button = document.createElement("button");
-
-            button.className = "submenu-item";
-            button.textContent = item.title;
-            button.dataset.page = item.page;
-
-            submenu.appendChild(button);
-        });
-
-
-        // Gruppe öffnen/schließen
-        parent.addEventListener("click", () => {
-
-            document.querySelectorAll(".menu-group")
-                .forEach(other => {
-
-                    if (other !== menuGroup) {
-                        other.classList.remove("open");
-                    }
-
-                });
-
-            menuGroup.classList.toggle("open");
-        });
-
-
-        menuGroup.appendChild(parent);
-        menuGroup.appendChild(submenu);
-
-        container.appendChild(menuGroup);
+      menuGroup.classList.toggle("open");
     });
 
+    menuGroup.appendChild(parent);
+    menuGroup.appendChild(submenu);
 
-    // =====================================================
-    // Navigation
-    // =====================================================
+    container.appendChild(menuGroup);
+  });
 
-    document.querySelectorAll("[data-page]")
-        .forEach(button => {
+  // =====================================================
+  // Navigation
+  // =====================================================
 
-            button.addEventListener("click", async () => {
+  document.querySelectorAll("[data-page]").forEach((button) => {
+    button.addEventListener("click", async () => {
+      await loadPage(button.dataset.page);
 
-                await loadPage(button.dataset.page);
-
-                closeMenu();
-            });
-
-        });
+      closeMenu();
+    });
+  });
+  
 }
 document.addEventListener("DOMContentLoaded", async () => {
+  const user = await checkLogin();
 
-    const user = await checkLogin();
+  if (!user) return;
 
-    if (!user) return;
+  renderMenu();
+  setupMobileMenu();
 
-    renderMenu();
-    setupMobileMenu();
+  // Logo → Startseite
+  const logo = document.getElementById("sidebarLogo");
 
-    await loadPage("home");
+  if (logo) {
+    logo.addEventListener("click", async () => {
+      await loadPage("home");
+      closeMenu();
+    });
+  }
+
+  // Abmelden
+  const logoutButton = document.getElementById("logoutButton");
+
+  if (logoutButton) {
+    logoutButton.addEventListener("click", async () => {
+      await logout();
+    });
+  }
+
+  await loadPage("home");
 });
-
 
 async function loadPage(page) {
   await checkLogin();
@@ -282,8 +297,8 @@ async function loadPage(page) {
     const html = await response.text();
     content.innerHTML = html;
     if (page === "home") {
-    updateHomeQuickActions();
-}
+      updateHomeQuickActions();
+    }
     // Seitentitel aktualisieren
     const title = document.getElementById("pageTitle");
     if (title) {
@@ -308,16 +323,19 @@ async function loadPageScript(page) {
     console.log("Keine Konfiguration für:", page);
     return;
   }
+
   for (const src of config.scripts) {
     if (!document.querySelector(`script[src^="${src}"]`)) {
-      await new Promise((resolve) => {
+      await new Promise((resolve, reject) => {
         const script = document.createElement("script");
-        script.src = src;
+        script.src = `${src}?v=${Date.now()}`;
         script.onload = resolve;
+        script.onerror = () => reject(new Error(`Script konnte nicht geladen werden: ${src}`));
         document.body.appendChild(script);
       });
     }
   }
+
   const initFunction = window[config.init];
   if (typeof initFunction === "function") {
     initFunction(page);
@@ -420,39 +438,86 @@ async function checkLogin() {
   }
 }
 function updateHomeQuickActions() {
+  if (!currentUser) return;
 
-    if (!currentUser) return;
+  document.querySelectorAll(".quick-actions .card").forEach((card) => {
+    const roles = card.dataset.roles ? card.dataset.roles.split(",") : [];
 
-    document
-        .querySelectorAll(".quick-actions .card")
-        .forEach(card => {
-
-            const roles = card.dataset.roles
-                ? card.dataset.roles.split(",")
-                : [];
-
-            if (!roles.includes(currentUser.role)) {
-                card.style.display = "none";
-            } else {
-                card.style.display = "";
-            }
-
-        });
+    if (!roles.includes(currentUser.role)) {
+      card.style.display = "none";
+    } else {
+      card.style.display = "";
+    }
+  });
 }
 async function logout() {
+  try {
+    await fetch("/api/users/logout", {
+      method: "POST",
+      credentials: "include",
+    });
+  } catch (err) {
+    console.error("Logout-Fehler:", err);
+  }
 
-    try {
+  currentUser = null;
 
-        await fetch("/api/users/logout", {
-            method: "POST",
-            credentials: "include"
-        });
-
-    } catch (err) {
-        console.error("Logout-Fehler:", err);
-    }
-
-    currentUser = null;
-
-    window.location.href = "login.html";
+  window.location.href = "login.html";
 }
+function hasRole(...roles) {
+  return currentUser && roles.includes(currentUser.role);
+}
+
+function isAdmin() {
+  return hasRole("admin");
+}
+
+function isUser() {
+  return hasRole("admin", "user");
+}
+
+function isReader() {
+  return hasRole("admin", "user", "lese");
+}
+
+const permissions = {
+  products: {
+    view: ["admin", "user", "lese"],
+    create: ["admin"],
+    edit: ["admin"],
+    delete: ["admin"],
+    check: ["admin"],
+  },
+
+  materials: {
+    view: ["admin", "user", "lese"],
+    edit: ["admin"],
+  },
+
+  events: {
+    view: ["admin", "user"],
+    create: ["admin", "user"],
+    edit: ["admin", "user"],
+  },
+
+  customers: {
+    view: ["admin", "user"],
+    create: ["admin"],
+    edit: ["admin"],
+  },
+
+  invoices: {
+    view: ["admin"],
+    edit: ["admin"],
+  },
+
+    distributions_plan: {
+    view: ["admin","user", "lese"],
+    edit: ["admin"],
+  },
+
+    planning: {
+    view: ["admin","user", "lese"],
+    edit: ["admin"],
+  },
+};

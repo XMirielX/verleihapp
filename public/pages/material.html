@@ -1,77 +1,79 @@
+<h1>Produktgruppen verwalten</h1>
 
-<h1>Materialverwaltung</h1>
-    <br>  
-<h2 id="formTitle">Materialtyp anlegen</h2>
+<br />
+
+<h2 id="formTitle">Produktgruppe anlegen</h2>
 
 <form id="materialForm">
-    <label for="name">Name</label>
-    <br>  
-    <input
-        type="text"
-        id="name"
-        placeholder="z.B. CEE Verlängerung">
-    <br>      
-    <label for="specification">Spezifikation</label>
-    <br> 
-    <input
-        type="text"
-        id="specification"
-        placeholder="z.B. CEE 32A">
-    <br>    
-    <label for="category">Kategorie</label>
-    <br>  
-    <select id="category"></select>
+  <label for="name">Name</label>
+  <br />
 
-    <button type="button" id="newCategoryBtn">
-        + Kategorie
-    </button>
-  <br>  
-    <button
-        type="submit"
-        id="saveButton">
-        Material anlegen
-    </button>
+  <input type="text" id="name" placeholder="z.B. CEE Verlängerung" />
 
-    <button
-        type="button"
-        id="cancelButton"
-        onclick="clearForm()"
-        hidden>
-        Abbrechen
-    </button>
+  <br />
 
+  <label for="specification">Spezifikation</label>
+  <br />
+
+  <input type="text" id="specification" placeholder="z.B. CEE 32A" />
+
+  <br />
+
+  <label for="category">Kategorie</label>
+  <br />
+
+  <select id="category"></select>
+
+  <button type="button" id="newCategoryBtn">+ Kategorie</button>
+
+  <br />
+
+  <button
+    type="submit"
+    id="saveButton"
+    aria-label="Speichern"
+    title="Speichern"
+  >
+    <i class="fa-solid fa-floppy-disk"></i> Speichern
+  </button>
+
+  <button type="button" id="cancelButton" onclick="clearForm()" hidden>
+    <i class="fa-solid fa-xmark"></i>Abbrechen
+  </button>
 </form>
 
 <p id="result"></p>
 
-<hr>
+<hr />
 
 <!-- =========================
      MATERIALTYPEN
 ========================= -->
 
-<h2>Materialtypen</h2>
+<h2>Produktgruppen</h2>
 
-<table id="materialTable">
+<!-- DESKTOP -->
+
+<div class="desktop-only">
+  <table id="materialTable">
     <thead>
-        <tr>
-            <th>Kategorie</th>
-            <th>Name</th>
-            <th>Spezifikation</th>
-            <th>Aktionen</th>
-        </tr>
+      <tr>
+        <th>Kategorie</th>
+        <th>Name</th>
+        <th>Spezifikation</th>
+        <th>Aktionen</th>
+      </tr>
     </thead>
 
     <tbody></tbody>
-</table>
-
-<div
-    id="materialCardContainer"
-    class="card-container"
-    style="display:none;">
+  </table>
 </div>
 
-<hr>
+<!-- MOBILE -->
+
+<div id="materialCardContainer" class="card-container mobile-only"></div>
+
+<hr />
 
 <!-- =========================
      KATEGORIEN
@@ -79,48 +81,81 @@
 
 <h2>Kategorien</h2>
 
-<table id="categoryTable">
+<!-- DESKTOP -->
+
+<div class="desktop-only">
+  <table id="categoryTable">
     <thead>
-        <tr>
-            <th>Name</th>
-            <th>Aktionen</th>
-        </tr>
+      <tr>
+        <th>Name</th>
+        <th>Aktionen</th>
+      </tr>
     </thead>
 
     <tbody></tbody>
-</table>
-
-<div
-    id="categoryCardContainer"
-    class="card-container"
-    style="display:none;">
+  </table>
 </div>
 
-<hr>
+<!-- MOBILE -->
+
+<div id="categoryCardContainer" class="card-container mobile-only"></div>
+
+<hr />
 
 <!-- =========================
-     DIALOG
+     KATEGORIE DIALOG
 ========================= -->
 
 <dialog id="categoryDialog">
+  <h3>Neue Kategorie</h3>
 
-    <h3>Neue Kategorie</h3>
+  <label for="newCategoryName"> Name </label>
 
-    <label for="newCategoryName">Name</label>
-    <input
-        type="text"
-        id="newCategoryName">
+  <input type="text" id="newCategoryName" />
 
-    <br><br>
+  <br /><br />
 
-    <button id="saveCategoryBtn">
-        Speichern
+  <div class="dialog-actions">
+    <button
+      type="button"
+      id="saveCategoryBtn"
+      aria-label="Speichern"
+      title="Speichern"
+    >
+      <i class="fa-solid fa-floppy-disk"></i>Speichern
     </button>
 
-    <button id="closeDialogBtn">
-        Abbrechen
+    <button type="button" id="closeDialogBtn">
+      <i class="fa-solid fa-xmark"></i>Abbrechen
     </button>
-
+  </div>
 </dialog>
 
+<!-- =========================
+     MATERIALPREISE DIALOG
+========================= -->
 
+<dialog id="priceDialog">
+  <h3 id="priceDialogTitle">Produktpreise</h3>
+
+  <div id="materialPriceContainer">
+    <!-- Preise werden per JavaScript geladen -->
+  </div>
+
+  <br />
+
+  <div class="dialog-actions">
+    <button
+      type="button"
+      id="saveMaterialPricesBtn"
+      aria-label="Speichern"
+      title="Speichern"
+    >
+      <i class="fa-solid fa-floppy-disk"></i>Speichern
+    </button>
+
+    <button type="button" id="closePriceDialogBtn">
+      <i class="fa-solid fa-xmark"></i>Abbrechen
+    </button>
+  </div>
+</dialog>

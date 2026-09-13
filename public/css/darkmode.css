@@ -30,6 +30,8 @@
         --status-free: #5fd35f;
         --status-rented: #ff6b6b;
         --status-missing: #ffb84d;
+        --status-gestartet: #c8ab4d;
+        --status-inaktiv: #c01d1d;
 
         --text-secondary: #bfbfbf;
     }
@@ -60,53 +62,6 @@
         color: var(--text);
     }
 
-.menu-group .submenu {
-    display: none;
-    padding-left: 15px;
-}
-
-.menu-group.open .submenu {
-    display: flex;
-    flex-direction: column;
-}
-
-
-.menu-parent {
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-}
-
-
-.submenu-item {
-    font-size:14px;
-    padding-left:35px !important;
-}
-
-.sidebar-header {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    padding: 20px;
-    border-bottom: 1px solid var(--border);
-}
-
-.sidebar-header img {
-    width: 50px;
-    height: auto;
-}
-
-.sidebar-header h2 {
-    margin: 0;
-    font-size: 18px;
-}
-.mobile-logo {
-    height: 40px;
-    width: auto;
-}
-.sidebar-header small {
-    color: var(--text-secondary);
-}
     /* =====================
        Buttons
     ===================== */
@@ -185,11 +140,15 @@
     .status-frei {
         color: var(--status-free);
     }
-
+   .status-gestartet {
+        color: var(--status-gestartet);
+    }
     .status-verliehen {
         color: var(--status-rented);
     }
-
+    .status-inaktiv {
+        color: var(--status-inaktiv);
+    }
     .status-fehlt {
         color: var(--status-missing);
     }

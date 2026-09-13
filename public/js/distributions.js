@@ -3,21 +3,31 @@
 // ==========================
 
 
-const productSelect = document.getElementById("product_id");
-const distributionIdInput = document.getElementById("distribution_id");
-const inputField = document.getElementById("input");
-const cableField = document.getElementById("cable");
-const schukoField = document.getElementById("schuko");
-const cee16Field = document.getElementById("cee16");
-const cee32Field = document.getElementById("cee32");
-const cee63Field = document.getElementById("cee63");
-const cee125Field = document.getElementById("cee125");
-const tableBody = document.getElementById("distribution_table");
+let productSelect = null;
+let distributionIdInput = null;
+let inputField = null;
+let cableField = null;
+let schukoField = null;
+let cee16Field = null;
+let cee32Field = null;
+let cee63Field = null;
+let cee125Field = null;
+let tableBody = null;
 
 let products = [];
 let distributions = [];
 
 async function initDistributionPage() {
+  productSelect = document.getElementById("product_id");
+  distributionIdInput = document.getElementById("distribution_id");
+  inputField = document.getElementById("input");
+  cableField = document.getElementById("cable");
+  schukoField = document.getElementById("schuko");
+  cee16Field = document.getElementById("cee16");
+  cee32Field = document.getElementById("cee32");
+  cee63Field = document.getElementById("cee63");
+  cee125Field = document.getElementById("cee125");
+  tableBody = document.getElementById("distribution_table");
 
   await loadProducts();
   await loadDistributions();
@@ -145,12 +155,12 @@ function renderDistributionCards() {
                             📷 Bilder
                         </button>
 
-                        <button class="small" onclick="editDistribution(${item.id})">
-                            Bearbeiten
+                        <button class="small" onclick="editDistribution(${item.id})" aria-label="Bearbeiten" title="Bearbeiten">
+                            <i class="fa-solid fa-pen"></i>
                         </button>
 
-                        <button class="small" onclick="deleteDistribution(${item.id})">
-                            Löschen
+                        <button class="small" onclick="deleteDistribution(${item.id})" aria-label="Löschen" title="Löschen">
+                            <i class="fa-solid fa-trash"></i>
                         </button>
                     </div>
                 </div>
@@ -188,14 +198,18 @@ function renderDistributionTable() {
 
         <button
           type="button"
-          onclick="editDistribution(${item.id})">
-          Bearbeiten
+          onclick="editDistribution(${item.id})"
+          aria-label="Bearbeiten"
+          title="Bearbeiten">
+          <i class="fa-solid fa-pen"></i>
         </button>
 
         <button
           type="button"
-          onclick="deleteDistribution(${item.id})">
-          Löschen
+          onclick="deleteDistribution(${item.id})"
+          aria-label="Löschen"
+          title="Löschen">
+          <i class="fa-solid fa-trash"></i>
         </button>
       </td>
     `;

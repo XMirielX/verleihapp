@@ -1,0 +1,154 @@
+<div class="page-header">
+  <div>
+    <h2>Rechnung</h2>
+    <p>Rechnung für ein Event</p>
+  </div>
+</div>
+
+<!-- =====================================================
+     EVENT AUSWÄHLEN
+===================================================== -->
+
+<div class="card">
+  <div class="form-grid">
+    <div class="form-group">
+      <label for="invoiceEventSelect"> Event </label>
+
+      <select id="invoiceEventSelect">
+        <option value="">Event auswählen</option>
+      </select>
+    </div>
+  </div>
+</div>
+
+<!-- =====================================================
+     RECHNUNG
+===================================================== -->
+
+<div id="invoiceContainer" hidden>
+  <!-- =================================================
+         RECHNUNGSDATEN
+    ================================================== -->
+
+  <!-- =================================================
+       RECHNUNGSDATEN
+  ================================================== -->
+
+  <div class="card">
+    <div class="card-header">
+      <h3>Rechnungsdaten</h3>
+    </div>
+
+    <div id="invoiceStatus"></div>
+
+    <div id="invoiceHeader" class="invoice-header-layout">
+      <!-- ==========================================
+         RECHNUNG
+    =========================================== -->
+
+      <div class="invoice-info-card">
+        <div class="invoice-info-card-header">
+          <h4>Rechnung</h4>
+        </div>
+
+        <div id="invoiceDataFields" class="invoice-info-fields"></div>
+      </div>
+
+      <!-- ==========================================
+         RECHNUNGSEMPFÄNGER
+    =========================================== -->
+
+      <div class="invoice-info-card">
+        <div class="invoice-info-card-header">
+          <h4>Rechnungsempfänger</h4>
+        </div>
+
+        <div id="invoiceCustomerFields" class="invoice-info-fields"></div>
+      </div>
+
+      <!-- ==========================================
+         SPEICHERN
+    =========================================== -->
+
+      <div class="invoice-header-actions">
+        <button
+          type="button"
+          id="saveInvoiceHeaderBtn"
+          aria-label="Speichern"
+          title="Speichern"
+        >
+          <i class="fa-solid fa-floppy-disk"></i>
+          Speichern
+        </button>
+        <button
+          type="button"
+          id="finalizeInvoiceBtn"
+          aria-label="Rechnung abschließen"
+          title="Rechnung abschließen"
+        >
+          <i class="fa-solid fa-lock"></i>
+          Abschließen
+        </button>
+        <button type="button" id="createInvoicePdfBtn">PDF erstellen</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- =================================================
+         RECHNUNGSPOSITIONEN
+    ================================================== -->
+
+  <div class="card">
+    <div class="card-header">
+      <h3>Rechnungspositionen</h3>
+
+      <div class="invoice-item-actions">
+        <button type="button" id="addInvoiceItemBtn">+ Position</button>
+      </div>
+      <button type="button" id="saveInvoiceItemsBtn">
+        <i class="fa-solid fa-floppy-disk"></i>
+        Positionen speichern
+      </button>
+    </div>
+
+    <!-- =================================================
+     DESKTOP
+================================================== -->
+
+    <div class="desktop-only">
+      <div class="table-container">
+        <table id="invoiceItemsTable">
+          <thead>
+            <tr>
+              <th>Beschreibung</th>
+              <th>Menge</th>
+              <th>Einzelpreis</th>
+              <th>Gesamt</th>
+              <th></th>
+            </tr>
+          </thead>
+
+          <tbody></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- =================================================
+     MOBILE
+================================================== -->
+
+    <div id="invoiceItemCards" class="mobile-only invoice-item-cards"></div>
+
+    <!-- =================================================
+         SUMMEN
+    ================================================== -->
+
+    <div class="card">
+      <div class="card-header">
+        <h3>Summen</h3>
+      </div>
+
+      <div id="invoiceTotals"></div>
+    </div>
+  </div>
+</div>

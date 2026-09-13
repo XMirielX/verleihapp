@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="de">
+  <head>
+    <meta charset="UTF-8" />
+
+    <title>Rechnung {{INVOICE_NUMBER}}</title>
+
+    <style>
+      {{CSS}}
+    </style>
+  </head>
+
+  <body>
+    <div class="invoice">
+<!-- ==========================================
+     BRIEFKOPF
+=========================================== -->
+
+<header class="invoice-header">
+
+  <div class="header-image">
+    {{HEADER_IMAGE}}
+  </div>
+
+
+  <div class="sender-line">
+    <strong>Förderverein THW-Steinau e.V.</strong>
+    <span>Am Steinaubach 18 · 36396 Steinau an der Straße</span>
+  </div>
+
+  <div class="sender-line-border"></div>
+
+</header>
+
+<!-- ==========================================
+     EMPFÄNGER
+=========================================== -->
+
+<section class="customer">
+
+  <div>
+    {{CUSTOMER_NAME}}<br />
+    {{CUSTOMER_ADDRESS}}<br />
+    {{CUSTOMER_ZIP}} {{CUSTOMER_CITY}}
+  </div>
+
+</section>
+
+
+      <!-- ==========================================
+         RECHNUNGSKOPF
+    =========================================== -->
+
+      <section class="invoice-heading">
+        <h1>Rechnung</h1>
+<div class="invoice-meta">
+
+  <div class="subject">
+    <span>Betreff:</span>
+    <strong>{{EVENT_NAME}}</strong>
+  </div>
+
+  <div class="invoice-number">
+
+    <div class="invoice-info">
+      <span>Datum</span>
+      <strong>{{INVOICE_DATE}}</strong>
+    </div>
+
+    <div class="invoice-info">
+      <span>Rechnungs-Nr.</span>
+      <strong>{{INVOICE_NUMBER}}</strong>
+    </div>
+
+  </div>
+
+</div>
+
+      </section>
+
+      <!-- ==========================================
+         POSITIONEN
+    =========================================== -->
+
+      <table class="invoice-items">
+        <thead>
+          <tr>
+            <th class="position">Pos.</th>
+            <th class="quantity">Menge</th>
+            <th>Beschreibung</th>
+            <th class="price">Einzelpreis</th>
+            <th class="price">Gesamtpreis</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          {{ITEM_ROWS}}
+        </tbody>
+
+        <tfoot>
+          <tr>
+            <td></td>
+            <td></td>
+            <td class="total-label">Rechnungsbetrag</td>
+            <td></td>
+            <td class="price total">{{TOTAL}}</td>
+          </tr>
+        </tfoot>
+      </table>
+
+      <!-- ==========================================
+         FOOTER
+    =========================================== -->
+
+      <section class="invoice-footer">
+        <p>
+          Der Rechnungsbetrag enthält keine Mehrwertsteuer gem. §19 UStG
+          Kleinunternehmerregelung.
+        </p>
+
+        <p>Steuernummer: 1925056869</p>
+
+        <p class="payment-intro">
+          Den Rechnungsbetrag überweisen Sie bitte auf folgendes Konto:
+        </p>
+
+        <p>
+          Volks- und Raiffeisenbank Fulda<br />
+          IBAN: DE44 5306 0180 0003 0045 20<br />
+          Kontoinhaber: Förderverein THW-Steinau e.V.
+        </p>
+
+        <p class="greeting">Mit freundlichen Grüßen</p>
+
+        <p>Förderverein THW-Steinau e.V.</p>
+      </section>
+    </div>
+  </body>
+</html>

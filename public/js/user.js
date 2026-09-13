@@ -80,8 +80,8 @@ async function loadUsers() {
             <td>${user.username}</td>
             <td>${user.role}</td>
             <td>
-                <button class="small" onclick="editUser(${user.id})">Bearbeiten</button>
-                <button class="small" onclick="deleteUser(${user.id})">Löschen</button>
+                <button class="small" onclick="editUser(${user.id})" aria-label="Bearbeiten" title="Bearbeiten"><i class="fa-solid fa-pen"></i></button>
+                <button class="small" onclick="deleteUser(${user.id})" aria-label="Löschen" title="Löschen"><i class="fa-solid fa-trash"></i></button>
                 <button class="small" onclick="resetPass(${user.id})">Passwort Reset</button>
             </td>
         `;
@@ -99,8 +99,8 @@ async function loadUsers() {
                 card.innerHTML = `
             <p><strong>Benutzername:</strong> ${user.username}</p>
             <p><strong>Rolle:</strong> ${user.role}</p>
-            <button onclick="editUser(${user.id})">Bearbeiten</button>
-            <button onclick="deleteUser(${user.id})">Löschen</button>
+            <button onclick="editUser(${user.id})" aria-label="Bearbeiten" title="Bearbeiten"><i class="fa-solid fa-pen"></i></button>
+            <button onclick="deleteUser(${user.id})" aria-label="Löschen" title="Löschen"><i class="fa-solid fa-trash"></i></button>
             <button onclick="resetPass(${user.id})">Passwort Reset</button>
         `;
                 cardContainer.appendChild(card);
@@ -143,11 +143,11 @@ async function deleteUser(id) {
 }
 
 async function editUser(id) {
-    const newRole = prompt("Neue Rolle (admin/user):");
+    const newRole = prompt("Neue Rolle (admin/user/lese):");
 
     if (!newRole) return;
-    if (newRole !== "admin" && newRole !== "user") {
-        alert("Rollenbezeichnung kann nur admin oder user sein");
+    if (newRole !== "admin" && newRole !== "user" && newRole !== "lese") {
+        alert("Rollenbezeichnung kann nur admin, user oder lese sein");
     } else {
         try {
             const res = await fetch(`/api/users/${id}/role`, {

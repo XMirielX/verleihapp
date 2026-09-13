@@ -60,7 +60,13 @@
     justify-content:space-between;
     padding:var(--space-sm) 0;
 }
-
+.product-returned {
+  color: #d3cececb;
+  background: #f0f0f037;
+  text-decoration: none;
+  border-radius: 6px;
+  padding: 4px 8px;
+}
 
 .rental-card .status-badge {
     color:white;
@@ -194,6 +200,496 @@
 #planningCards,
 #rentalCardContainer,
 #materialCardContainer,
-#distributionCards {
+#distributionCards 
+{
     display: none;
+}
+
+/* =====================================================
+   KUNDEN – MOBILE CARDS
+   ===================================================== */
+
+.customer-card {
+    position: relative;
+    overflow: hidden;
+    padding: 0;
+}
+
+/* ---------------------------------
+   Header
+   --------------------------------- */
+
+.customer-card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+
+    padding: 16px 18px;
+
+    border-bottom: 1px solid var(--border);
+}
+
+.customer-title {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+
+    width: 100%;
+}
+
+.customer-title h3 {
+    margin: 0;
+
+    font-size: 1.05rem;
+    font-weight: 600;
+
+    color: var(--text);
+
+    line-height: 1.3;
+}
+
+
+/* ---------------------------------
+   Status
+   --------------------------------- */
+
+.customer-card .status-badge {
+    flex-shrink: 0;
+
+    padding: 4px 9px;
+
+    font-size: 0.75rem;
+    font-weight: 600;
+
+    border-radius: 999px;
+}
+
+
+/* ---------------------------------
+   Inhalt
+   --------------------------------- */
+
+.customer-card-body {
+    display: flex;
+    flex-direction: column;
+
+    padding: 4px 18px 10px;
+}
+
+.customer-detail {
+    display: flex;
+    align-items: flex-start;
+
+    gap: 16px;
+
+    padding: 11px 0;
+
+    border-bottom: 1px solid var(--border);
+}
+
+.customer-detail:last-child {
+    border-bottom: none;
+}
+
+.customer-detail-label {
+    flex: 0 0 95px;
+
+    font-size: 0.76rem;
+    font-weight: 600;
+
+    color: var(--text-muted, #777);
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+}
+
+.customer-detail-value {
+    flex: 1;
+
+    min-width: 0;
+
+    font-size: 0.9rem;
+    line-height: 1.45;
+
+    color: var(--text);
+
+    overflow-wrap: anywhere;
+}
+
+a.customer-detail-value {
+    text-decoration: none;
+}
+
+a.customer-detail-value:hover {
+    text-decoration: underline;
+}
+
+
+/* ---------------------------------
+   Preiskategorie
+   --------------------------------- */
+
+.price-category-badge {
+    display: inline-flex;
+    align-items: center;
+
+    width: fit-content;
+
+    padding: 4px 9px;
+
+    border-radius: 6px;
+
+    background: var(--background);
+    border: 1px solid var(--border);
+
+    font-size: 0.8rem;
+    font-weight: 500;
+
+    color: var(--text);
+}
+
+
+/* ---------------------------------
+   Aktionen
+   --------------------------------- */
+
+.customer-card .card-actions {
+    display: flex;
+    gap: 8px;
+
+    padding: 13px 18px 16px;
+
+    border-top: 1px solid var(--border);
+}
+
+.customer-card .card-actions .btn {
+    flex: 1;
+
+    min-height: 38px;
+
+    padding: 7px 12px;
+
+    font-size: 0.85rem;
+}
+
+
+/* ---------------------------------
+   Mobile
+   --------------------------------- */
+
+@media (max-width: 768px) {
+
+    .customer-card {
+        margin-bottom: 12px;
+    }
+
+    .customer-card-header {
+        padding: 14px 15px;
+    }
+
+    .customer-title {
+        gap: 8px;
+    }
+
+    .customer-title h3 {
+        font-size: 1rem;
+    }
+
+    .customer-card-body {
+        padding: 3px 15px 8px;
+    }
+
+    .customer-detail {
+        gap: 10px;
+        padding: 10px 0;
+    }
+
+    .customer-detail-label {
+        flex-basis: 82px;
+        font-size: 0.7rem;
+    }
+
+    .customer-detail-value {
+        font-size: 0.86rem;
+    }
+
+    .customer-card .card-actions {
+        padding: 11px 15px 14px;
+    }
+/* =====================================================
+   MATERIAL PREISE DIALOG
+===================================================== */
+
+#priceDialog {
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1.5rem;
+    background-color: var(--card-bg);
+    color: var(--text);
+    min-width: 320px;
+    max-width: 500px;
+    width: 90%;
+}
+
+#priceDialog::backdrop {
+    background: rgba(0, 0, 0, 0.55);
+}
+
+
+/* =====================
+   Preiszeilen
+===================== */
+
+.material-price-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+
+    padding: 0.65rem 0;
+    border-bottom: 1px solid var(--border);
+}
+
+.material-price-row:last-child {
+    border-bottom: none;
+}
+
+.material-price-name {
+    flex: 1;
+    font-weight: 600;
+}
+
+.material-price-input {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+}
+
+.material-price-field {
+    width: 90px;
+    box-sizing: border-box;
+}
+
+
+/* =====================
+   Dialog Buttons
+===================== */
+
+#priceDialog .dialog-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.5rem;
+    margin-top: 1rem;
+}
+
+
+/* =====================
+   Mobile
+===================== */
+
+@media (max-width: 768px) {
+
+    #priceDialog {
+        min-width: unset;
+        width: calc(100% - 2rem);
+        max-width: none;
+        padding: 1rem;
+    }
+
+    .material-price-row {
+        gap: 0.5rem;
+    }
+
+    .material-price-field {
+        width: 80px;
+    }
+
+}
+}
+/* =====================================================
+   Rechnung – Rechnungsdaten
+===================================================== */
+
+.invoice-header-layout {
+    display: grid;
+    grid-template-columns: 1fr 1.4fr;
+    gap: 1rem;
+}
+
+/* ---------------------------------------------
+   Informationskarten
+--------------------------------------------- */
+
+.invoice-info-card {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1rem;
+}
+
+.invoice-info-card-header {
+    margin-bottom: 1rem;
+    padding-bottom: 0.6rem;
+    border-bottom: 1px solid var(--border);
+}
+
+.invoice-info-card-header h4 {
+    margin: 0;
+    font-size: 1rem;
+    font-weight: 700;
+}
+
+/* ---------------------------------------------
+   Felder innerhalb der Karten
+--------------------------------------------- */
+
+.invoice-info-fields {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 0.65rem;
+}
+
+.invoice-info-fields .form-group {
+    margin: 0;
+}
+
+.invoice-info-fields label {
+    display: block;
+    margin-bottom: 0.25rem;
+    font-size: 0.85rem;
+    font-weight: 600;
+}
+
+.invoice-info-fields input,
+.invoice-info-fields select {
+    width: 100%;
+    box-sizing: border-box;
+}
+
+/* PLZ + Ort */
+.invoice-address-row {
+    display: grid;
+    grid-template-columns: 110px 1fr;
+    gap: 0.6rem;
+}
+
+/* ---------------------------------------------
+   Speichern
+--------------------------------------------- */
+
+.invoice-header-actions {
+    grid-column: 1 / -1;
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 0.25rem;
+}
+/* =====================================================
+   Rechnung – Rechnungsdaten
+===================================================== */
+
+/* =====================================================
+   RECHNUNG – HEADER
+===================================================== */
+
+.invoice-header-layout {
+    display: grid;
+    grid-template-columns: 1fr 1.4fr;
+    gap: 1rem;
+}
+
+
+/* =====================================================
+   Rechnungs-Info-Karten
+===================================================== */
+
+.invoice-info-card {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1rem;
+}
+
+.invoice-info-card-header {
+    margin-bottom: 1rem;
+    padding-bottom: 0.6rem;
+    border-bottom: 1px solid var(--border);
+}
+
+.invoice-info-card-header h4 {
+    margin: 0;
+    font-size: 1rem;
+    font-weight: 700;
+}
+
+
+/* =====================================================
+   Felder
+===================================================== */
+
+.invoice-info-fields {
+    display: flex;
+    flex-direction: column;
+    gap: 0.65rem;
+}
+
+.invoice-info-fields .form-group {
+    margin: 0;
+}
+
+.invoice-info-fields label {
+    display: block;
+    margin-bottom: 0.25rem;
+}
+
+
+/* =====================================================
+   PLZ + Ort
+===================================================== */
+
+.invoice-address-row {
+    display: grid;
+    grid-template-columns: 110px 1fr;
+    gap: 0.6rem;
+}
+
+.invoice-address-row .form-group {
+    min-width: 0;
+}
+
+
+/* =====================================================
+   Speichern
+===================================================== */
+
+.invoice-header-actions {
+    display: flex;
+    justify-content: flex-start;
+    margin-top: 1rem;
+}
+/* =====================================================
+   Rechnung – Mobile
+===================================================== */
+
+@media (max-width: 768px) {
+
+    .invoice-header-layout {
+        grid-template-columns: 1fr;
+    }
+
+    .invoice-info-card {
+        padding: 0.85rem;
+    }
+
+    .invoice-address-row {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .invoice-header-actions {
+        justify-content: stretch;
+    }
+
+    .invoice-header-actions button {
+        width: 100%;
+    }
 }

@@ -7,39 +7,47 @@
 ===================================================== */
 
 :root {
-    --primary: #005aa7;
-    --primary-dark: #004080;
+  --primary: #005aa7;
+  --primary-dark: #004080;
 
-    --background: #f4f4f9;
-    --text: #333;
+  --background: #f4f4f9;
+  --text: #333;
 
-    --border: #ccc;
-    --table-border: black;
+  --border: #ccc;
+  --table-border: black;
 
-    --card-bg: #fff;
-    --card-shadow: rgba(0,0,0,0.1);
+  --card-bg: #fff;
+  --card-shadow: rgba(0, 0, 0, 0.1);
 
-    --text-secondary: #666;
+  --text-secondary: #666;
 
-    --table-header: #e6f0fa;
-    --hover: #f0f8ff;
+  --table-header: #e6f0fa;
+  --hover: #f0f8ff;
 
-    --input-bg: #fff;
+  --input-bg: #fff;
+  --font-family:
+     Arial, sans-serif;
+  --space-x: 2px;
+  --space-xs: 4px;
+  --space-sm: 8px;
+  --space-md: 12px;
+  --space-mx: 16px;
+  --space-lg: 20px;
 
-    --space-x:2px;
-    --space-xs:4px;
-    --space-sm:8px;
-    --space-md:12px;
-    --space-mx:16px;
-    --space-lg:20px;
+  --font-title: 28px;
+  --font-large: 18px;
+  --font-normal: 16px;
+  --font-small: 12px;
 
---font-title:28px;
---font-large:18px;
---font-normal:16px;
---font-small:12px;
+  --radius-sm: 6px;
+  --radius-md: 10px;
 
-    --radius-sm:6px;
-    --radius-md:10px;
+  --transition-fast: 0.15s ease;
 
-        --transition-fast:0.15s ease;
+       --status-free: #188118;
+        --status-rented: #ac1313;
+        --status-missing: #d5ab1e;
+        --status-gestartet: #cdad30;
+        --status-inaktiv: #ab0d0d;
+
 }

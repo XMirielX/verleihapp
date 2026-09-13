@@ -44,39 +44,7 @@ db.runAsync = (sql, params = []) => {
 db.allAsync = promisify(db.all.bind(db));
 db.getAsync = promisify(db.get.bind(db));
 
-async function ensureOptionalTables() {
-    await db.runAsync(`
-        CREATE TABLE IF NOT EXISTS distribution_items (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            product_id INTEGER NOT NULL UNIQUE,
-            input TEXT,
-            cable TEXT,
-            schuko INTEGER NOT NULL DEFAULT 0,
-            cee16 INTEGER NOT NULL DEFAULT 0,
-            cee32 INTEGER NOT NULL DEFAULT 0,
-            cee63 INTEGER NOT NULL DEFAULT 0,
-            cee125 INTEGER NOT NULL DEFAULT 0,
-            active INTEGER NOT NULL DEFAULT 1,
-
-            FOREIGN KEY (product_id) REFERENCES products(id)
-        )
-    `);
-
-    await db.runAsync(`
-        CREATE TABLE IF NOT EXISTS distribution_plan (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            event_id INTEGER NOT NULL,
-            distribution_item_id INTEGER NOT NULL,
-            location TEXT,
-            planned INTEGER NOT NULL DEFAULT 0,
-            FOREIGN KEY (event_id) REFERENCES event(id),
-            FOREIGN KEY (distribution_item_id) REFERENCES distribution_items(id),
-            UNIQUE(event_id, distribution_item_id)
-        )
-    `);
-}
-
-module.exports = { db, initDB, ensureOptionalTables };
+module.exports = { db, initDB };
 
 async function initDB() {
     await db.runAsync(`CREATE TABLE IF NOT EXISTS categories (

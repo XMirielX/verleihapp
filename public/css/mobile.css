@@ -2,6 +2,14 @@
    Mobile Layout
 ===================================================== */
 
+.desktop-only {
+    display: block;
+}
+
+.mobile-only {
+    display: none;
+}
+
 @media (max-width: 768px) {
 
     /* =====================
@@ -9,9 +17,14 @@
     ===================== */
 
     .mobile-header {
-        display: flex;
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        z-index: 1000;       
         align-items: center;
         gap: 12px;
+        display: flex;
 
         height: 60px;
         padding: 0 15px;
@@ -29,7 +42,7 @@
     #menuButton {
         display: block;
     }
-
+.main { padding-top: 30px; }
 
     /* =====================
        Sidebar
@@ -43,7 +56,7 @@
         width: 260px;
         height: 100vh;
 
-        z-index: 1000;
+        z-index: 1100;
 
         transition: left .25s;
         box-shadow: 0 0 20px rgba(0,0,0,.3);
@@ -153,7 +166,227 @@
         grid-template-columns: 1fr;
     }
 
+/* =====================================================
+   KUNDEN CARDS
+   ===================================================== */
 
+.customer-card {
+    width: 100%;
+    box-sizing: border-box;
+
+    padding: 0;
+    overflow: hidden;
+
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+
+    background: var(--card-bg);
+
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+}
+
+
+/* =====================================================
+   HEADER
+   ===================================================== */
+
+.customer-card-header {
+    padding: 14px 16px;
+
+    border-bottom: 1px solid var(--border);
+
+    background: var(--background);
+}
+
+.customer-title {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 10px;
+}
+
+.customer-title h3 {
+    margin: 0;
+
+    font-size: 1rem;
+    font-weight: 600;
+
+    color: var(--text);
+
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+
+/* =====================================================
+   STATUS
+   ===================================================== */
+
+.customer-card .status-badge {
+    flex-shrink: 0;
+
+    padding: 4px 9px;
+
+    border-radius: 999px;
+
+    font-size: 0.72rem;
+    font-weight: 600;
+}
+
+
+/* =====================================================
+   INHALT
+   ===================================================== */
+
+.customer-card-body {
+    padding: 4px 16px;
+}
+
+.customer-detail {
+    display: flex;
+    align-items: flex-start;
+
+    gap: 12px;
+
+    padding: 10px 0;
+
+    border-bottom: 1px solid var(--border);
+}
+
+.customer-detail:last-child {
+    border-bottom: none;
+}
+
+
+/* Bezeichnung links */
+
+.customer-detail-label {
+    flex: 0 0 85px;
+
+    font-size: 0.72rem;
+    font-weight: 600;
+
+    color: var(--text-muted, #777);
+
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+}
+
+
+/* Wert rechts */
+
+.customer-detail-value {
+    flex: 1;
+
+    min-width: 0;
+
+    font-size: 0.88rem;
+    line-height: 1.4;
+
+    color: var(--text);
+
+    overflow-wrap: anywhere;
+}
+
+
+/* Links */
+
+a.customer-detail-value {
+    text-decoration: none;
+}
+
+a.customer-detail-value:hover {
+    text-decoration: underline;
+}
+
+
+/* =====================================================
+   PREISKATEGORIE
+   ===================================================== */
+
+.price-category-badge {
+    display: inline-flex;
+    align-items: center;
+
+    width: fit-content;
+
+    padding: 4px 8px;
+
+    border-radius: 6px;
+
+    border: 1px solid var(--border);
+
+    background: var(--background);
+
+    font-size: 0.76rem;
+    font-weight: 500;
+}
+
+
+/* =====================================================
+   AKTIONEN
+   ===================================================== */
+
+.customer-card .card-actions {
+    display: flex;
+
+    gap: 8px;
+
+    padding: 12px 16px 14px;
+
+    border-top: 1px solid var(--border);
+}
+
+.customer-card .card-actions .btn {
+    flex: 1;
+
+    min-height: 38px;
+
+    padding: 7px 10px;
+
+    font-size: 0.84rem;
+}
+
+
+/* =====================================================
+   MOBILE
+   ===================================================== */
+
+@media (max-width: 768px) {
+
+    .customer-card {
+        border-radius: 10px;
+    }
+
+    .customer-card-header {
+        padding: 13px 14px;
+    }
+
+    .customer-card-body {
+        padding: 3px 14px;
+    }
+
+    .customer-detail {
+        gap: 8px;
+        padding: 9px 0;
+    }
+
+    .customer-detail-label {
+        flex-basis: 78px;
+        font-size: 0.68rem;
+    }
+
+    .customer-detail-value {
+        font-size: 0.84rem;
+    }
+
+    .customer-card .card-actions {
+        padding: 10px 14px 13px;
+    }
+
+}
     /* =====================
        Mobile Karten
     ===================== */
@@ -192,5 +425,116 @@
         grid-template-columns: 1fr;
     }
 
+.invoice-header-layout {
+    display: grid;
+    grid-template-columns: 1fr 1.4fr;
+    gap: 1rem;
+}
+
+.invoice-info-card {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1rem;
+}
+
+.invoice-info-card-header {
+    margin-bottom: 1rem;
+    padding-bottom: 0.6rem;
+    border-bottom: 1px solid var(--border);
+}
+
+.invoice-info-card-header h4 {
+    margin: 0;
+    font-size: 1rem;
+    font-weight: 700;
+}
+
+.invoice-info-fields {
+    display: flex;
+    flex-direction: column;
+    gap: 0.65rem;
+}
+
+.invoice-info-fields .form-group {
+    margin: 0;
+}
+
+.invoice-info-fields label {
+    display: block;
+    margin-bottom: 0.25rem;
+}
+
+.invoice-address-row {
+    display: grid;
+    grid-template-columns: 110px 1fr;
+    gap: 0.6rem;
+}
+
+.invoice-header-actions {
+    grid-column: 1 / -1;
+    display: flex;
+    justify-content: flex-start;
+    margin-top: 1rem;
+}
+}
+
+
+/* =====================================================
+   MOBILE
+===================================================== */
+
+@media (max-width: 768px) {
+
+    #invoiceItemCards {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    .invoice-item-card {
+        border-radius: 10px;
+    }
+
+    .invoice-item-card-header {
+        padding: 10px 13px;
+    }
+
+    .invoice-item-card-body {
+        padding: 2px 13px;
+    }
+
+    .invoice-item-detail {
+        gap: 8px;
+        min-height: 40px;
+    }
+
+    .invoice-item-detail > span {
+        flex-basis: 78px;
+        font-size: 0.68rem;
+    }
+
+    .invoice-item-card-actions {
+        padding: 10px 13px 12px;
+    }
+}
+
+
+/* =====================================================
+   MOBILE
+===================================================== */
+
+@media (max-width: 768px) {
+
+    .invoice-header-layout {
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-md);
+    }
+
+    .invoice-info-card {
+        width: 100%;
+        box-sizing: border-box;
+    }
 
 }

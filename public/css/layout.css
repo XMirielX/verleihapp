@@ -13,6 +13,22 @@
     min-height: 100vh;
 }
 
+/* =====================
+   Globale Schrift
+===================== */
+
+html,
+body {
+    font-family: var(--font-family);
+}
+
+button,
+input,
+select,
+textarea,
+table {
+    font-family: inherit;
+}
 
 /* =====================================================
    Sidebar
@@ -30,20 +46,51 @@
     flex-direction: column;
 }
 
+/* =====================================================
+   Sidebar Header / Logo
+===================================================== */
+
 .sidebar-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+
     padding: 20px;
+
     border-bottom: 1px solid var(--border);
+
+    cursor: pointer;
 }
 
+.sidebar-header img {
+    width: 50px;
+    height: auto;
+}
+
+.sidebar-header h2 {
+    margin: 0;
+    font-size: 18px;
+}
+
+.sidebar-header small {
+    color: var(--text-secondary);
+}
+
+/* =====================================================
+   Sidebar Menü
+===================================================== */
 
 .sidebar-menu {
+    flex: 1;
+
     display: flex;
     flex-direction: column;
 
     padding: 10px;
     gap: 5px;
-}
 
+    overflow-y: auto;
+}
 
 .sidebar-menu button {
     width: 100%;
@@ -66,19 +113,80 @@
     gap: 10px;
 }
 
-
 .sidebar-menu button:hover {
     background: var(--primary);
     color: white;
 }
-
 
 .sidebar-menu button.active {
     background: var(--primary);
     color: white;
 }
 
+/* =====================================================
+   Sidebar Menügruppen
+===================================================== */
 
+.menu-group .submenu {
+    display: none;
+    padding-left: 15px;
+}
+
+.menu-group.open .submenu {
+    display: flex;
+    flex-direction: column;
+}
+
+.menu-parent {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.submenu-item {
+    font-size: 14px;
+    padding-left: 35px !important;
+}
+
+/* =====================================================
+   Sidebar Footer / Abmelden
+===================================================== */
+
+.sidebar-footer {
+    padding: 10px;
+    border-top: 1px solid var(--border);
+}
+
+.logout-button {
+    width: 100%;
+
+    border: none;
+    background: transparent;
+
+    color: var(--text);
+
+    text-align: left;
+    padding: 12px;
+
+    border-radius: var(--radius-sm);
+
+    cursor: pointer;
+    font-size: 15px;
+}
+
+.logout-button:hover {
+    background: var(--primary);
+    color: white;
+}
+
+/* =====================================================
+   Mobile Logo
+===================================================== */
+
+.mobile-logo {
+    height: 40px;
+    width: auto;
+}
 /* =====================================================
    Hauptbereich
 ===================================================== */

@@ -11,8 +11,11 @@ function isPlanningEditable() {
 async function initPlanningPage() {
   await loadRentalEvents();
   await loadPlanningMaterials();
+
   renderCategories();
   renderMaterialsSelect();
+
+  updatePlanningVisibility();
   renderPlanningView();
 
   const eventSelect = document.getElementById("eventSelect");
@@ -40,6 +43,8 @@ async function initPlanningPage() {
     saveButton.addEventListener("click", savePlanning);
   }
 }
+
+
 
 // Veranstaltungen laden
 async function loadRentalEvents() {
@@ -94,8 +99,9 @@ async function eventChanged() {
   const eventSelect = document.getElementById("eventSelect");
 
   selectedEvent = eventSelect.value;
-
   selectedEventDataPlan = null;
+
+  updatePlanningVisibility();
 
   if (selectedEvent) {
     const selectedOption = eventSelect.options[eventSelect.selectedIndex];
@@ -260,6 +266,16 @@ function getFilteredMaterials() {
     const matchesPlan = !onlyPlanned || material.quantity > 0;
     return matchesMaterial && matchesCategory && matchesPlan;
   });
+}
+
+function updatePlanningVisibility() {
+  const planningContent = document.getElementById("planningContent");
+
+  if (!planningContent) {
+    return;
+  }
+
+  planningContent.style.display = selectedEvent ? "" : "none";
 }
 
 // Kategorien erzeugen

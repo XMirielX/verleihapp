@@ -8,14 +8,23 @@ function isPlanEditable() {
 }
 
 async function initDistributionPlanPage() {
-
   const filterElement = document.getElementById("distributionFilter");
+
   const categoryElement = document.getElementById("categoryFilter");
+
   const eventElement = document.getElementById("event_id");
 
+  const saveButton = document.getElementById("saveButton");
+
+  const transferButton = document.getElementById("transferButton");
+
+  // Veranstaltung laden
   await loadDistributionEvents();
+
+  // Benutzer laden
   await loadCurrentUser();
 
+  // Filter
   if (filterElement) {
     filterElement.addEventListener("change", renderDistributionsView);
   }
@@ -24,12 +33,99 @@ async function initDistributionPlanPage() {
     categoryElement.addEventListener("change", renderDistributionsView);
   }
 
+  // Veranstaltung geändert
   if (eventElement) {
     eventElement.addEventListener("change", loadDistributionPlan);
   }
 
+  // Speichern
+  if (saveButton) {
+    saveButton.addEventListener("click", saveDistributionPlan);
+  }
+
+  // In Materialplanung übernehmen
+  if (transferButton) {
+    transferButton.addEventListener("click", transferToMaterialPlan);
+  }
+
+  // Initial ausblenden
+  updateDistributionVisibility();
+
   updateRights();
 }
+function updateDistributionVisibility() {
+  const distributionContent = document.getElementById("distributionContent");
+
+  if (!distributionContent) {
+    return;
+  }
+
+  distributionContent.style.display = selectedEventData ? "" : "none";
+}
+async function loadDistributionPlan() {
+  const eventSelect = document.getElementById("event_id");
+
+  if (!eventSelect) {
+    return;
+  }
+
+  const eventId = eventSelect.value;
+
+  // Zurücksetzen
+  selectedEventData = null;
+  plan = [];
+
+  updateDistributionVisibility();
+
+  // Keine Veranstaltung ausgewählt
+  if (!eventId) {
+    updateRights();
+    renderDistributionsView();
+    return;
+  }
+
+  const selectedOption = eventSelect.options[eventSelect.selectedIndex];
+
+  selectedEventData = {
+    id: eventId,
+    stat: selectedOption.dataset.stat,
+  };
+
+  try {
+    const response = await fetch(`/api/distribution-plan/${eventId}`);
+
+    if (!response.ok) {
+      throw new Error(`HTTP ${response.status}`);
+    }
+
+    plan = await response.json();
+
+    if (!Array.isArray(plan)) {
+      console.error("Ungültige Distribution-Antwort:", plan);
+
+      plan = [];
+    }
+
+    loadCategories();
+
+    updateDistributionVisibility();
+
+    updateRights();
+
+    renderDistributionsView();
+  } catch (error) {
+    console.error("DISTRIBUTION PLAN LOAD ERROR:", error);
+
+    plan = [];
+
+    updateDistributionVisibility();
+
+    updateRights();
+
+    renderDistributionsView();
+  }
+}
+
 async function loadCurrentUser() {
   try {
     const response = await fetch("/api/users/me");
@@ -42,7 +138,6 @@ async function loadCurrentUser() {
     const user = await response.json();
 
     canEdit = user.role === "admin";
-
   } catch (error) {
     console.error("USER LOAD ERROR:", error);
     canEdit = false;
@@ -106,35 +201,7 @@ async function loadDistributionEvents() {
   });
 }
 
-async function loadDistributionPlan() {
-  const eventSelect = document.getElementById("event_id");
-  const eventId = eventSelect.value;
 
-  selectedEventData = null;
-
-  if (!eventId) {
-    plan = [];
-    updateRights();
-    renderDistributionsView();
-    return;
-  }
-
-  const selectedOption =
-    eventSelect.options[eventSelect.selectedIndex];
-
-  selectedEventData = {
-    id: eventId,
-    stat: selectedOption.dataset.stat
-  };
-
-  const res = await fetch(`/api/distribution-plan/${eventId}`);
-  plan = await res.json();
-
-  loadCategories();
-
-  updateRights();
-  renderDistributionsView();
-}
 function renderDistributionTable() {
   const tbody = document.getElementById("plan_table");
   if (!tbody) return;
@@ -196,8 +263,7 @@ function renderDistributionCards() {
     const card = document.createElement("div");
 
     card.className =
-      "distribution-card " +
-      (item.planned ? "planned" : "unplanned");
+      "distribution-card " + (item.planned ? "planned" : "unplanned");
 
     card.innerHTML = `
       <div class="distribution-header">
@@ -293,11 +359,12 @@ async function transferToMaterialPlan() {
     alert("Bitte zuerst eine Veranstaltung auswählen.");
     return;
   }
-    if (!canEdit || !isPlanEditable()) {
-    alert("Die Veranstaltung ist abgeschlossen oder Sie haben keine Berechtigung zur Bearbeitung.");
+  if (!canEdit || !isPlanEditable()) {
+    alert(
+      "Die Veranstaltung ist abgeschlossen oder Sie haben keine Berechtigung zur Bearbeitung.",
+    );
     return;
   }
-
 
   if (!confirm("Distribution in die Materialplanung übernehmen?")) return;
 
@@ -355,7 +422,9 @@ async function saveDistributionPlan() {
   }
 
   if (!isPlanEditable()) {
-    alert("Die Veranstaltung ist bereits abgeschlossen. Die Planung kann nur eingesehen werden.");
+    alert(
+      "Die Veranstaltung ist bereits abgeschlossen. Die Planung kann nur eingesehen werden.",
+    );
     return;
   }
   const items = [];

@@ -78,10 +78,10 @@ async function loginUser(username, password) {
         if (result.firstLogin) {
             window.location.href = "passwordchange.html";
         }
-        else {        // Zur letzten besuchten Seite springen
-            const last = localStorage.getItem("lastPage") || "index.html";
+        else {
+            // Nach einem erfolgreichen Login immer die zentrale Startseite öffnen.
             localStorage.removeItem("lastPage");
-            window.location.href = last;
+            window.location.href = "mainframe.html";
         }
     } catch (err) {
         const el = document.getElementById("loginResult");
@@ -89,16 +89,7 @@ async function loginUser(username, password) {
     }
 }
 
-// Logout-Funktion
-async function logout() {
-    try {
-        await fetch("/api/users/logout", { credentials: "include" });
-    } catch (err) {
-        console.error("Fehler beim Logout:", err);
-    } finally {
-        window.location.href = "login.html";
-    }
-}
+
 function toggleDarkMode() {
     document.body.classList.toggle("dark-mode");
 }

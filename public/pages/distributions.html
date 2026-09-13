@@ -64,15 +64,18 @@
 
 </div>
 
-
-    <button onclick="saveDistribution()">Speichern</button>
-    <button onclick="clearForm()">Neu</button>
-    <button type="button" onclick="window.location.href='products.html'">Zurück</button>
+<br>
+    <button onclick="saveDistribution()" aria-label="Speichern" title="Speichern">
+        <i class="fa-solid fa-floppy-disk"></i> Speichern
+    </button>
+    <button onclick="clearForm()">
+        <i class="fa-solid fa-plus"></i> Neu
+    </button>
 
 </section>
 
 <section class="card">
-    <h2>Distribution anlegen / bearbeiten</h2>
+    <h2>Verteiler anlegen / bearbeiten</h2>
 <div id="distributionTableContainer" class="desktop-only">
     <table>
         <thead>
@@ -110,8 +113,8 @@
             <button onclick="uploadDistributionImage()">
                 Hochladen
             </button>
-            <button onclick="deleteCurrentDistributionImage()">
-                Löschen
+            <button onclick="deleteCurrentDistributionImage()" aria-label="Löschen" title="Löschen">
+                <i class="fa-solid fa-trash"></i>
             </button>
         </div>
         <div class="image-navigation">

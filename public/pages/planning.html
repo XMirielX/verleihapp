@@ -1,3 +1,4 @@
+
 <h1>Materialplanung</h1>
 
 <div class="planning-header">
@@ -9,72 +10,74 @@
         </select>
     </div>
 
-    <div class="form-group">
-        <label for="materialSelect">Material:</label>
-        <select id="materialSelect">
-            <option value="">Alle</option>
-        </select>
-    </div>
-
-    <div class="form-group">
-        <label for="categorySelect">Kategorie:</label>
-        <select id="categorySelect">
-            <option value="">Alle</option>
-        </select>
-    </div>
-
-    <div class="form-group checkbox-group">
-        <label>
-            <input type="checkbox" id="onlyPlanned">
-            Nur geplante anzeigen
-        </label>
-    </div>
-
 </div>
 
 
-<br>
-<div id="planningTableContainer">
-    <!-- Wird durch planning.js gefüllt -->
-    <table id="planningTable">
-        <thead>
-            <tr>
-                <th>
-                    Material
-                </th>
-                <th>
-                    Kategorie
-                </th>
-                <th>
-                    Verfügbar
-                </th>
-                <th>
-                    Menge
-                </th>
-            </tr>
-        </thead>
-        <tbody id="planningBody">
-            <!-- Daten kommen per Javascript -->
-        </tbody>
-    </table>
-</div>
-<div id="planningCards" class="mobile-only"></div>
-<br>
-<div id="planningSummary">
-    Geplante Positionen:
-    <span id="plannedPositions">
-        0
-    </span>
+<!-- Wird erst bei ausgewählter Veranstaltung angezeigt -->
+<div id="planningContent">
+
+    <div class="planning-header">
+
+        <div class="form-group">
+            <label for="materialSelect">Material:</label>
+            <select id="materialSelect">
+                <option value="">Alle</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="categorySelect">Kategorie:</label>
+            <select id="categorySelect">
+                <option value="">Alle</option>
+            </select>
+        </div>
+
+        <div class="form-group checkbox-group">
+            <label>
+                <input type="checkbox" id="onlyPlanned">
+                Nur geplante anzeigen
+            </label>
+        </div>
+
+    </div>
+
+
     <br>
-    Geplante Artikel:
-    <span id="plannedQuantity">
-        0
-    </span>
+
+    <div id="planningTableContainer" class="desktop-only">
+        <table id="planningTable">
+            <thead>
+                <tr>
+                    <th>Material</th>
+                    <th>Kategorie</th>
+                    <th>Verfügbar</th>
+                    <th>Menge</th>
+                </tr>
+            </thead>
+            <tbody id="planningBody">
+                <!-- Daten kommen per Javascript -->
+            </tbody>
+        </table>
+    </div>
+
+    <div id="planningCards" class="mobile-only"></div>
+
+    <br>
+
+    <div id="planningSummary">
+        Geplante Positionen:
+        <span id="plannedPositions">0</span>
+        <br>
+        Geplante Artikel:
+        <span id="plannedQuantity">0</span>
+    </div>
+
+    <br>
+
+    <button id="savePlanningButton">
+        <i class="fa-solid fa-floppy-disk"></i>
+    </button>
+
+    <p id="result"></p>
+
 </div>
-<br>
-
-<button id="savePlanningButton">
-    Speichern
-</button>
-
-<p id="result"></p>
