@@ -545,6 +545,11 @@ async function startCameraScan() {
   if (!window.ZXing?.BrowserBarcodeReader) {
     throw new Error("Barcode-Scanner konnte nicht geladen werden");
   }
+  if (!window.isSecureContext) {
+    throw new Error(
+      "Kamera benötigt eine sichere Verbindung (HTTPS).",
+    );
+  }
   if (!navigator.mediaDevices?.getUserMedia) {
     throw new Error("Kamera wird von diesem Browser nicht unterstützt");
   }
