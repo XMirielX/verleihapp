@@ -47,7 +47,9 @@
        --status-free: #188118;
         --status-rented: #ac1313;
         --status-missing: #d5ab1e;
-        --status-gestartet: #cdad30;
+        --status-gestartet: #007bff;
+        --status-abgeschlossen: #d97706;
+        --status-abgerechnet: #d32f2f;
         --status-inaktiv: #ab0d0d;
 
 }

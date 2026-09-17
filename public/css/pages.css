@@ -11,7 +11,7 @@
 #priceDialog .dialog-actions { display: flex; justify-content: flex-end; gap: .5rem; margin-top: 1rem; }
 
 /* Invoice */
-.invoice-header-layout { display: grid; grid-template-columns: 1fr 1.4fr; gap: 1rem; }
+.invoice-header-layout { display: grid; grid-template-columns: 1fr 1.4fr; gap: 1rem; align-items: start; }
 .invoice-info-card { padding: 1rem; background: var(--card-bg); border: 1px solid var(--border); border-radius: var(--radius); }
 .invoice-info-card-header { margin-bottom: 1rem; padding-bottom: .6rem; border-bottom: 1px solid var(--border); }
 .invoice-info-card-header h4 { margin: 0; font-size: 1rem; font-weight: 700; }
@@ -20,7 +20,7 @@
 .invoice-info-fields label { display: block; margin-bottom: .25rem; }
 .invoice-address-row { display: grid; grid-template-columns: 110px 1fr; gap: .6rem; }
 .invoice-address-row .form-group { min-width: 0; }
-.invoice-header-actions { display: flex; justify-content: flex-start; margin-top: 1rem; }
+.invoice-header-actions { grid-column: 1 / -1; display: flex; justify-content: flex-start; gap: .5rem; margin-top: 1rem; }
 
 /* This is a desktop form grid, not a mobile card. */
 .output-grid { display: grid; grid-template-columns: repeat(5, minmax(100px, 1fr)); gap: 15px; }

@@ -429,6 +429,7 @@ a.customer-detail-value:hover {
     display: grid;
     grid-template-columns: 1fr 1.4fr;
     gap: 1rem;
+    align-items: start;
 }
 
 .invoice-info-card {
@@ -475,6 +476,7 @@ a.customer-detail-value:hover {
     grid-column: 1 / -1;
     display: flex;
     justify-content: flex-start;
+    gap: 0.5rem;
     margin-top: 1rem;
 }
 }

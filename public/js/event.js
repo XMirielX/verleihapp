@@ -46,8 +46,9 @@ async function loadCustomers() {
 
     select.innerHTML = `<option value="">Kein Kunde</option>`;
 
+    customersEvents;
     customersEvents
-      .filter((customersEvents) => Number(customersEvents.stat) !== 90)
+      .filter((customer) => Number(customer.stat) === 1)
       .sort((a, b) => (a.name || "").localeCompare(b.name || ""))
       .forEach((customersEvents) => {
         const option = document.createElement("option");
@@ -133,15 +134,21 @@ function renderEvents(events) {
     ${
       isAdmin
         ? `
-                <div class="event-actions">
 
-                    <button
-                        class="small"
-                        onclick="openEventEdit(${ev.id})"
-                        aria-label="Bearbeiten"
-                        title="Bearbeiten">
-                        <i class="fa-solid fa-pen"></i>
-                    </button>
+                    ${
+                      Number(ev.stat) !== 95
+                        ? `
+                            <button
+                                class="small"
+                                onclick="openEventEdit(${ev.id})"
+                                aria-label="Bearbeiten"
+                                title="Bearbeiten">
+                                <i class="fa-solid fa-pen"></i>
+                            </button>
+                          `
+                        : ""
+                    }
+
 
                     ${
                       Number(ev.stat) === 10
@@ -199,27 +206,45 @@ function renderEvents(events) {
             <td>${formatDateDE(ev.start)}</td>
             <td>${formatDateDE(ev.ende)}</td>
 
+${
+  isAdmin
+    ? `
+        <td class="event-actions">
+
+
+${
+  Number(ev.stat) !== 95
+    ? `
+        <button
+            class="small"
+            onclick="openEventEdit(${ev.id})"
+            aria-label="Bearbeiten"
+            title="Bearbeiten">
+            <i class="fa-solid fa-pen"></i>
+        </button>
+      `
+    : ""
+}
+
             ${
-              isAdmin
+              Number(ev.stat) === 10
                 ? `
-                        <td class="event-actions">
-
-                            ${
-                              isAdmin && Number(ev.stat) === 10
-                                ? `
-                                        <button
-                                            class="small"
-                                            onclick="deleteEvent(${ev.id})">
-                                            🗑️
-                                        </button>
-                                    `
-                                : ""
-                            }
-
-                        </td>
-                    `
+                    <button
+                        class="small"
+                        onclick="deleteEvent(${ev.id})"
+                        aria-label="Löschen"
+                        title="Löschen">
+                        <i class="fa-solid fa-trash"></i>
+                    </button>
+                `
                 : ""
             }
+
+        </td>
+    `
+    : ""
+}
+
         `;
 
     // Ganze Zeile als Bearbeiten klickbar
@@ -397,17 +422,16 @@ function setupEditMode() {
   document.getElementById("start").value = toDateInputValue(event.start);
 
   document.getElementById("ende").value = toDateInputValue(event.ende);
+if (eventIsClosed) {
+  document.getElementById("name").disabled = true;
+  document.getElementById("stat").disabled = true;
+  document.getElementById("start").disabled = true;
+  document.getElementById("ende").disabled = true;
 
-  if (eventIsClosed) {
-    document.getElementById("name").disabled = true;
-    document.getElementById("stat").disabled = true;
-    document.getElementById("start").disabled = true;
-    document.getElementById("ende").disabled = true;
-
-    if (customerSelect) {
-      customerSelect.disabled = false;
-    }
+  if (customerSelect) {
+    customerSelect.disabled = Number(event.stat) === 95;
   }
+}
 
   const startInput = document.getElementById("start");
 
@@ -567,19 +591,9 @@ function formatStatus(stat) {
   const s = Number(stat);
 
   if (s === 10) return '<span class="status-frei">aktiv</span>';
-  if (s === 20) return '<span class="status-verliehen">gestartet</span>';
-  if (s === 90) return '<span class="status-verliehen">abgeschlossen</span>';
+  if (s === 20) return '<span class="status-gestartet">gestartet</span>';
+  if (s === 90) return '<span class="status-abgeschlossen">abgeschlossen</span>';
+  if (s === 95) return '<span class="status-abgerechnet">abgerechnet</span>';
 
   return stat;
-}
-function getEventStatus(ev) {
-  if (isEventClosed(ev)) return "done";
-
-  const today = new Date();
-  const start = new Date(ev.start);
-  const end = new Date(ev.ende);
-
-  if (end < today) return "done"; // 🟢
-  if (start <= today) return "active"; // 🔵
-  return "upcoming"; // ⚪
 }

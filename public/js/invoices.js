@@ -23,6 +23,12 @@ async function initInvoicePage() {
     container.hidden = true;
   }
 
+  const positionsSection = document.getElementById("invoicePositionsSection");
+
+  if (positionsSection) {
+    positionsSection.hidden = false;
+  }
+
   await loadInvoiceEvents();
 
   const eventSelect = document.getElementById("invoiceEventSelect");
@@ -112,6 +118,12 @@ async function handleInvoiceEventChange(event) {
       container.hidden = true;
     }
 
+    const positionsSection = document.getElementById("invoicePositionsSection");
+
+    if (positionsSection) {
+      positionsSection.hidden = true;
+    }
+
     return;
   }
 
@@ -168,29 +180,53 @@ async function loadInvoiceForEvent(eventId) {
 
 function showCreateInvoice(eventId) {
   const container = document.getElementById("invoiceContainer");
+  const header = document.getElementById("invoiceHeader");
 
-  if (!container) {
+  if (!container || !header) {
     return;
   }
 
   container.hidden = false;
 
-  const header = document.getElementById("invoiceHeader");
+   // Keine Positionen anzeigen, solange keine Rechnung existiert
+  const positionsSection = document.getElementById("invoicePositionsSection");
+
+  if (positionsSection) {
+    positionsSection.hidden = true;
+  }
+
   const tbody = document.querySelector("#invoiceItemsTable tbody");
+  const cards = document.getElementById("invoiceItemCards");
   const totals = document.getElementById("invoiceTotals");
 
   if (tbody) {
     tbody.innerHTML = "";
   }
 
+  if (cards) {
+    cards.innerHTML = "";
+  }
+
   if (totals) {
     totals.innerHTML = "";
+    totals.hidden = true;
   }
 
-  if (!header) {
-    return;
+  const saveItemsButton = document.getElementById("saveInvoiceItemsBtn");
+  const addItemButton = document.getElementById("addInvoiceItemBtn");
+  const discountButton = document.getElementById("addInvoiceDiscountBtn");
+
+  if (saveItemsButton) {
+    saveItemsButton.hidden = true;
   }
 
+  if (addItemButton) {
+    addItemButton.hidden = true;
+  }
+
+  if (discountButton) {
+    discountButton.hidden = true;
+  }
   // -------------------------------------------------
   // Event suchen
   // -------------------------------------------------
@@ -199,16 +235,10 @@ function showCreateInvoice(eventId) {
     (item) => Number(item.id) === Number(eventId),
   );
 
-  // -------------------------------------------------
-  // Event nicht gefunden
-  // -------------------------------------------------
-
   if (!event) {
     header.innerHTML = `
       <div class="invoice-create-box">
-        <p>
-          Event konnte nicht gefunden werden.
-        </p>
+        <p>Event konnte nicht gefunden werden.</p>
       </div>
     `;
 
@@ -244,7 +274,7 @@ function showCreateInvoice(eventId) {
   }
 
   // -------------------------------------------------
-  // Kein Kunde vorhanden
+  // Kein Kunde
   // -------------------------------------------------
 
   if (!event.customer_id) {
@@ -272,7 +302,7 @@ function showCreateInvoice(eventId) {
   }
 
   // -------------------------------------------------
-  // Kunde vorhanden
+  // Rechnung kann erstellt werden
   // -------------------------------------------------
 
   header.innerHTML = `
@@ -375,6 +405,17 @@ function renderInvoice() {
 
   container.hidden = false;
 
+const positionsSection = document.getElementById("invoicePositionsSection");
+
+if (positionsSection) {
+  positionsSection.hidden = false;
+}
+  const totals = document.getElementById("invoiceTotals");
+
+  if (totals) {
+    totals.hidden = false;
+  }
+
   renderInvoiceHeader();
   renderInvoiceItems();
   renderInvoiceTotals();
@@ -386,38 +427,74 @@ function renderInvoice() {
 
 function renderInvoiceHeader() {
   const header = document.getElementById("invoiceHeader");
-  const status = document.getElementById("invoiceStatus");
-  let invoiceFields = document.getElementById("invoiceDataFields");
-  let customerFields = document.getElementById("invoiceCustomerFields");
 
-  if (!header || !status || !currentInvoice) {
+  if (!header || !currentInvoice) {
     return;
   }
 
-  // showCreateInvoice ersetzt den Inhalt des Headers durch den Erstellen-
-  // Button. Nach der erfolgreichen Erstellung wird das normale Layout wieder
-  // aufgebaut, bevor die Felder befüllt werden.
-  if (!invoiceFields || !customerFields) {
+  let status = document.getElementById("invoiceStatus");
+  let invoiceFields = document.getElementById("invoiceDataFields");
+  let customerFields = document.getElementById("invoiceCustomerFields");
+
+  // Nach "Rechnung erstellen" oder einem Wechsel von einem Event
+  // ohne Rechnung existiert der normale Rechnungskopf nicht mehr.
+  // Deshalb hier den vollständigen Kopf wieder aufbauen.
+  if (!status || !invoiceFields || !customerFields) {
     header.innerHTML = `
+      <div id="invoiceStatus"></div>
+
       <div class="invoice-info-card">
-        <div class="invoice-info-card-header"><h4>Rechnung</h4></div>
-        <div id="invoiceDataFields" class="invoice-info-fields"></div>
+        <div class="invoice-info-card-header">
+          <h4>Rechnung</h4>
+        </div>
+
+        <div
+          id="invoiceDataFields"
+          class="invoice-info-fields">
+        </div>
       </div>
+
       <div class="invoice-info-card">
-        <div class="invoice-info-card-header"><h4>Rechnungsempfänger</h4></div>
-        <div id="invoiceCustomerFields" class="invoice-info-fields"></div>
+        <div class="invoice-info-card-header">
+          <h4>Rechnungsempfänger</h4>
+        </div>
+
+        <div
+          id="invoiceCustomerFields"
+          class="invoice-info-fields">
+        </div>
       </div>
+
       <div class="invoice-header-actions">
-        <button type="button" id="saveInvoiceHeaderBtn" aria-label="Speichern" title="Speichern">
-          <i class="fa-solid fa-floppy-disk"></i> Speichern
+
+        <button
+          type="button"
+          id="saveInvoiceHeaderBtn"
+          aria-label="Speichern"
+          title="Speichern">
+          <i class="fa-solid fa-floppy-disk"></i>
+          Speichern
         </button>
-        <button type="button" id="finalizeInvoiceBtn" aria-label="Rechnung abschließen" title="Rechnung abschließen">
-          <i class="fa-solid fa-lock"></i> Abschließen
+
+        <button
+          type="button"
+          id="finalizeInvoiceBtn"
+          aria-label="Rechnung abschließen"
+          title="Rechnung abschließen">
+          <i class="fa-solid fa-lock"></i>
+          Abschließen
         </button>
-        <button type="button" id="createInvoicePdfBtn">PDF erstellen</button>
+
+        <button
+          type="button"
+          id="createInvoicePdfBtn">
+          PDF erstellen
+        </button>
+
       </div>
     `;
 
+    status = document.getElementById("invoiceStatus");
     invoiceFields = document.getElementById("invoiceDataFields");
     customerFields = document.getElementById("invoiceCustomerFields");
   }

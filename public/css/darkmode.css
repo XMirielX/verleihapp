@@ -30,7 +30,9 @@
         --status-free: #5fd35f;
         --status-rented: #ff6b6b;
         --status-missing: #ffb84d;
-        --status-gestartet: #c8ab4d;
+        --status-gestartet: #55a8ff;
+        --status-abgeschlossen: #ffb84d;
+        --status-abgerechnet: #ff6b6b;
         --status-inaktiv: #c01d1d;
 
         --text-secondary: #bfbfbf;
@@ -142,6 +144,12 @@
     }
    .status-gestartet {
         color: var(--status-gestartet);
+    }
+    .status-abgeschlossen {
+        color: var(--status-abgeschlossen);
+    }
+    .status-abgerechnet {
+        color: var(--status-abgerechnet);
     }
     .status-verliehen {
         color: var(--status-rented);

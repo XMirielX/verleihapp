@@ -286,7 +286,7 @@ router.get("/:event_id", async (req, res) => {
         SELECT
           mt.id as material_id,
           mt.name as pname,
-          mt.specification as spezification,
+          mt.specification AS specification,
           COUNT(DISTINCT p.id) as available,
           COALESCE(plan.planned, 0) as planned,
 

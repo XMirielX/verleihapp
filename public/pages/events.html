@@ -1,6 +1,6 @@
     <h2>Veranstaltungen</h2>
 
-    <input type="text" id="searchInput" placeholder="Suche nach Name oder Costumer">
+    <input type="text" id="searchInput" placeholder="Suche nach Veranstaltung oder Kunde..." oninput="searchEvents()" />
 
     <br><br>
 
@@ -14,6 +14,7 @@
                 <th onclick="sortEvents('costumer')">Kunde</th>
                 <th onclick="sortEvents('start')">Start</th>
                 <th onclick="sortEvents('ende')">Ende</th>
+                <th>Aktionen</th>
             </tr>
         </thead>
         <tbody></tbody> <!-- wichtig -->

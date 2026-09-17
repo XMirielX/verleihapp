@@ -238,11 +238,6 @@ router.get("/event/:eventId", async (req, res) => {
 // Rechnung aus Event erstellen
 // =====================================================
 
-// =====================================================
-// POST /api/invoices/event/:eventId/create
-// Rechnung aus Event erstellen
-// =====================================================
-
 router.post("/event/:eventId/create", async (req, res) => {
   const eventId = Number(req.params.eventId);
 
@@ -544,6 +539,19 @@ COALESCE(
     // -------------------------------------------------
     // Rechnung neu berechnen
     // -------------------------------------------------
+
+    // -------------------------------------------------
+    // Event als "Rechnung vorhanden" markieren
+    // -------------------------------------------------
+
+    await db.runAsync(
+      `
+    UPDATE event
+    SET stat = 95
+    WHERE id = ?
+  `,
+      [eventId],
+    );
 
     await recalculateInvoice(invoiceId);
 
@@ -984,7 +992,6 @@ function runAsync(sql, params = []) {
 // RECHNUNGSNUMMER
 // =====================================================
 
-
 async function generateInvoiceNumber() {
   const now = new Date();
 
@@ -999,7 +1006,7 @@ async function generateInvoiceNumber() {
         SELECT invoice_number
         FROM invoices
         WHERE invoice_number IS NOT NULL
-        `
+        `,
   );
 
   let nextNumber = 1;

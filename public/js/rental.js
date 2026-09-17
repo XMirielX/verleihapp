@@ -52,19 +52,19 @@ async function loadRentalPageEvents(selectId = null, page = null) {
       const option = document.createElement("option");
 
       option.value = event.id;
-      option.textContent = `${event.name} (${event.start} - ${event.ende})`;
+      option.textContent = `${getRentalEventStatusSymbol(event.stat)} ${event.name}`;
       option.selected = index === 0;
 
       select.appendChild(option);
     });
+
+    updateCloseButtonVisibility(events);
 
     select.onchange = () => {
       updateCloseButtonVisibility(events);
       loadRentals(Number(select.value));
     };
   }
-
-  updateCloseButtonVisibility(events);
 
   return events;
 }
@@ -76,6 +76,7 @@ function sortEventsSmart(events, page = null) {
           20: 1,
           10: 2,
           90: 3,
+          95: 4,
         }
       : {
           20: 1,
@@ -146,7 +147,19 @@ function renderRentalTable(materials) {
   });
 }
 
-
+function getRentalEventStatusSymbol(stat) {
+  switch (Number(stat)) {
+    case 10:
+      return "🟢";
+    case 20:
+      return "🔵";
+    case 90:
+    case 95:
+      return "⛔";
+    default:
+      return "⚪";
+  }
+}
 function renderRentalCards(materials) {
   const container = document.getElementById("rentalCardContainer");
   if (!container) return;
@@ -219,13 +232,12 @@ function renderRentalCards(materials) {
     `;
 
     card.addEventListener("click", () =>
-      toggleMaterialProducts(card, material)
+      toggleMaterialProducts(card, material),
     );
 
     container.appendChild(card);
   });
 }
-
 
 // -----------------------------
 // CACHE
@@ -529,42 +541,40 @@ async function handleRentalAction(url) {
     alert(err.message);
   }
 }
-// =====================================================
-// PLACEHOLDER CAMERA SCAN
-// =====================================================
-// 1. ZXing installieren oder per CDN einbinden
-// <script src="https://unpkg.com/@zxing/library@0.19.1/umd/index.min.js"></script>
 async function startCameraScan() {
-  return new Promise(async (resolve, reject) => {
-    try {
-      const codeReader = new ZXing.BrowserBarcodeReader();
-      const video = document.createElement("video");
-      video.setAttribute("playsinline", true); // iOS
+  if (!window.ZXing?.BrowserBarcodeReader) {
+    throw new Error("Barcode-Scanner konnte nicht geladen werden");
+  }
+  if (!navigator.mediaDevices?.getUserMedia) {
+    throw new Error("Kamera wird von diesem Browser nicht unterstützt");
+  }
 
-      const container = document.getElementById("cameraContainer");
-      container.style.display = "block"; // 🔹 Container sichtbar, wenn Kamera läuft
-      container.appendChild(video);
+  const codeReader = new ZXing.BrowserBarcodeReader();
+  const video = document.createElement("video");
+  video.setAttribute("playsinline", true);
 
-      const stream = await navigator.mediaDevices.getUserMedia({
-        video: { facingMode: "environment" },
-      });
-      video.srcObject = stream;
-      await video.play();
+  const container = document.getElementById("cameraContainer");
+  if (!container) throw new Error("Kamera-Container nicht gefunden");
 
-      const result = await codeReader.decodeOnceFromVideoDevice(
-        undefined,
-        video,
-      );
-      resolve(result.text);
+  container.replaceChildren(video);
+  container.style.display = "block";
 
-      // Kamera stoppen
-      stream.getTracks().forEach((track) => track.stop());
-      video.remove();
-      container.style.display = "none"; // 🔹 Container wieder ausblenden
-    } catch (err) {
-      reject(err);
-    }
-  });
+  let stream;
+  try {
+    stream = await navigator.mediaDevices.getUserMedia({
+      video: { facingMode: "environment" },
+    });
+    video.srcObject = stream;
+    await video.play();
+
+    const result = await codeReader.decodeOnceFromVideoElement(video);
+    return result.text;
+  } finally {
+    codeReader.reset();
+    stream?.getTracks().forEach((track) => track.stop());
+    video.remove();
+    container.style.display = "none";
+  }
 }
 function setupCloseEventButton() {
   const btn = document.getElementById("closeEventButton");
@@ -578,12 +588,7 @@ function setupCloseEventButton() {
       const event_id = parseInt(eventSelect.value, 10);
       if (!event_id) throw new Error("Kein Event ausgewählt");
 
-      if (
-        !confirm(
-          "Event wirklich abschließen?",
-        )
-      )
-        return;
+      if (!confirm("Event wirklich abschließen?")) return;
 
       const res = await fetch(`/api/events/${event_id}/close`, {
         method: "PUT",
@@ -595,8 +600,15 @@ function setupCloseEventButton() {
       alert(result.message);
 
       // 🔄 UI aktualisieren
-      loadRentalPageEvents("eventSelect");
-      loadRentals(event_id);
+      await loadRentalPageEvents("eventSelect", "rentals");
+
+      const selectedEvent = Number(
+        document.getElementById("eventSelect")?.value,
+      );
+
+      if (selectedEvent) {
+        await loadRentals(selectedEvent);
+      }
     } catch (err) {
       console.error(err);
       alert(err.message);
@@ -615,7 +627,7 @@ function updateCloseButtonVisibility(allEvents) {
   if (!event) return;
 
   // stat 90 = abgeschlossen
-  if (Number(event.stat) === 90) {
+  if (Number(event.stat) === 90 || Number(event.stat) === 95) {
     btn.style.display = "none";
   } else {
     btn.style.display = "inline-block";
