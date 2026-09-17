@@ -352,6 +352,7 @@ function renderCategoryTable() {
   }
 }
 
+
 function renderMaterialCards() {
   materialCardContainer.innerHTML = "";
 
@@ -359,19 +360,34 @@ function renderMaterialCards() {
     const cat = categories.find((c) => c.id == m.category_id);
 
     const card = document.createElement("div");
-    card.className = "card";
+    card.className = "card material-card";
 
     card.innerHTML = `
-      <div class="card-header">
-        <strong>${m.name}</strong>
+      <div class="material-card-header">
+        <div class="material-title">
+          <h3>${m.name || ""}</h3>
+        </div>
       </div>
 
-      <div class="card-body">
-        ${cat ? cat.name : "-"}
-        ${m.specification ? " / " + m.specification : ""}
+      <div class="material-card-body">
+
+        <div class="material-detail">
+          <span class="material-detail-label">Kategorie</span>
+          <span class="material-detail-value">
+            ${cat ? cat.name : "-"}
+          </span>
+        </div>
+
+        <div class="material-detail">
+          <span class="material-detail-label">Spezifikation</span>
+          <span class="material-detail-value">
+            ${m.specification || "-"}
+          </span>
+        </div>
+
       </div>
 
-      <div class="card-actions">
+      <div class="material-card-actions">
 
         <button
           type="button"
@@ -410,6 +426,7 @@ function renderMaterialCards() {
     materialCardContainer.appendChild(card);
   });
 }
+
 
 function renderCategoryCards() {
   categoryTableBody.innerHTML = "";

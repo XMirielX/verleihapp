@@ -1,5 +1,4 @@
 const pages = {
-
   // =====================================================
   // VERLEIH
   // =====================================================
@@ -18,6 +17,7 @@ const pages = {
     roles: ["admin", "user"],
     scripts: ["js/rental.js"],
     init: "initRentalPage",
+    mode: "rent",
   },
 
   rentalback: {
@@ -26,6 +26,7 @@ const pages = {
     roles: ["admin", "user"],
     scripts: ["js/rental.js"],
     init: "initRentalPage",
+    mode: "return",
   },
 
   rentalstorno: {
@@ -34,6 +35,7 @@ const pages = {
     roles: ["admin", "user"],
     scripts: ["js/rental.js"],
     init: "initRentalPage",
+    mode: "storno",
   },
 
   // =====================================================
@@ -129,9 +131,8 @@ const pages = {
     title: "Rechnungen",
     roles: ["admin"],
     scripts: ["js/invoices.js"],
-    init: "initInvoicePage"
-},
-
+    init: "initInvoicePage",
+  },
 
   // =====================================================
   // ADMIN
@@ -147,8 +148,6 @@ const pages = {
   // =====================================================
   // START
   // =====================================================
-
-
 };
 
 let currentUser = null;
@@ -252,7 +251,6 @@ function renderMenu() {
       closeMenu();
     });
   });
-  
 }
 document.addEventListener("DOMContentLoaded", async () => {
   const user = await checkLogin();
@@ -299,12 +297,15 @@ async function loadPage(page) {
     if (page === "home") {
       updateHomeQuickActions();
     }
-    // Seitentitel aktualisieren
+    // Seitentitel und Seitenmodus aktualisieren
+    const pageConfig = pages[page];
+
     const title = document.getElementById("pageTitle");
     if (title) {
-      const pageConfig = pages[page];
       title.textContent = pageConfig?.title || page;
     }
+
+    document.body.dataset.mode = pageConfig?.mode || "";
     // Seitenspezifisches JavaScript laden
     await loadPageScript(page);
     // aktive Menümarkierung
@@ -330,7 +331,8 @@ async function loadPageScript(page) {
         const script = document.createElement("script");
         script.src = `${src}?v=${Date.now()}`;
         script.onload = resolve;
-        script.onerror = () => reject(new Error(`Script konnte nicht geladen werden: ${src}`));
+        script.onerror = () =>
+          reject(new Error(`Script konnte nicht geladen werden: ${src}`));
         document.body.appendChild(script);
       });
     }
@@ -511,13 +513,13 @@ const permissions = {
     edit: ["admin"],
   },
 
-    distributions_plan: {
-    view: ["admin","user", "lese"],
+  distributions_plan: {
+    view: ["admin", "user", "lese"],
     edit: ["admin"],
   },
 
-    planning: {
-    view: ["admin","user", "lese"],
+  planning: {
+    view: ["admin", "user", "lese"],
     edit: ["admin"],
   },
 };

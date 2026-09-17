@@ -298,18 +298,19 @@ function renderCategories() {
   });
 }
 
+
 function renderPlanningCards() {
   const container = document.getElementById("planningCards");
   if (!container) return;
 
-container.innerHTML = "";
+  container.innerHTML = "";
 
-// Karten erst anzeigen, wenn ein Event ausgewählt wurde
-if (!selectedEvent) {
+  // Karten erst anzeigen, wenn ein Event ausgewählt wurde
+  if (!selectedEvent) {
     return;
-}
+  }
 
-const filtered = getFilteredMaterials();
+  const filtered = getFilteredMaterials();
 
   filtered.forEach((item) => {
     const card = document.createElement("div");
@@ -324,31 +325,44 @@ const filtered = getFilteredMaterials();
     }
 
     card.innerHTML = `
-            <div class="planning-card-title">
-                ${item.name}
-            </div>
+      <div class="planning-card-header">
+        <div class="planning-title">
+          <h3>${item.name || ""}</h3>
+        </div>
 
-            <div class="planning-card-sub">
-                ${item.category || "-"}
-                ${item.specification ? " / " + item.specification : ""}
-            </div>
+        <div class="planning-subtitle">
+          ${item.category || "-"}
+          ${item.specification ? " / " + item.specification : ""}
+        </div>
+      </div>
 
-            <div class="planning-row">
-                <span>Verfügbar</span>
-                <strong>${item.available}</strong>
-            </div>
+      <div class="planning-card-body">
 
-            <div class="planning-qty">
-                <label>Menge</label>
-            <input
-                type="number"
-                min="0"
-                value="${item.quantity}"
-                data-id="${item.id}"
-                class="planningQuantity"
-                ${!isPlanningEditable() ? "readonly" : ""}>
-                        </div>
-                    `;
+        <div class="planning-detail">
+          <span class="planning-detail-label">Verfügbar</span>
+          <span class="planning-detail-value">
+            ${item.available}
+          </span>
+        </div>
+
+      </div>
+
+      <div class="planning-quantity-row">
+        <label for="planningQuantity-${item.id}">
+          Menge
+        </label>
+
+        <input
+          id="planningQuantity-${item.id}"
+          type="number"
+          min="0"
+          value="${item.quantity}"
+          data-id="${item.id}"
+          class="planningQuantity"
+          ${!isPlanningEditable() ? "readonly" : ""}>
+      </div>
+    `;
+
     container.appendChild(card);
   });
 }

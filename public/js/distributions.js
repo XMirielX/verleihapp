@@ -137,34 +137,138 @@ function renderDistributionCards() {
       container.insertAdjacentHTML(
         "beforeend",
         `
-                <div class="distribution-card">
-                    <div class="distribution-title">${product?.bez ?? "-"}</div>
+          <div class="distribution-card">
 
-                    <div><strong>Eingang:</strong> ${item.input || "-"}</div>
-                    <div><strong>Kabel:</strong> ${item.cable || "-"}</div>
+            <div class="distribution-card-header">
+              <div class="distribution-title">
+                <h3>${product?.bez ?? "-"}</h3>
+              </div>
+            </div>
 
-                    <div class="output-grid">
-                        ${item.schuko ? `<div>Schuko: ${item.schuko}</div>` : ""}
-                        ${item.cee16 ? `<div>CEE16: ${item.cee16}</div>` : ""}
-                        ${item.cee32 ? `<div>CEE32: ${item.cee32}</div>` : ""}
-                        ${item.cee63 ? `<div>CEE63: ${item.cee63}</div>` : ""}
-                        ${item.cee125 ? `<div>CEE125: ${item.cee125}</div>` : ""}
+            <div class="distribution-card-body">
+
+              <div class="distribution-detail">
+                <span class="distribution-detail-label">Eingang</span>
+                <span class="distribution-detail-value">
+                  ${item.input || "-"}
+                </span>
+              </div>
+
+              <div class="distribution-detail">
+                <span class="distribution-detail-label">Kabel</span>
+                <span class="distribution-detail-value">
+                  ${item.cable || "-"}
+                </span>
+              </div>
+
+              ${
+                item.schuko ||
+                item.cee16 ||
+                item.cee32 ||
+                item.cee63 ||
+                item.cee125
+                  ? `
+                    <div class="distribution-output-title">
+                      Ausgänge
                     </div>
-                    <div style="margin-top:10px">
-                        <button class="small" onclick="openDistributionImages(${item.id})">
-                            📷 Bilder
-                        </button>
 
-                        <button class="small" onclick="editDistribution(${item.id})" aria-label="Bearbeiten" title="Bearbeiten">
-                            <i class="fa-solid fa-pen"></i>
-                        </button>
+                    <div class="distribution-output-grid">
 
-                        <button class="small" onclick="deleteDistribution(${item.id})" aria-label="Löschen" title="Löschen">
-                            <i class="fa-solid fa-trash"></i>
-                        </button>
+                      ${
+                        item.schuko
+                          ? `
+                            <div>
+                              <small>Schuko</small>
+                              <strong>${item.schuko}</strong>
+                            </div>
+                          `
+                          : ""
+                      }
+
+                      ${
+                        item.cee16
+                          ? `
+                            <div>
+                              <small>CEE16</small>
+                              <strong>${item.cee16}</strong>
+                            </div>
+                          `
+                          : ""
+                      }
+
+                      ${
+                        item.cee32
+                          ? `
+                            <div>
+                              <small>CEE32</small>
+                              <strong>${item.cee32}</strong>
+                            </div>
+                          `
+                          : ""
+                      }
+
+                      ${
+                        item.cee63
+                          ? `
+                            <div>
+                              <small>CEE63</small>
+                              <strong>${item.cee63}</strong>
+                            </div>
+                          `
+                          : ""
+                      }
+
+                      ${
+                        item.cee125
+                          ? `
+                            <div>
+                              <small>CEE125</small>
+                              <strong>${item.cee125}</strong>
+                            </div>
+                          `
+                          : ""
+                      }
+
                     </div>
-                </div>
-            `,
+                  `
+                  : ""
+              }
+
+            </div>
+
+            <div class="distribution-card-actions">
+
+              <button
+                type="button"
+                class="small"
+                onclick="openDistributionImages(${item.id})"
+                aria-label="Bilder"
+                title="Bilder">
+                📷
+              </button>
+
+              <button
+                type="button"
+                class="small"
+                onclick="editDistribution(${item.id})"
+                aria-label="Bearbeiten"
+                title="Bearbeiten">
+                <i class="fa-solid fa-pen"></i>
+              </button>
+
+              <button
+                type="button"
+                class="small"
+                onclick="deleteDistribution(${item.id})"
+                aria-label="Löschen"
+                title="Löschen">
+                <i class="fa-solid fa-trash"></i>
+              </button>
+
+            </div>
+
+          </div>
+        `,
       );
     });
 }

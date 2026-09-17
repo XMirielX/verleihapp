@@ -102,51 +102,66 @@ function renderEvents(events) {
       const item = document.createElement("div");
 
       item.className = "card event-card";
-      item.style.borderLeftWidth = "6px";
-      item.style.borderLeftColor = color;
 
       item.innerHTML = `
-                <div class="event-title">
-                    ${ev.name}
+    <div class="event-card-header">
+        <div class="event-title">
+            <h3>${ev.name || ""}</h3>
+            <span class="status-badge">${formatStatus(ev.stat)}</span>
+        </div>
+    </div>
+
+    <div class="event-card-body">
+
+        <div class="event-detail">
+            <span class="event-detail-label">Kunde</span>
+            <span class="event-detail-value">${ev.customer_name || "-"}</span>
+        </div>
+
+        <div class="event-detail">
+            <span class="event-detail-label">Beginn</span>
+            <span class="event-detail-value">${formatDateDE(ev.start)}</span>
+        </div>
+
+        <div class="event-detail">
+            <span class="event-detail-label">Ende</span>
+            <span class="event-detail-value">${formatDateDE(ev.ende)}</span>
+        </div>
+
+    </div>
+
+    ${
+      isAdmin
+        ? `
+                <div class="event-actions">
+
+                    <button
+                        class="small"
+                        onclick="openEventEdit(${ev.id})"
+                        aria-label="Bearbeiten"
+                        title="Bearbeiten">
+                        <i class="fa-solid fa-pen"></i>
+                    </button>
+
+                    ${
+                      Number(ev.stat) === 10
+                        ? `
+                                <button
+                                    class="small"
+                                    onclick="deleteEvent(${ev.id})"
+                                    aria-label="Löschen"
+                                    title="Löschen">
+                                    <i class="fa-solid fa-trash"></i>
+                                </button>
+                            `
+                        : ""
+                    }
+
                 </div>
-
-                <div class="event-sub">
-                    ${ev.customer_name || "-"}<br>
-                    ${formatDateDE(ev.start)} – ${formatDateDE(ev.ende)}
-                </div>
-
-                ${
-                  isAdmin
-                    ? `
-                            <div class="event-actions">
-
-<button
-    class="small"
-    onclick="openEventEdit(${ev.id})"
-    aria-label="Bearbeiten"
-    title="Bearbeiten">
-    <i class="fa-solid fa-pen"></i>
-</button>
-
-                                ${
-                                  isAdmin && Number(ev.stat) === 10
-                                    ? `
-                                            <button
-                                                class="small"
-                                                onclick="deleteEvent(${ev.id})"
-                                                aria-label="Löschen"
-                                                title="Löschen">
-                                                <i class="fa-solid fa-trash"></i>
-                                            </button>
-                                        `
-                                    : ""
-                                }
-
-                            </div>
-                        `
-                    : ""
-                }
-            `;
+            `
+        : ""
+    }
+`;
 
       // Ganze Karte als Bearbeiten klickbar
       if (isAdmin) {
@@ -384,15 +399,15 @@ function setupEditMode() {
   document.getElementById("ende").value = toDateInputValue(event.ende);
 
   if (eventIsClosed) {
-  document.getElementById("name").disabled = true;
-  document.getElementById("stat").disabled = true;
-  document.getElementById("start").disabled = true;
-  document.getElementById("ende").disabled = true;
+    document.getElementById("name").disabled = true;
+    document.getElementById("stat").disabled = true;
+    document.getElementById("start").disabled = true;
+    document.getElementById("ende").disabled = true;
 
-  if (customerSelect) {
-    customerSelect.disabled = false;
+    if (customerSelect) {
+      customerSelect.disabled = false;
+    }
   }
-}
 
   const startInput = document.getElementById("start");
 

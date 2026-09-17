@@ -146,6 +146,7 @@ function renderRentalTable(materials) {
   });
 }
 
+
 function renderRentalCards(materials) {
   const container = document.getElementById("rentalCardContainer");
   if (!container) return;
@@ -154,30 +155,76 @@ function renderRentalCards(materials) {
 
   materials.forEach((material) => {
     let scanIcon = "⚪";
-    if (material.scanned === material.planned && material.planned > 0)
+
+    if (material.scanned === material.planned && material.planned > 0) {
       scanIcon = "🟢";
-    else if (material.scanned > material.planned) scanIcon = "🔴";
-    else if (material.scanned > 0) scanIcon = "🟡";
+    } else if (material.scanned > material.planned) {
+      scanIcon = "🔴";
+    } else if (material.scanned > 0) {
+      scanIcon = "🟡";
+    }
 
     const card = document.createElement("div");
-    card.className = "card";
+
+    card.className = "card rental-card";
     card.dataset.materialId = material.material_id;
     card.style.cursor = "pointer";
+
     card.innerHTML = `
-      <div class="card-header"><strong>${material.pname}</strong><br><small>${material.specification || "-"}</small></div>
-      <div class="card-body">
-        <div class="status-row"><span>🟢 Vorhanden</span><strong>${material.available}</strong></div>
-        <div class="status-row"><span>🔵 Geplant</span><strong>${material.planned}</strong></div>
-        <div class="status-row"><span>${scanIcon} Ausgeliehen</span><strong>${material.scanned}</strong></div>
+      <div class="rental-card-header">
+        <div class="rental-title">
+          <h3>${material.pname || ""}</h3>
+        </div>
+
+        <div class="rental-subtitle">
+          ${material.specification || "-"}
+        </div>
+      </div>
+
+      <div class="rental-card-body">
+
+        <div class="rental-detail">
+          <span class="rental-detail-label">Vorhanden</span>
+          <span class="rental-detail-value">
+            <span class="rental-status-icon">🟢</span>
+            ${material.available}
+          </span>
+        </div>
+
+        <div class="rental-detail">
+          <span class="rental-detail-label">Geplant</span>
+          <span class="rental-detail-value">
+            <span class="rental-status-icon">🔵</span>
+            ${material.planned}
+          </span>
+        </div>
+
+        <div class="rental-detail">
+          <span class="rental-detail-label">Ausgeliehen</span>
+          <span class="rental-detail-value">
+            <span class="rental-status-icon">${scanIcon}</span>
+            ${material.scanned}
+          </span>
+        </div>
+
+        <div class="rental-detail">
+          <span class="rental-detail-label">Zurückgegeben</span>
+          <span class="rental-detail-value">
+            <span class="rental-status-icon">↩️</span>
+            ${material.returned}
+          </span>
+        </div>
+
       </div>
     `;
+
     card.addEventListener("click", () =>
-      toggleMaterialProducts(card, material),
+      toggleMaterialProducts(card, material)
     );
+
     container.appendChild(card);
   });
 }
-
 
 
 // -----------------------------

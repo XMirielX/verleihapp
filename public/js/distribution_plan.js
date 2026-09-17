@@ -251,6 +251,7 @@ function renderDistributionTable() {
     `;
   });
 }
+
 function renderDistributionCards() {
   const container = document.getElementById("distributionCards");
   if (!container) return;
@@ -266,91 +267,109 @@ function renderDistributionCards() {
       "distribution-card " + (item.planned ? "planned" : "unplanned");
 
     card.innerHTML = `
-      <div class="distribution-header">
+      <div class="distribution-card-header">
 
-        <strong>${item.product_name}</strong>
+        <div class="distribution-title">
+          <h3>${item.product_name || ""}</h3>
 
-        <button
-          class="small image-button"
-          onclick="openDistributionImages(${item.id}, true)">
-          📷
-        </button>
+          <div class="distribution-header-actions">
 
-        <label class="switch">
-          <input
-            type="checkbox"
-            class="planned"
-            data-id="${item.id}"
-            ${item.planned ? "checked" : ""}
-            ${!editable ? "disabled" : ""}
-          >
+            <button
+              type="button"
+              class="small image-button"
+              onclick="openDistributionImages(${item.id}, true)"
+              aria-label="Bilder"
+              title="Bilder">
+              📷
+            </button>
+
+            <label class="switch">
+              <input
+                type="checkbox"
+                class="planned"
+                data-id="${item.id}"
+                ${item.planned ? "checked" : ""}
+                ${!editable ? "disabled" : ""}
+              >
+            </label>
+
+          </div>
+        </div>
+
+      </div>
+
+      <div class="distribution-card-body">
+
+        <div class="distribution-detail">
+          <span class="distribution-detail-label">Eingang</span>
+          <span class="distribution-detail-value">
+            ${item.input || "-"}
+          </span>
+        </div>
+
+        <div class="distribution-detail">
+          <span class="distribution-detail-label">Kabel</span>
+          <span class="distribution-detail-value">
+            ${item.cable || "-"}
+          </span>
+        </div>
+
+        <div class="distribution-output-title">
+          Ausgänge
+        </div>
+
+        <div class="distribution-output-grid">
+
+          <div>
+            <small>Schuko</small>
+            <strong>${item.schuko || 0}</strong>
+          </div>
+
+          <div>
+            <small>CEE16</small>
+            <strong>${item.cee16 || 0}</strong>
+          </div>
+
+          <div>
+            <small>CEE32</small>
+            <strong>${item.cee32 || 0}</strong>
+          </div>
+
+          <div>
+            <small>CEE63</small>
+            <strong>${item.cee63 || 0}</strong>
+          </div>
+
+          <div>
+            <small>CEE125</small>
+            <strong>${item.cee125 || 0}</strong>
+          </div>
+
+        </div>
+
+      </div>
+
+      <div class="distribution-location">
+        <label for="distributionLocation-${item.id}">
+          Ort
         </label>
 
-      </div>
-
-      <div class="distribution-info">
-
-        <div>
-          <small>Eingang</small>
-          <strong>${item.input || "-"}</strong>
-        </div>
-
-        <div>
-          <small>Kabel</small>
-          <strong>${item.cable || "-"}</strong>
-        </div>
-
-      </div>
-
-      <div class="output-title">
-        Ausgänge
-      </div>
-
-      <div class="output-grid">
-
-        <div>
-          <small>Schuko</small>
-          <strong>${item.schuko || 0}</strong>
-        </div>
-
-        <div>
-          <small>CEE16</small>
-          <strong>${item.cee16 || 0}</strong>
-        </div>
-
-        <div>
-          <small>CEE32</small>
-          <strong>${item.cee32 || 0}</strong>
-        </div>
-
-        <div>
-          <small>CEE63</small>
-          <strong>${item.cee63 || 0}</strong>
-        </div>
-
-        <div>
-          <small>CEE125</small>
-          <strong>${item.cee125 || 0}</strong>
-        </div>
-
-      </div>
-
-      <label class="location-label">
-        Ort
-
         <input
+          id="distributionLocation-${item.id}"
           type="text"
           class="location"
           data-id="${item.id}"
           value="${item.location || ""}"
           ${!editable ? "disabled" : ""}
         >
-      </label>
+      </div>
     `;
 
     container.appendChild(card);
   });
 }
+
+
 
 async function transferToMaterialPlan() {
   const eventId = document.getElementById("event_id").value;

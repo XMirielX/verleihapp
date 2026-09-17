@@ -1,695 +1,171 @@
-#productTableContainer {
-    display:flex;
-    flex-direction:column;
-    gap:var(--space-md);
-}
+/* Page-specific styles. Mobile list cards are defined exclusively below. */
 
+/* Material prices dialog */
+#priceDialog { width: 90%; min-width: 320px; max-width: 500px; padding: 1.5rem; color: var(--text); background: var(--card-bg); border: 1px solid var(--border); border-radius: var(--radius); }
+#priceDialog::backdrop { background: rgba(0, 0, 0, .55); }
+.material-price-row { display: flex; align-items: center; justify-content: space-between; gap: 1rem; padding: .65rem 0; border-bottom: 1px solid var(--border); }
+.material-price-row:last-child { border-bottom: 0; }
+.material-price-name { flex: 1; font-weight: 600; }
+.material-price-input { display: flex; align-items: center; gap: .35rem; }
+.material-price-field { box-sizing: border-box; width: 90px; }
+#priceDialog .dialog-actions { display: flex; justify-content: flex-end; gap: .5rem; margin-top: 1rem; }
 
-.product-card .product-title {
-    font-weight:bold;
-    font-size:var(--font-large);
-    margin-bottom:var(--space-xs);
-}
+/* Invoice */
+.invoice-header-layout { display: grid; grid-template-columns: 1fr 1.4fr; gap: 1rem; }
+.invoice-info-card { padding: 1rem; background: var(--card-bg); border: 1px solid var(--border); border-radius: var(--radius); }
+.invoice-info-card-header { margin-bottom: 1rem; padding-bottom: .6rem; border-bottom: 1px solid var(--border); }
+.invoice-info-card-header h4 { margin: 0; font-size: 1rem; font-weight: 700; }
+.invoice-info-fields { display: flex; flex-direction: column; gap: .65rem; }
+.invoice-info-fields .form-group { margin: 0; }
+.invoice-info-fields label { display: block; margin-bottom: .25rem; }
+.invoice-address-row { display: grid; grid-template-columns: 110px 1fr; gap: .6rem; }
+.invoice-address-row .form-group { min-width: 0; }
+.invoice-header-actions { display: flex; justify-content: flex-start; margin-top: 1rem; }
 
+/* This is a desktop form grid, not a mobile card. */
+.output-grid { display: grid; grid-template-columns: repeat(5, minmax(100px, 1fr)); gap: 15px; }
 
-.product-card .product-sub {
-    font-size:var(--font-small);
-    color:var(--text-secondary);
-    margin-bottom:var(--space-sm);
-}
-
-
-.product-card .product-actions {
-    margin-top:var(--space-md);
-}
-
-.event-card .event-title {
-    font-weight:bold;
-    font-size:var(--font-large);
-    margin-bottom:var(--space-xs);
-}
-
-
-.event-card .event-sub {
-    font-size:var(--font-normal);
-    color:var(--text-secondary);
-}
-
-
-.event-card .event-actions button {
-    margin-right:var(--space-xs);
-}
-
-
-.user-card p {
-    margin:var(--space-xs) 0;
-}
-
-
-.user-card button {
-    margin-top:var(--space-xs);
-}
-
-#rentalCardContainer {
-    display:none;
-}
-
-
-.rental-card .rental-status {
-    display:flex;
-    justify-content:space-between;
-    padding:var(--space-sm) 0;
-}
-.product-returned {
-  color: #d3cececb;
-  background: #f0f0f037;
-  text-decoration: none;
-  border-radius: 6px;
-  padding: 4px 8px;
-}
-
-.rental-card .status-badge {
-    color:white;
-    padding:var(--space-xs) var(--space-sm);
-    border-radius:var(--radius-sm);
-    font-size:var(--font-small);
-    font-weight:bold;
-}
-
-
-#materialCardContainer {
-    display:none;
-}
-
-
-.material-card .material-title {
-    font-size:var(--font-large);
-    font-weight:bold;
-    margin-bottom:var(--space-sm);
-}
-
-
-.material-card .material-sub {
-    font-size:var(--font-normal);
-    color:var(--text-secondary);
-}
-
-#planningCards {
-    display:none;
-}
-
-
-.planning-card {
-    background:var(--card-bg);
-    color:var(--text);
-
-    border:1px solid var(--border);
-    border-radius:var(--radius-md);
-
-    padding:var(--space-md);
-    margin-bottom:var(--space-md);
-
-    box-shadow:0 2px 5px rgba(0,0,0,0.15);
-}
-
-
-.planning-card.warning {
-    border:2px solid #d32f2f;
-}
-
-
-.planning-card-title {
-    font-weight:bold;
-    font-size:1.1rem;
-    margin-bottom:10px;
-}
-
-
-.planning-row {
-    display:flex;
-    justify-content:space-between;
-    padding:5px 0;
-}
-
-
-.planning-qty input {
-    width:100%;
-    padding:8px;
-}
-
-
-#distributionCards {
-    display:none;
-}
-
-
-.distribution-card {
-    position:relative;
-
-    background:var(--card-bg);
-    color:var(--text);
-
-    border:1px solid var(--border);
-    border-left:8px solid #777;
-
-    border-radius:var(--radius-md);
-
-    padding:var(--space-md);
-
-    box-shadow:0 2px 6px var(--card-shadow);
-}
-
-
-.distribution-card.planned {
-    border-left-color:#00a000;
-}
-
-
-.distribution-card.unplanned {
-    border-left-color:#777;
-}
-
-
-.distribution-header {
-    display:flex;
-    align-items:center;
-    gap:var(--space-sm);
-}
-
-
-.distribution-header strong {
-    flex:1;
-    font-size:var(--font-large);
-}
-
-
-.distribution-info {
-    display:grid;
-    grid-template-columns:1fr 1fr;
-    gap:var(--space-sm);
-}
-
-
-.output-grid {
-    display: grid;
-    grid-template-columns: repeat(5, minmax(100px, 1fr));
-    gap: 15px;
-}
-
-
-#planningCards,
-#rentalCardContainer,
+/* The event list has no .mobile-only class in its markup, so all mobile-card
+   containers are explicitly hidden outside the breakpoint. */
+#productTableContainer,
+#eventTableContainer,
 #materialCardContainer,
-#distributionCards 
-{
-    display: none;
-}
-
-/* =====================================================
-   KUNDEN – MOBILE CARDS
-   ===================================================== */
-
-.customer-card {
-    position: relative;
-    overflow: hidden;
-    padding: 0;
-}
-
-/* ---------------------------------
-   Header
-   --------------------------------- */
-
-.customer-card-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 12px;
-
-    padding: 16px 18px;
-
-    border-bottom: 1px solid var(--border);
-}
-
-.customer-title {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 12px;
-
-    width: 100%;
-}
-
-.customer-title h3 {
-    margin: 0;
-
-    font-size: 1.05rem;
-    font-weight: 600;
-
-    color: var(--text);
-
-    line-height: 1.3;
-}
-
-
-/* ---------------------------------
-   Status
-   --------------------------------- */
-
-.customer-card .status-badge {
-    flex-shrink: 0;
-
-    padding: 4px 9px;
-
-    font-size: 0.75rem;
-    font-weight: 600;
-
-    border-radius: 999px;
-}
-
-
-/* ---------------------------------
-   Inhalt
-   --------------------------------- */
-
-.customer-card-body {
-    display: flex;
-    flex-direction: column;
-
-    padding: 4px 18px 10px;
-}
-
-.customer-detail {
-    display: flex;
-    align-items: flex-start;
-
-    gap: 16px;
-
-    padding: 11px 0;
-
-    border-bottom: 1px solid var(--border);
-}
-
-.customer-detail:last-child {
-    border-bottom: none;
-}
-
-.customer-detail-label {
-    flex: 0 0 95px;
-
-    font-size: 0.76rem;
-    font-weight: 600;
-
-    color: var(--text-muted, #777);
-    text-transform: uppercase;
-    letter-spacing: 0.03em;
-}
-
-.customer-detail-value {
-    flex: 1;
-
-    min-width: 0;
-
-    font-size: 0.9rem;
-    line-height: 1.45;
-
-    color: var(--text);
-
-    overflow-wrap: anywhere;
-}
-
-a.customer-detail-value {
-    text-decoration: none;
-}
-
-a.customer-detail-value:hover {
-    text-decoration: underline;
-}
-
-
-/* ---------------------------------
-   Preiskategorie
-   --------------------------------- */
-
-.price-category-badge {
-    display: inline-flex;
-    align-items: center;
-
-    width: fit-content;
-
-    padding: 4px 9px;
-
-    border-radius: 6px;
-
-    background: var(--background);
-    border: 1px solid var(--border);
-
-    font-size: 0.8rem;
-    font-weight: 500;
-
-    color: var(--text);
-}
-
-
-/* ---------------------------------
-   Aktionen
-   --------------------------------- */
-
-.customer-card .card-actions {
-    display: flex;
-    gap: 8px;
-
-    padding: 13px 18px 16px;
-
-    border-top: 1px solid var(--border);
-}
-
-.customer-card .card-actions .btn {
-    flex: 1;
-
-    min-height: 38px;
-
-    padding: 7px 12px;
-
-    font-size: 0.85rem;
-}
-
-
-/* ---------------------------------
-   Mobile
-   --------------------------------- */
+#rentalCardContainer,
+#planningCards,
+#distributionCards,
+#userCardContainer,
+#customerCards,
+#categoryCardContainer { display: none; }
 
 @media (max-width: 768px) {
-
-    .customer-card {
-        margin-bottom: 12px;
-    }
-
-    .customer-card-header {
-        padding: 14px 15px;
-    }
-
-    .customer-title {
-        gap: 8px;
-    }
-
-    .customer-title h3 {
-        font-size: 1rem;
-    }
-
-    .customer-card-body {
-        padding: 3px 15px 8px;
-    }
-
-    .customer-detail {
-        gap: 10px;
-        padding: 10px 0;
-    }
-
-    .customer-detail-label {
-        flex-basis: 82px;
-        font-size: 0.7rem;
-    }
-
-    .customer-detail-value {
-        font-size: 0.86rem;
-    }
-
-    .customer-card .card-actions {
-        padding: 11px 15px 14px;
-    }
-/* =====================================================
-   MATERIAL PREISE DIALOG
-===================================================== */
-
-#priceDialog {
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    padding: 1.5rem;
-    background-color: var(--card-bg);
-    color: var(--text);
-    min-width: 320px;
-    max-width: 500px;
-    width: 90%;
-}
-
-#priceDialog::backdrop {
-    background: rgba(0, 0, 0, 0.55);
-}
-
-
-/* =====================
-   Preiszeilen
-===================== */
-
-.material-price-row {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 1rem;
-
-    padding: 0.65rem 0;
-    border-bottom: 1px solid var(--border);
-}
-
-.material-price-row:last-child {
-    border-bottom: none;
-}
-
-.material-price-name {
-    flex: 1;
-    font-weight: 600;
-}
-
-.material-price-input {
-    display: flex;
-    align-items: center;
-    gap: 0.35rem;
-}
-
-.material-price-field {
-    width: 90px;
-    box-sizing: border-box;
-}
-
-
-/* =====================
-   Dialog Buttons
-===================== */
-
-#priceDialog .dialog-actions {
-    display: flex;
-    justify-content: flex-end;
-    gap: 0.5rem;
-    margin-top: 1rem;
-}
-
-
-/* =====================
-   Mobile
-===================== */
-
-@media (max-width: 768px) {
-
-    #priceDialog {
-        min-width: unset;
-        width: calc(100% - 2rem);
-        max-width: none;
-        padding: 1rem;
-    }
-
-    .material-price-row {
-        gap: 0.5rem;
-    }
-
-    .material-price-field {
-        width: 80px;
-    }
-
-}
-}
-/* =====================================================
-   Rechnung – Rechnungsdaten
-===================================================== */
-
-.invoice-header-layout {
-    display: grid;
-    grid-template-columns: 1fr 1.4fr;
-    gap: 1rem;
-}
-
-/* ---------------------------------------------
-   Informationskarten
---------------------------------------------- */
-
-.invoice-info-card {
-    background: var(--card-bg);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    padding: 1rem;
-}
-
-.invoice-info-card-header {
-    margin-bottom: 1rem;
-    padding-bottom: 0.6rem;
-    border-bottom: 1px solid var(--border);
-}
-
-.invoice-info-card-header h4 {
-    margin: 0;
-    font-size: 1rem;
-    font-weight: 700;
-}
-
-/* ---------------------------------------------
-   Felder innerhalb der Karten
---------------------------------------------- */
-
-.invoice-info-fields {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 0.65rem;
-}
-
-.invoice-info-fields .form-group {
-    margin: 0;
-}
-
-.invoice-info-fields label {
-    display: block;
-    margin-bottom: 0.25rem;
-    font-size: 0.85rem;
-    font-weight: 600;
-}
-
-.invoice-info-fields input,
-.invoice-info-fields select {
-    width: 100%;
-    box-sizing: border-box;
-}
-
-/* PLZ + Ort */
-.invoice-address-row {
-    display: grid;
-    grid-template-columns: 110px 1fr;
-    gap: 0.6rem;
-}
-
-/* ---------------------------------------------
-   Speichern
---------------------------------------------- */
-
-.invoice-header-actions {
-    grid-column: 1 / -1;
-    display: flex;
-    justify-content: flex-end;
-    margin-top: 0.25rem;
-}
-/* =====================================================
-   Rechnung – Rechnungsdaten
-===================================================== */
-
-/* =====================================================
-   RECHNUNG – HEADER
-===================================================== */
-
-.invoice-header-layout {
-    display: grid;
-    grid-template-columns: 1fr 1.4fr;
-    gap: 1rem;
-}
-
-
-/* =====================================================
-   Rechnungs-Info-Karten
-===================================================== */
-
-.invoice-info-card {
-    background: var(--card-bg);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    padding: 1rem;
-}
-
-.invoice-info-card-header {
-    margin-bottom: 1rem;
-    padding-bottom: 0.6rem;
-    border-bottom: 1px solid var(--border);
-}
-
-.invoice-info-card-header h4 {
-    margin: 0;
-    font-size: 1rem;
-    font-weight: 700;
-}
-
-
-/* =====================================================
-   Felder
-===================================================== */
-
-.invoice-info-fields {
-    display: flex;
-    flex-direction: column;
-    gap: 0.65rem;
-}
-
-.invoice-info-fields .form-group {
-    margin: 0;
-}
-
-.invoice-info-fields label {
-    display: block;
-    margin-bottom: 0.25rem;
-}
-
-
-/* =====================================================
-   PLZ + Ort
-===================================================== */
-
-.invoice-address-row {
-    display: grid;
-    grid-template-columns: 110px 1fr;
-    gap: 0.6rem;
-}
-
-.invoice-address-row .form-group {
-    min-width: 0;
-}
-
-
-/* =====================================================
-   Speichern
-===================================================== */
-
-.invoice-header-actions {
-    display: flex;
-    justify-content: flex-start;
-    margin-top: 1rem;
-}
-/* =====================================================
-   Rechnung – Mobile
-===================================================== */
-
-@media (max-width: 768px) {
-
-    .invoice-header-layout {
-        grid-template-columns: 1fr;
-    }
-
-    .invoice-info-card {
-        padding: 0.85rem;
-    }
-
-    .invoice-address-row {
-        grid-template-columns: 1fr 1fr;
-    }
-
-    .invoice-header-actions {
-        justify-content: stretch;
-    }
-
-    .invoice-header-actions button {
+    /* Mobile card containers */
+    #productTableContainer,
+    #eventTableContainer,
+    #materialCardContainer,
+    #rentalCardContainer,
+    #planningCards,
+    #distributionCards,
+    #userCardContainer,
+    #customerCards,
+    #categoryCardContainer { display: flex; flex-direction: column; gap: var(--space-md); }
+
+    #priceDialog { width: calc(100% - 2rem); min-width: 0; max-width: none; padding: 1rem; }
+    .material-price-row { gap: .5rem; }
+    .material-price-field { width: 80px; }
+    .invoice-header-layout { grid-template-columns: 1fr; }
+    .invoice-info-card { padding: .85rem; }
+    .invoice-address-row { grid-template-columns: 1fr 1fr; }
+    .invoice-header-actions, .invoice-header-actions button { width: 100%; }
+    .output-grid { grid-template-columns: 1fr; }
+
+    /* Shared mobile card shell */
+    .product-card, .event-card, .material-card, .rental-card,
+    .planning-card, .distribution-card, .customer-card, .user-card {
+        box-sizing: border-box;
         width: 100%;
+        padding: 0;
+        overflow: hidden;
+        color: var(--text);
+        background: var(--card-bg);
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        box-shadow: 0 2px 6px var(--card-shadow);
     }
+
+    .product-card-header, .event-card-header, .material-card-header,
+    .rental-card-header, .planning-card-header, .distribution-card-header,
+    .customer-card-header, .user-card-header { padding: 13px 14px; background: var(--background); border-bottom: 1px solid var(--border); }
+
+    .product-title, .event-title, .material-title, .rental-title,
+    .planning-title, .distribution-title, .customer-title { display: flex; align-items: center; gap: 8px; }
+    .product-title, .event-title, .distribution-title, .customer-title { justify-content: space-between; }
+    .product-title h3, .event-title h3, .material-title h3, .rental-title h3,
+    .planning-title h3, .distribution-title h3, .customer-title h3 {
+        min-width: 0;
+        margin: 0;
+        overflow: hidden;
+        color: var(--text);
+        font-size: 1rem;
+        font-weight: 600;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+    .user-card-header { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+    .user-card-header h3 { min-width: 0; margin: 0; overflow: hidden; color: var(--text); font-size: 1rem; font-weight: 600; text-overflow: ellipsis; white-space: nowrap; }
+    .user-role-badge { flex-shrink: 0; padding: 4px 9px; color: var(--text); background: var(--card-bg); border: 1px solid var(--border); border-radius: 999px; font-size: .72rem; font-weight: 600; }
+
+    .product-card-body, .event-card-body, .material-card-body,
+    .rental-card-body, .planning-card-body, .distribution-card-body,
+    .customer-card-body { padding: 3px 14px; }
+    .customer-card-body { display: flex; flex-direction: column; padding-bottom: 8px; }
+    .user-card-body { padding: 3px 14px; }
+
+    .product-detail, .event-detail, .material-detail, .customer-detail {
+        display: flex;
+        align-items: flex-start;
+        gap: 8px;
+        padding: 9px 0;
+        border-bottom: 1px solid var(--border);
+    }
+    .rental-detail, .planning-detail, .distribution-detail {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 8px;
+        padding: 9px 0;
+        border-bottom: 1px solid var(--border);
+    }
+    .user-detail { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 9px 0; }
+    .product-detail:last-child, .event-detail:last-child, .material-detail:last-child,
+    .rental-detail:last-child, .customer-detail:last-child, .distribution-detail:last-child { border-bottom: 0; }
+
+    .product-detail-label, .event-detail-label, .material-detail-label,
+    .customer-detail-label, .rental-detail-label, .planning-detail-label,
+    .distribution-detail-label, .user-detail-label, .planning-quantity-row label,
+    .distribution-location label, .distribution-output-title {
+        color: var(--text-muted, #777);
+        font-size: .68rem;
+        font-weight: 600;
+        letter-spacing: .03em;
+        text-transform: uppercase;
+    }
+    .product-detail-label, .event-detail-label, .material-detail-label,
+    .customer-detail-label { flex: 0 0 78px; }
+    .product-detail-value, .event-detail-value, .material-detail-value,
+    .customer-detail-value { flex: 1; min-width: 0; overflow-wrap: anywhere; color: var(--text); font-size: .84rem; line-height: 1.4; }
+    .rental-detail-value, .planning-detail-value, .distribution-detail-value { color: var(--text); font-size: .84rem; font-weight: 600; }
+    .user-detail-value { color: var(--text); font-size: .84rem; font-weight: 600; }
+    .rental-subtitle, .planning-subtitle { margin-top: 3px; color: var(--text-muted, #777); font-size: .74rem; }
+
+    .product-card .status-badge, .event-card .status-badge, .customer-card .status-badge { flex-shrink: 0; padding: 4px 9px; border-radius: 999px; font-size: .72rem; font-weight: 600; }
+    .product-card .product-actions, .event-card .event-actions,
+    .material-card-actions, .customer-card .card-actions, .distribution-card-actions,
+    .user-card-actions { display: flex; gap: 8px; padding: 10px 14px 13px; border-top: 1px solid var(--border); }
+    .product-card .product-actions .small, .event-card .event-actions .small,
+    .material-card-actions button, .customer-card .card-actions .btn,
+    .distribution-card-actions .small, .user-card-actions button { flex: 1; min-height: 38px; padding: 7px 10px; font-size: .84rem; }
+
+    .planning-card.warning { border-color: #d32f2f; }
+    .distribution-card.planned { border-left: 6px solid #00a000; }
+    .distribution-card.unplanned { border-left: 6px solid #777; }
+    .distribution-header-actions { display: flex; align-items: center; flex-shrink: 0; gap: 8px; }
+
+    .rental-card .product-details { padding: 0 14px; background: var(--background); border-top: 1px solid var(--border); }
+    .rental-card .product-details > div { padding: 9px 0; border-bottom: 1px solid var(--border); font-size: .82rem; }
+    .rental-card .product-details > div:last-child { border-bottom: 0; }
+    .rental-card .product-returned { color: var(--text-muted, #777); }
+
+    .planning-quantity-row, .distribution-location { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 10px 14px 13px; border-top: 1px solid var(--border); }
+    .planning-quantity-row input { box-sizing: border-box; width: 80px; min-height: 38px; font-size: .9rem; font-weight: 600; text-align: center; }
+    .distribution-output-title { padding: 10px 0 7px; }
+    .distribution-output-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 5px; padding-bottom: 9px; }
+    .distribution-output-grid > div { display: flex; flex-direction: column; align-items: center; gap: 3px; padding: 6px 2px; background: var(--background); border: 1px solid var(--border); border-radius: 6px; }
+    .distribution-output-grid small { color: var(--text-muted, #777); font-size: .6rem; }
+    .distribution-output-grid strong { color: var(--text); font-size: .82rem; }
+    .distribution-location label { flex: 0 0 55px; }
+    .distribution-location input { box-sizing: border-box; flex: 1; min-width: 0; min-height: 38px; }
+
+    .price-category-badge { display: inline-flex; align-items: center; width: fit-content; padding: 4px 8px; color: var(--text); background: var(--background); border: 1px solid var(--border); border-radius: 6px; font-size: .76rem; font-weight: 500; }
+    a.customer-detail-value { text-decoration: none; }
+    a.customer-detail-value:hover { text-decoration: underline; }
 }

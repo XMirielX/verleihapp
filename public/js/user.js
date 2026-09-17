@@ -97,11 +97,21 @@ async function loadUsers() {
                 const card = document.createElement("div");
                 card.classList.add("user-card");
                 card.innerHTML = `
-            <p><strong>Benutzername:</strong> ${user.username}</p>
-            <p><strong>Rolle:</strong> ${user.role}</p>
+            <div class="user-card-header">
+                <h3>${user.username}</h3>
+                <span class="user-role-badge">${user.role}</span>
+            </div>
+            <div class="user-card-body">
+                <div class="user-detail">
+                    <span class="user-detail-label">Rolle</span>
+                    <span class="user-detail-value">${user.role}</span>
+                </div>
+            </div>
+            <div class="user-card-actions">
             <button onclick="editUser(${user.id})" aria-label="Bearbeiten" title="Bearbeiten"><i class="fa-solid fa-pen"></i></button>
             <button onclick="deleteUser(${user.id})" aria-label="Löschen" title="Löschen"><i class="fa-solid fa-trash"></i></button>
-            <button onclick="resetPass(${user.id})">Passwort Reset</button>
+            <button class="small" onclick="resetPass(${user.id})">Passwort Reset</button>
+            </div>
         `;
                 cardContainer.appendChild(card);
             });

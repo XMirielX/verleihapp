@@ -105,8 +105,7 @@ function renderProducts(products) {
         buttons += `<button class="small" onclick="checkProduct(${product.id})">Check</button>`;
       }
 
-      item.style.borderLeftWidth = "6px";
-      item.style.borderLeftColor = statusColor;
+  
       if (canProduct("edit")) {
         item.title = "Produkt bearbeiten";
         item.addEventListener("click", (event) => {
@@ -116,12 +115,39 @@ function renderProducts(products) {
       const productSpec = getProductSpec(product);
 
       item.innerHTML = `
-                <div class="product-title">${product.bez || ""}</div>
-                <div class="product-sub">${categoryMap[product.category_id] || "-"}${productSpec ? " / " + productSpec : ""}</div>
-                <div class="product-info">Barcode: ${product.Code || "-"}</div>
-                <div class="product-info">Prüfung: ${formatDateDE(product.check_date)}</div>
-                ${buttons ? `<div class="product-actions">${buttons}</div>` : ""}
-            `;
+    <div class="product-card-header">
+        <div class="product-title">
+            <h3>${product.bez || ""}</h3>
+            <span class="status-badge">${formatStatus(product.stat)}</span>
+        </div>
+    </div>
+
+    <div class="product-card-body">
+
+        <div class="product-detail">
+            <span class="product-detail-label">Barcode</span>
+            <span class="product-detail-value">${product.Code || "-"}</span>
+        </div>
+
+        <div class="product-detail">
+            <span class="product-detail-label">Kategorie</span>
+            <span class="product-detail-value">${categoryMap[product.category_id] || "-"}</span>
+        </div>
+
+        <div class="product-detail">
+            <span class="product-detail-label">Material</span>
+            <span class="product-detail-value">${productSpec || "-"}</span>
+        </div>
+
+        <div class="product-detail">
+            <span class="product-detail-label">Prüfung</span>
+            <span class="product-detail-value">${formatDateDE(product.check_date)}</span>
+        </div>
+
+    </div>
+
+    ${buttons ? `<div class="product-actions">${buttons}</div>` : ""}
+`;
       container.appendChild(item);
     });
 
