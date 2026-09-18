@@ -28,7 +28,6 @@
 /* The event list has no .mobile-only class in its markup, so all mobile-card
    containers are explicitly hidden outside the breakpoint. */
 #productTableContainer,
-#eventTableContainer,
 #materialCardContainer,
 #rentalCardContainer,
 #planningCards,
@@ -40,7 +39,6 @@
 @media (max-width: 768px) {
     /* Mobile card containers */
     #productTableContainer,
-    #eventTableContainer,
     #materialCardContainer,
     #rentalCardContainer,
     #planningCards,
@@ -48,6 +46,8 @@
     #userCardContainer,
     #customerCards,
     #categoryCardContainer { display: flex; flex-direction: column; gap: var(--space-md); }
+
+    #eventTableContainer { display: flex; flex-direction: column; gap: var(--space-md); }
 
     #priceDialog { width: calc(100% - 2rem); min-width: 0; max-width: none; padding: 1rem; }
     .material-price-row { gap: .5rem; }

@@ -82,7 +82,7 @@ function renderEvents(events) {
   const table = document.getElementById("eventTable");
   const container = document.getElementById("eventTableContainer");
 
-  if (!table || !container) return;
+  if (!container) return;
 
   const isAdmin = user && user.role === "admin";
 
@@ -90,16 +90,10 @@ function renderEvents(events) {
   // MOBILE
   // =====================================================
   if (window.innerWidth <= 768) {
-    table.style.display = "none";
+    if (table) table.style.display = "none";
     container.innerHTML = "";
 
     events.forEach((ev) => {
-      const status = getEventStatus(ev);
-
-      let color = "#999";
-      if (status === "done") color = "green";
-      else if (status === "active") color = "#007bff";
-
       const item = document.createElement("div");
 
       item.className = "card event-card";
@@ -134,6 +128,7 @@ function renderEvents(events) {
     ${
       isAdmin
         ? `
+                <div class="event-actions">
 
                     ${
                       Number(ev.stat) !== 95
@@ -191,6 +186,7 @@ function renderEvents(events) {
   // DESKTOP
   // =====================================================
 
+  if (!table) return;
   table.style.display = "table";
 
   const tbody = table.querySelector("tbody");

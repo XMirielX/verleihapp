@@ -218,14 +218,20 @@ async function loadMaterialTypes() {
 
   select.innerHTML = '<option value="">-- Bitte waehlen --</option>';
 
-  materialTypes.forEach((mat) => {
+  [...materialTypes]
+    .sort((a, b) =>
+      (a.name || "").localeCompare(b.name || "", "de", {
+        sensitivity: "base",
+      }),
+    )
+    .forEach((mat) => {
     const option = document.createElement("option");
 
     option.value = mat.id;
     option.textContent = `${mat.category_name} - ${mat.name} ${mat.specification ?? ""}`;
 
     select.appendChild(option);
-  });
+    });
 }
 // =====================================================
 // 🔍 FILTER & SUCHE
