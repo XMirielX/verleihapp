@@ -272,6 +272,7 @@ function renderMaterials() {
     renderCategoryCards();
 }
 
+
 function renderMaterialTable() {
   materialTableBody.innerHTML = "";
 

@@ -12,7 +12,7 @@ router.get("/", async (req, res) => {
             SELECT mt.*, c.name as category_name
             FROM material_typ mt
             JOIN categories c ON c.id = mt.category_id
-            ORDER BY mt.id DESC
+            ORDER BY c.name COLLATE NOCASE ASC, mt.name COLLATE NOCASE ASC
         `);
 
         res.json(rows);
