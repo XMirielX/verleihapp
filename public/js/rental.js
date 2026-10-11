@@ -41,7 +41,7 @@ async function loadRentalPageEvents(selectId = null, page = null) {
   }
 
   // Status und anschließend Datum sortieren
-  events = sortEventsSmart(events, page);
+  events = sortEventsByStatus(events);
 
   const select = selectId && document.getElementById(selectId);
 
@@ -52,7 +52,7 @@ async function loadRentalPageEvents(selectId = null, page = null) {
       const option = document.createElement("option");
 
       option.value = event.id;
-      option.textContent = `${getRentalEventStatusSymbol(event.stat)} ${event.name}`;
+      option.textContent = `${getEventStatusSymbol(event.stat)} ${event.name}`;
       option.selected = index === 0;
 
       select.appendChild(option);
@@ -60,47 +60,14 @@ async function loadRentalPageEvents(selectId = null, page = null) {
 
     updateCloseButtonVisibility(events);
 
-    select.onchange = () => {
+    select.onchange = async () => {
       updateCloseButtonVisibility(events);
-      loadRentals(Number(select.value));
+      await loadRentals(Number(select.value));
+      focusBarcodeInput();
     };
   }
 
   return events;
-}
-
-function sortEventsSmart(events, page = null) {
-  const statusOrder =
-    page === "rentals"
-      ? {
-          20: 1,
-          10: 2,
-          90: 3,
-          95: 4,
-        }
-      : {
-          20: 1,
-          10: 2,
-        };
-
-  return events.sort((a, b) => {
-    const statusA = Number(a.stat);
-    const statusB = Number(b.stat);
-
-    // Zuerst nach Status
-    const orderA = statusOrder[statusA] ?? 99;
-    const orderB = statusOrder[statusB] ?? 99;
-
-    if (orderA !== orderB) {
-      return orderA - orderB;
-    }
-
-    // Innerhalb des Status nach Datum aufsteigend
-    const dateA = new Date(a.start);
-    const dateB = new Date(b.start);
-
-    return dateA - dateB;
-  });
 }
 
 async function loadRentals(eventId) {
@@ -118,7 +85,11 @@ async function loadRentals(eventId) {
     renderRentalCards(materials);
   } catch (err) {
     console.error(err);
-    alert(err.message);
+    if (document.getElementById("barcodeInput")) {
+      showRentalScanMessage(err.message, "error");
+    } else {
+      alert(err.message);
+    }
   }
 }
 
@@ -147,19 +118,6 @@ function renderRentalTable(materials) {
   });
 }
 
-function getRentalEventStatusSymbol(stat) {
-  switch (Number(stat)) {
-    case 10:
-      return "🟢";
-    case 20:
-      return "🔵";
-    case 90:
-    case 95:
-      return "⛔";
-    default:
-      return "⚪";
-  }
-}
 function renderRentalCards(materials) {
   const container = document.getElementById("rentalCardContainer");
   if (!container) return;
@@ -433,9 +391,22 @@ function setupCsvExportButton() {
 // =====================================================
 // BARcode SCANNER
 // =====================================================
+function focusBarcodeInput() {
+  document.getElementById("barcodeInput")?.focus({ preventScroll: true });
+}
+
+function showRentalScanMessage(message, type = "success") {
+  const result = document.getElementById("result");
+  if (!result) return;
+  result.className = `rental-scan-message rental-scan-message-${type}`;
+  result.textContent = message;
+}
+
 function setupBarcodeScanner() {
   const barcodeInput = document.getElementById("barcodeInput");
   if (!barcodeInput) return;
+
+  focusBarcodeInput();
 
   barcodeInput.addEventListener("keydown", (e) => {
     if (e.key === "Enter") {
@@ -455,10 +426,12 @@ function setupCameraButton() {
   btn.addEventListener("click", async () => {
     try {
       const scannedcode = await startCameraScan();
-      if (scannedcode) handleScan(scannedcode);
+      if (scannedcode) await handleScan(scannedcode);
     } catch (err) {
       console.error("Scan fehlgeschlagen:", err);
-      alert("Scan konnte nicht durchgeführt werden");
+      showRentalScanMessage(err.message || "Scan konnte nicht durchgeführt werden", "error");
+    } finally {
+      focusBarcodeInput();
     }
   });
 }
@@ -472,14 +445,11 @@ function handleScan(Code) {
 
   switch (mode) {
     case "rent":
-      handleRentalAction("/api/rentals");
-      break;
+      return handleRentalAction("/api/rentals");
     case "return":
-      handleRentalAction("/api/rentals/return");
-      break;
+      return handleRentalAction("/api/rentals/return");
     case "storno":
-      handleRentalAction("/api/rentals/storno");
-      break;
+      return handleRentalAction("/api/rentals/storno");
     default:
       console.warn("Unbekannter Modus:", mode);
   }
@@ -495,7 +465,7 @@ async function handleRentalAction(url) {
     const barcodeInput = document.getElementById("barcodeInput");
     const Code = barcodeInput ? barcodeInput.value.trim() : null;
     if (!Code) {
-      alert("Bitte Barcode eingeben oder scannen");
+      showRentalScanMessage("Bitte Barcode eingeben oder scannen", "error");
       return;
     }
 
@@ -503,6 +473,8 @@ async function handleRentalAction(url) {
       event_id,
       Codes: [Code], // <-- hier als Array
     };
+
+    if (barcodeInput) barcodeInput.value = "";
 
     const res = await fetch(url, {
       method: "POST",
@@ -524,21 +496,34 @@ async function handleRentalAction(url) {
       );
     }
     if (result.results && result.results.length > 0) {
-      const messages = result.results.map(
-        (r) =>
-          `${r.Code}: ${r.status}${r.product ? " (" + r.product + ")" : ""}`,
+      const actionLabels = {
+        "wird ausgeliehen": "wurde ausgeliehen",
+        "wird erneut ausgeliehen": "wurde erneut ausgeliehen",
+        "zurückgegeben": "wurde zurückgegeben",
+        "storniert": "wurde storniert",
+        "bereits verliehen": "ist bereits verliehen",
+        "nicht verliehen": "ist nicht verliehen",
+      };
+      const messages = result.results.map(r =>
+        r.product
+          ? `${r.product} ${actionLabels[r.status] || r.status} (${r.Code})`
+          : `${r.status} (${r.Code})`,
       );
 
-      alert(messages.join("\n"));
+      const successStatuses = ["wird ausgeliehen", "wird erneut ausgeliehen", "zurückgegeben", "storniert"];
+      const hasErrors = result.results.some(r => !successStatuses.includes(r.status));
+      showRentalScanMessage(messages.join("\n"), hasErrors ? "error" : "success");
+    } else {
+      showRentalScanMessage(result.message || "Aktion abgeschlossen");
     }
     clearProductDetailCacheForEvent(event_id);
     await loadRentals(event_id);
 
-    if (barcodeInput) barcodeInput.value = "";
-    if (barcodeInput && window.innerWidth > 768) barcodeInput.focus();
   } catch (err) {
     console.error(err);
-    alert(err.message);
+    showRentalScanMessage(err.message, "error");
+  } finally {
+    focusBarcodeInput();
   }
 }
 async function startCameraScan() {
@@ -602,7 +587,7 @@ function setupCloseEventButton() {
       const result = await res.json();
       if (!res.ok) throw new Error(result.error);
 
-      alert(result.message);
+      showAppMessage(result.message);
 
       // 🔄 UI aktualisieren
       await loadRentalPageEvents("eventSelect", "rentals");
@@ -641,7 +626,7 @@ function updateCloseButtonVisibility(allEvents) {
 // =====================================================
 // DATUM FORMAT
 // =====================================================
-function formatDateDE(date) {
+function formatRentalDateDE(date) {
   if (!date) return "";
   const d = new Date(date);
   return `${String(d.getDate()).padStart(2, "0")}.${String(d.getMonth() + 1).padStart(2, "0")}.${d.getFullYear()}`;

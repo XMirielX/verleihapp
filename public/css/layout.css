@@ -1,22 +1,16 @@
-/* =====================================================
-   THW Förderverein VerleihApp
-   Layout
-===================================================== */
+/* ============================================================
+   layout.css
+   Grundlayout, Navigation, Kopfzeilen und Formulargruppen.
+   Regelreihenfolge bleibt für die CSS-Kaskade erhalten.
+   ============================================================ */
 
-
-/* =====================================================
-   Grundlayout
-===================================================== */
-
+/* Grundlayout und Inhaltsbereich */
 .layout {
     display: flex;
     min-height: 100vh;
 }
 
-/* =====================
-   Globale Schrift
-===================== */
-
+/* Globale Schrift */
 html,
 body {
     font-family: var(--font-family);
@@ -30,35 +24,23 @@ table {
     font-family: inherit;
 }
 
-/* =====================================================
-   Sidebar
-===================================================== */
-
+/* Seitennavigation und Footer */
 .sidebar {
     width: 260px;
-
     background: var(--card-bg);
     border-right: 1px solid var(--border);
-
     flex-shrink: 0;
-
     display: flex;
     flex-direction: column;
 }
 
-/* =====================================================
-   Sidebar Header / Logo
-===================================================== */
-
+/* Seitennavigation: Logo */
 .sidebar-header {
     display: flex;
     align-items: center;
     gap: 12px;
-
     padding: 20px;
-
     border-bottom: 1px solid var(--border);
-
     cursor: pointer;
 }
 
@@ -76,38 +58,26 @@ table {
     color: var(--text-secondary);
 }
 
-/* =====================================================
-   Sidebar Menü
-===================================================== */
-
+/* Seitennavigation: Menü */
 .sidebar-menu {
     flex: 1;
-
     display: flex;
     flex-direction: column;
-
     padding: 10px;
     gap: 5px;
-
     overflow-y: auto;
 }
 
 .sidebar-menu button {
     width: 100%;
-
     border: none;
     background: transparent;
-
     color: var(--text);
-
     text-align: left;
     padding: 12px;
-
     border-radius: var(--radius-sm);
-
     cursor: pointer;
     font-size: 15px;
-
     display: flex;
     align-items: center;
     gap: 10px;
@@ -123,10 +93,7 @@ table {
     color: white;
 }
 
-/* =====================================================
-   Sidebar Menügruppen
-===================================================== */
-
+/* Seitennavigation: Untermenüs */
 .menu-group .submenu {
     display: none;
     padding-left: 15px;
@@ -148,10 +115,7 @@ table {
     padding-left: 35px !important;
 }
 
-/* =====================================================
-   Sidebar Footer / Abmelden
-===================================================== */
-
+/* Seitennavigation: Backup und Abmelden */
 .sidebar-footer {
     padding: 10px;
     border-top: 1px solid var(--border);
@@ -159,17 +123,12 @@ table {
 
 .logout-button {
     width: 100%;
-
     border: none;
     background: transparent;
-
     color: var(--text);
-
     text-align: left;
     padding: 12px;
-
     border-radius: var(--radius-sm);
-
     cursor: pointer;
     font-size: 15px;
 }
@@ -179,133 +138,82 @@ table {
     color: white;
 }
 
-/* =====================================================
-   Mobile Logo
-===================================================== */
-
+/* Kopfzeilen und Logos */
 .mobile-logo {
     height: 40px;
     width: auto;
 }
-/* =====================================================
-   Hauptbereich
-===================================================== */
 
+/* Grundlayout und Inhaltsbereich */
 .main {
     flex: 1;
-
     display: flex;
     flex-direction: column;
-
     min-width: 0;
 }
 
-
-/* =====================================================
-   Desktop Header
-===================================================== */
-
+/* Kopfzeilen und Logos */
 .header {
-
     height: 60px;
-
     display: flex;
     align-items: center;
-
     gap: 15px;
-
     padding: 0 20px;
-
     border-bottom: 1px solid var(--border);
-
     background: var(--card-bg);
 }
-
 
 .header-logo {
     height: 42px;
     width: auto;
 }
 
-
 .header-title {
     display: flex;
     flex-direction: column;
 }
 
-
 .header-title h1 {
     margin: 0;
-
     font-size: 20px;
-
     color: var(--primary);
 }
 
-
 .header-title span {
     font-size: 13px;
-
     color: var(--text-secondary);
 }
-
-
-/* =====================================================
-   Mobile Header
-===================================================== */
 
 .mobile-header {
     display: none;
 }
 
-
 .menu-button {
-
     display: none;
-
     border: none;
     background: none;
-
     font-size: 24px;
-
     cursor: pointer;
-
     color: var(--text);
 }
 
-
-/* =====================================================
-   Inhalt
-===================================================== */
-
+/* Grundlayout und Inhaltsbereich */
 #content {
-
     flex: 1;
-
     padding: 20px;
-
     overflow-y: auto;
 }
-
-
-/* =====================================================
-   Mobile Navigation
-===================================================== */
 
 .bottom-nav {
     display: none;
 }
 
-
-/* =====================================================
-   Overlay
-===================================================== */
-
 .overlay {
     display: none;
 }
 
-filter-container {
+/* Formulargruppen und Filter */
+.filter-container {
     display: flex;
     flex-direction: column;
     gap: 12px;
@@ -326,4 +234,80 @@ filter-container {
 .form-group select {
     width: 100%;
     box-sizing: border-box;
+}
+
+/* Einheitliches Formularraster; auf kleinen Bildschirmen eine Spalte. */
+.form-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(240px, 100%), 1fr));
+    gap: 16px;
+    max-width: 960px;
+}
+
+/* Login: Benutzername und Passwort bewusst untereinander. */
+#loginForm .form-grid {
+    grid-template-columns: 1fr;
+    max-width: 360px;
+}
+
+/* Produktanlage und Bearbeitung: Felder untereinander. */
+#productForm .form-grid {
+    grid-template-columns: 1fr;
+    max-width: 360px;
+}
+
+/* Veranstaltungsanlage und Bearbeitung: Felder untereinander. */
+#eventForm .form-grid {
+    grid-template-columns: 1fr;
+    max-width: 360px;
+}
+
+/* Kundenanlage und Bearbeitung: Felder untereinander. */
+#customerForm .form-grid {
+    grid-template-columns: 1fr;
+    max-width: 360px;
+}
+
+.form-grid .form-group,
+.output-grid .form-group {
+    width: 100%;
+    min-width: 0;
+}
+
+.form-group > input:not([type="checkbox"]),
+.form-group > select,
+.form-group > textarea {
+    width: 100%;
+}
+
+.checkbox-group label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+/* Primäre Aktion zuerst, ergänzende Aktionen daneben. */
+.form-actions,
+.button-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 12px;
+    margin-top: 16px;
+}
+
+.form-actions button,
+.button-row button {
+    min-height: 38px;
+}
+
+.btn-secondary {
+    background: transparent;
+    color: var(--text);
+    border: 1px solid var(--border);
+}
+
+.btn-secondary:hover {
+    background: var(--hover);
+    color: var(--text);
 }

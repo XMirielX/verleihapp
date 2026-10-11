@@ -19,12 +19,19 @@ async function openDistributionImages(distributionId) {
 
 
 // Bilder laden
-async function loadDistributionImages() {
+async function loadDistributionImages(selectedFilename = null) {
     const res = await fetch(
-        `/api/distributions_images/${currentDistributionId}/images`
+        `/api/distributions_images/${currentDistributionId}/images`,
+        { cache: "no-store" }
     );
-    distributionImages = await res.json();
-    currentImageIndex = 0;
+    const result = await res.json();
+    if (!res.ok) {
+        throw new Error(result.error || "Bilder konnten nicht geladen werden");
+    }
+    distributionImages = result;
+    currentImageIndex = Math.max(0, distributionImages.findIndex(
+        image => image.filename === selectedFilename
+    ));
     renderImageGallery();
 }
 
@@ -47,6 +54,9 @@ function renderImageGallery() {
         `/uploads/distributions/${image.filename}`;
     img.className =
         "distribution-image";
+    img.onerror = () => {
+        container.textContent = "Das gespeicherte Bild konnte nicht geladen werden.";
+    };
     // Desktop / Mobil unterschiedliche Klassen
     if (window.innerWidth <= 768) {
         img.classList.add("mobile-image");
@@ -105,15 +115,30 @@ async function uploadDistributionImage(valid) {
         "image",
         input.files[0]
     );
-    await fetch(
-        `/api/distributions_images/${currentDistributionId}/images`,
-        {
-            method: "POST",
-            body: formData
+    try {
+        const res = await fetch(
+            `/api/distributions_images/${currentDistributionId}/images`,
+            {
+                method: "POST",
+                body: formData
+            }
+        );
+        const result = await res.json().catch(() => null);
+        if (!res.ok) {
+            throw new Error(result?.error || `Bild konnte nicht gespeichert werden (HTTP ${res.status})`);
         }
-    );
-    input.value = "";
-    await loadDistributionImages();
+        if (!result?.success || !result.filename) {
+            throw new Error("Der Server hat das Speichern des Bildes nicht bestätigt");
+        }
+        await loadDistributionImages(result.filename);
+        if (!distributionImages.some(image => image.filename === result.filename)) {
+            throw new Error("Das hochgeladene Bild wurde nicht in der Galerie gefunden");
+        }
+        input.value = "";
+    } catch (err) {
+        console.error("Bild-Upload fehlgeschlagen:", err);
+        alert(err.message);
+    }
 }
 
 

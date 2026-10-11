@@ -4,31 +4,36 @@
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta charset="UTF-8">
-    <header>
-        <img src="img/logo.png" alt="THW Logo">
-        <br>
-        <h1>Förderverein THW Steinau</h1>
-    </header>
     <title>Login THW System</title>
     <link rel="stylesheet" href="css/style.css">
 </head>
 
 <body>
-    <h1>Login</h1>
+    <header>
+        <img src="img/logo.png" alt="THW Logo">
+        <br>
+        <p class="auth-brand">Förderverein THW Steinau</p>
+    </header>
+    <div class="page-header"><h1>Login</h1></div>
 
-    <div class="form-row">
+    <form id="loginForm">
+    <div class="form-grid">
+    <div class="form-group">
         <label for="username">Benutzername:</label>
         <input type="text" id="username">
     </div>
 
-    <div class="form-row">
+    <div class="form-group">
         <label for="password">Passwort:</label>
         <input type="password" id="password">
     </div>
 
-    <button id="loginButton">Einloggen</button>
+    </div>
+    <div class="form-actions"><button id="loginButton" type="submit">Einloggen</button></div>
+    </form>
     <p id="loginResult"></p>
 
+    <script src="js/notifications.js"></script>
     <script src="js/main.js"></script>
 
 

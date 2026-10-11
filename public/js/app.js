@@ -7,7 +7,7 @@ const pages = {
     title: "Übersicht",
     group: "Verleih",
     roles: ["admin", "user"],
-    scripts: ["js/rental.js"],
+    scripts: ["js/event_selection.js", "js/rental.js"],
     init: "initRentalPage",
   },
 
@@ -15,7 +15,7 @@ const pages = {
     title: "Ausleihen",
     group: "Verleih",
     roles: ["admin", "user"],
-    scripts: ["js/rental.js"],
+    scripts: ["js/event_selection.js", "js/rental.js"],
     init: "initRentalPage",
     mode: "rent",
   },
@@ -24,7 +24,7 @@ const pages = {
     title: "Zurückgeben",
     group: "Verleih",
     roles: ["admin", "user"],
-    scripts: ["js/rental.js"],
+    scripts: ["js/event_selection.js", "js/rental.js"],
     init: "initRentalPage",
     mode: "return",
   },
@@ -33,7 +33,7 @@ const pages = {
     title: "Stornieren",
     group: "Verleih",
     roles: ["admin", "user"],
-    scripts: ["js/rental.js"],
+    scripts: ["js/event_selection.js", "js/rental.js"],
     init: "initRentalPage",
     mode: "storno",
   },
@@ -46,7 +46,7 @@ const pages = {
     title: "Material",
     group: "Planung",
     roles: ["admin", "lese", "user"],
-    scripts: ["js/planning.js"],
+    scripts: ["js/event_selection.js", "js/planning.js"],
     init: "initPlanningPage",
   },
 
@@ -54,7 +54,7 @@ const pages = {
     title: "Verteiler",
     group: "Planung",
     roles: ["admin", "lese", "user"],
-    scripts: ["js/distribution_plan.js", "js/distribution_image.js"],
+    scripts: ["js/event_selection.js", "js/distribution_plan.js", "js/distribution_image.js"],
     init: "initDistributionPlanPage",
   },
 
@@ -130,7 +130,7 @@ const pages = {
   invoices: {
     title: "Rechnungen",
     roles: ["admin"],
-    scripts: ["js/invoices.js"],
+    scripts: ["js/event_selection.js", "js/invoices.js"],
     init: "initInvoicePage",
   },
 
@@ -270,6 +270,33 @@ document.addEventListener("DOMContentLoaded", async () => {
     });
   }
 
+  const backupButton = document.getElementById("backupButton");
+  if (backupButton && user.role === "admin") {
+    backupButton.hidden = false;
+    backupButton.addEventListener("click", async () => {
+      backupButton.disabled = true;
+      backupButton.textContent = "Backup wird erstellt…";
+      try {
+        const res = await fetch("/api/main/backup", {
+          method: "POST",
+          credentials: "include",
+        });
+        const result = await res.json();
+        if (!res.ok || !result.success) {
+          throw new Error(result.error || "Backup konnte nicht erstellt werden");
+        }
+        showAppMessage(result.warning || (result.dropboxUploaded
+          ? "Backup erstellt und auf Dropbox hochgeladen"
+          : "Backup erstellt"), result.warning ? "warning" : "success");
+      } catch (err) {
+        alert("Fehler beim Backup: " + err.message);
+      } finally {
+        backupButton.disabled = false;
+        backupButton.textContent = "Backup erstellen";
+      }
+    });
+  }
+
   // Abmelden
   const logoutButton = document.getElementById("logoutButton");
 
@@ -283,6 +310,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 });
 
 async function loadPage(page) {
+  if (!confirmUnsavedChanges()) return;
   await checkLogin();
   window.currentPage = page;
   const content = document.getElementById("content");
@@ -293,6 +321,7 @@ async function loadPage(page) {
       throw new Error(`Seite nicht gefunden: ${page}`);
     }
     const html = await response.text();
+    resetUnsavedChanges();
     content.innerHTML = html;
     if (page === "home") {
       updateHomeQuickActions();
@@ -308,6 +337,11 @@ async function loadPage(page) {
     document.body.dataset.mode = pageConfig?.mode || "";
     // Seitenspezifisches JavaScript laden
     await loadPageScript(page);
+    const heading = content.querySelector(".page-header h1");
+    if (heading) {
+      if (title) title.textContent = heading.textContent;
+      document.title = `${heading.textContent} | VerleihApp`;
+    }
     // aktive Menümarkierung
     setActiveMenu(page);
   } catch (error) {
@@ -340,7 +374,7 @@ async function loadPageScript(page) {
 
   const initFunction = window[config.init];
   if (typeof initFunction === "function") {
-    initFunction(page);
+    await initFunction(page);
   }
 }
 function loadScript(src) {
@@ -453,6 +487,7 @@ function updateHomeQuickActions() {
   });
 }
 async function logout() {
+  if (!confirmUnsavedChanges()) return;
   try {
     await fetch("/api/users/logout", {
       method: "POST",
@@ -463,6 +498,7 @@ async function logout() {
   }
 
   currentUser = null;
+  resetUnsavedChanges();
 
   window.location.href = "login.html";
 }

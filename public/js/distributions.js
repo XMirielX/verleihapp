@@ -323,6 +323,10 @@ function renderDistributionTable() {
 }
 
 function clearForm() {
+  const title = document.getElementById("distributionFormTitle");
+  if (title) title.textContent = "Verteiler anlegen";
+  const saveButton = document.getElementById("saveDistributionButton");
+  if (saveButton) saveButton.innerHTML = '<i class="fa-solid fa-floppy-disk"></i> Speichern';
   if (distributionIdInput) distributionIdInput.value = "";
   if (productSelect) productSelect.value = "";
   if (inputField) inputField.value = "";
@@ -369,7 +373,7 @@ async function saveDistribution() {
 
     clearForm();
     await loadDistributions();
-    alert(data?.message || "Distribution gespeichert");
+    showAppMessage(data?.message || "Distribution gespeichert");
   } catch (err) {
     console.error(err);
     alert(err.message);
@@ -378,7 +382,10 @@ async function saveDistribution() {
 
 async function editDistribution(id) {
   const item = distributions.find((d) => Number(d.id) === Number(id));
-  if (!item) return;
+  if (!item) {
+    alert("Verteiler konnte nicht gefunden werden. Bitte lade die Seite neu.");
+    return;
+  }
 
   if (distributionIdInput) distributionIdInput.value = item.id;
   renderProductSelect(item.product_id);
@@ -390,6 +397,16 @@ async function editDistribution(id) {
   if (cee32Field) cee32Field.value = item.cee32 ?? 0;
   if (cee63Field) cee63Field.value = item.cee63 ?? 0;
   if (cee125Field) cee125Field.value = item.cee125 ?? 0;
+
+  const title = document.getElementById("distributionFormTitle");
+  if (title) {
+    title.textContent = "Verteiler bearbeiten";
+    title.tabIndex = -1;
+    title.focus({ preventScroll: true });
+    title.scrollIntoView({ block: "start" });
+  }
+  const saveButton = document.getElementById("saveDistributionButton");
+  if (saveButton) saveButton.innerHTML = '<i class="fa-solid fa-floppy-disk"></i> Änderungen speichern';
 }
 
 async function deleteDistribution(id) {

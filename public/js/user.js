@@ -13,7 +13,9 @@ function setupUserCreation() {
     const createBtn = document.getElementById("createUserButton");
     if (!createBtn) return;
 
-    createBtn.addEventListener("click", async () => {
+        const createForm = document.getElementById("userCreateForm");
+        (createForm || createBtn).addEventListener(createForm ? "submit" : "click", async event => {
+            event.preventDefault();
         const usernameEl = document.getElementById("newUsername");
         const roleEl = document.getElementById("newRole");
 
@@ -40,7 +42,7 @@ function setupUserCreation() {
             const result = await res.json();
             if (!res.ok) throw new Error(result.error);
 
-            alert(result.message);
+            showAppMessage(result.message);
             usernameEl.value = "";
             loadUsers(); // Liste aktualisieren
 
@@ -122,14 +124,14 @@ async function loadUsers() {
         alert("Fehler beim Laden der Benutzerliste.");
     }
 }
-async function checkLogin() {
+async function checkUserPageLogin() {
     const res = await fetch("/api/users/me");
     if (!res.ok) {
         localStorage.setItem("lastPage", window.location.pathname);
         window.location.href = "login.html";
     }
 }
-checkLogin();
+checkUserPageLogin();
 
 
 async function deleteUser(id) {
@@ -144,7 +146,7 @@ async function deleteUser(id) {
         const result = await res.json();
         if (!res.ok) throw new Error(result.error);
 
-        alert("Benutzer gelöscht");
+        showAppMessage("Benutzer gelöscht");
         loadUsers();
 
     } catch (err) {
@@ -170,7 +172,7 @@ async function editUser(id) {
             const result = await res.json();
             if (!res.ok) throw new Error(result.error);
 
-            alert("Rolle geändert");
+            showAppMessage("Rolle geändert");
             loadUsers();
         
 
@@ -191,7 +193,7 @@ async function resetPass(id) {
         const result = await res.json();
         if (!res.ok) throw new Error(result.error);
 
-        alert("Passwort wurde auf Standard zurückgesetzt");
+        showAppMessage("Passwort wurde auf Standard zurückgesetzt");
         loadUsers();
 
     } catch (err) {

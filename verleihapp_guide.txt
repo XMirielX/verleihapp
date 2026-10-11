@@ -16,7 +16,7 @@ LOKAL (Entwicklung):
 - Funktion prüfen (Login, CRUD etc.)
 cmd
 npm start
-http://localhost:3000/login.html
+http://localhost:3001/login.html
 
 
 GIT UPLOAD:
@@ -50,7 +50,13 @@ MANUELLES BACKUP:
 cp data/verleih.db backups/verleih_$(date +%F).db
 
 UPLOAD ZU DROPBOX:
-rclone copy backups dropbox_nicole:verleihapp-backups
+rclone copy data/backups dropbox_nicole:verleihapp-backups
+
+AUTOMATISCHES BACKUP:
+Die App erstellt alle 7 Tage eine Datenbanksicherung und lädt sie mit rclone hoch.
+Fälligkeit wird beim Start und stündlich geprüft; der letzte Erfolg bleibt gespeichert.
+Auch der Backup-Button sichert lokal und lädt nach Dropbox hoch.
+Einrichtung und Hinweise: docs/dropbox-backup.md
 
 
 RESTORE FALLS ETWAS KAPUTT GEHT:

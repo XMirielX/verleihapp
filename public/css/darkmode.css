@@ -1,32 +1,26 @@
-/* =====================================================
-   style.css - THW Förderverein Stil
-===================================================== */
+/* ============================================================
+   darkmode.css
+   Farbwerte und Darstellungsanpassungen für das dunkle Farbschema.
+   Regelreihenfolge bleibt für die CSS-Kaskade erhalten.
+   ============================================================ */
 
-
-/* =====================================================
-   15. Dark Mode
-===================================================== */
-
+/* Responsive Anpassungen: (prefers-color-scheme: dark) */
 @media (prefers-color-scheme: dark) {
-
+    /* Farben im dunklen Modus */
     :root {
+        /* Oberflächen und Farben */
         --primary: #5aa9ff;
         --primary-dark: #1565c0;
-
         --background: #1e1e1e;
         --text: #e0e0e0;
-
         --border: #555;
         --table-border: #555;
-
         --card-bg: #2b2b2b;
         --card-shadow: rgba(0,0,0,0.45);
-
         --table-header: #333;
         --hover: #303030;
-
         --input-bg: #333;
-
+        /* Statusfarben */
         --status-free: #5fd35f;
         --status-rented: #ff6b6b;
         --status-missing: #ffb84d;
@@ -34,24 +28,17 @@
         --status-abgeschlossen: #ffb84d;
         --status-abgerechnet: #ff6b6b;
         --status-inaktiv: #c01d1d;
-
+        /* Oberflächen und Farben */
         --text-secondary: #bfbfbf;
     }
 
-
-    /* =====================
-       Allgemein
-    ===================== */
-
+    /* Weitere dunkle Oberflächen */
     body {
         background-color: var(--background);
         color: var(--text);
     }
 
-    /* =====================
-       Formulare
-    ===================== */
-
+    /* Eingabefelder */
     input[type="text"],
     input[type="date"],
     select {
@@ -64,10 +51,7 @@
         color: var(--text);
     }
 
-    /* =====================
-       Buttons
-    ===================== */
-
+    /* Buttons */
     button {
         background-color: var(--primary-dark);
         color: white;
@@ -77,11 +61,7 @@
         background-color: #1565c0;
     }
 
-
-    /* =====================
-       Tabellen
-    ===================== */
-
+    /* Tabellen */
     table {
         background-color: #252525;
         color: var(--text);
@@ -102,11 +82,7 @@
         background-color: var(--hover);
     }
 
-
-    /* =====================
-       Karten
-    ===================== */
-
+    /* Karten */
     .product-item,
     .event-item,
     .user-card,
@@ -114,63 +90,56 @@
     .material-card,
     .planning-card,
     .distribution-card {
-
         background-color: var(--card-bg);
         color: var(--text);
         border-color: var(--border);
         box-shadow: 0 2px 6px var(--card-shadow);
     }
 
-
-    /* =====================
-       Kartentexte
-    ===================== */
-
+    /* Weitere dunkle Oberflächen */
     .product-sub,
     .event-sub,
     .rental-body,
     .material-sub {
-
         color: #c0c0c0;
     }
 
-
-    /* =====================
-       Statusfarben
-    ===================== */
-
+    /* Statusfarben */
     .status-frei {
         color: var(--status-free);
     }
-   .status-gestartet {
+
+    .status-gestartet {
         color: var(--status-gestartet);
     }
+
     .status-abgeschlossen {
         color: var(--status-abgeschlossen);
     }
+
     .status-abgerechnet {
         color: var(--status-abgerechnet);
     }
+
     .status-verliehen {
         color: var(--status-rented);
     }
+
     .status-inaktiv {
         color: var(--status-inaktiv);
     }
+
     .status-fehlt {
         color: var(--status-missing);
     }
 
-
-    /* =====================
-       Planung
-    ===================== */
-
+    /* Karten */
     .planning-card-title,
     .distribution-title {
         color: white;
     }
 
+    /* Planungsansichten */
     .planning-row,
     .distribution-row {
         color: var(--text);
@@ -181,7 +150,7 @@
         color: #bfbfbf;
     }
 
-
+    /* Eingabefelder */
     .planning-qty input,
     .distribution-inputs input {
         background-color: var(--input-bg);
@@ -189,32 +158,17 @@
         border-color: var(--border);
     }
 
-
-    /* =====================
-       Ausgabe-Felder
-    ===================== */
-
+    /* Weitere dunkle Oberflächen */
     .output-grid div {
         background-color: #333;
         color: white;
     }
 
-
-    /* =====================
-       Kamera
-    ===================== */
-
     #cameraContainer video {
         border-color: var(--primary-dark);
     }
 
-
-    /* =====================
-       Mobile Labels
-    ===================== */
-
     td::before {
         color: #b0b0b0;
     }
-
 }

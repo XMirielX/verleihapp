@@ -1,7 +1,7 @@
 const fs = require('fs');
 const path = require('path');
 
-const BASE_DIR = process.env.DB_DIR || path.join(__dirname, "..", "data");
+const BASE_DIR = process.env.DB_DIR || path.join(__dirname, "data");
 
 if (!fs.existsSync(BASE_DIR)) {
     fs.mkdirSync(BASE_DIR, { recursive: true });
@@ -16,7 +16,7 @@ if (!fs.existsSync(BACKUP_DIR)) {
 }
 
 // Backup erstellen
-function backupDB() {
+async function backupDB() {
   console.log("DB_PATH:", DB_PATH);
 console.log("DB exists:", fs.existsSync(DB_PATH));
   if (!fs.existsSync(DB_PATH)) {
@@ -28,10 +28,10 @@ console.log("DB exists:", fs.existsSync(DB_PATH));
   const fileName = `backup-${safeDate}.db`;
   const backupPath = path.join(BACKUP_DIR, fileName);
 
-  fs.copyFileSync(DB_PATH, backupPath);
+  await db.runAsync("VACUUM INTO ?", [backupPath]);
   console.log("Backup erstellt ✅:", fileName);
 
-  return true;
+  return { filename: fileName, path: backupPath };
 }
 // Restore (optional manuell triggern)
 function restoreDB() {

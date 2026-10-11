@@ -1,7 +1,10 @@
-/* =====================================================
-   Mobile Layout
-===================================================== */
+/* ============================================================
+   mobile.css
+   Mobile Navigation und zuletzt angewendete responsive Anpassungen.
+   Regelreihenfolge bleibt für die CSS-Kaskade erhalten.
+   ============================================================ */
 
+/* Inhalt und responsive Sichtbarkeit */
 .desktop-only {
     display: block;
 }
@@ -10,54 +13,49 @@
     display: none;
 }
 
+/* Responsive Anpassungen: (max-width: 768px) */
 @media (max-width: 768px) {
-
-    /* =====================
-       Header
-    ===================== */
-
+    /* Mobile Kopfzeile */
     .mobile-header {
         position: fixed;
         top: 0;
         left: 0;
         right: 0;
-        z-index: 1000;       
+        z-index: 1000;
         align-items: center;
         gap: 12px;
         display: flex;
-
         height: 60px;
         padding: 0 15px;
-
         background: var(--card-bg);
         border-bottom: 1px solid var(--border);
     }
 
+    /* Inhalt und responsive Sichtbarkeit */
     .mobile-logo {
         height: 40px;
         width: auto;
     }
 
+    /* Mobile Kopfzeile */
     .menu-button,
     #menuButton {
         display: block;
     }
-.main { padding-top: 30px; }
 
-    /* =====================
-       Sidebar
-    ===================== */
+    /* Inhalt und responsive Sichtbarkeit */
+    .main {
+        padding-top: 30px;
+    }
 
+    /* Mobile Navigation */
     .sidebar {
         position: fixed;
         top: 0;
         left: -280px;
-
         width: 260px;
         height: 100vh;
-
         z-index: 1100;
-
         transition: left .25s;
         box-shadow: 0 0 20px rgba(0,0,0,.3);
     }
@@ -66,73 +64,44 @@
         left: 0;
     }
 
-
-    /* =====================
-       Overlay
-    ===================== */
-
     .overlay.show {
         display: block;
     }
 
     .overlay {
         display: none;
-
         position: fixed;
         inset: 0;
-
         background: rgba(0,0,0,.4);
-
         z-index: 999;
     }
 
-
-    /* =====================
-       Bottom Navigation
-    ===================== */
-
     .bottom-nav {
         display: flex;
-
         position: fixed;
-
         bottom: 0;
         left: 0;
         right: 0;
-
         height: 65px;
-
         background: var(--card-bg);
         border-top: 1px solid var(--border);
     }
 
     .bottom-nav button {
         flex: 1;
-
         display: flex;
         flex-direction: column;
         justify-content: center;
         align-items: center;
-
         gap: 3px;
-
         border: none;
         background: transparent;
     }
 
-
-    /* =====================
-       Content
-    ===================== */
-
+    /* Inhalt und responsive Sichtbarkeit */
     #content {
         padding-bottom: 80px;
     }
-
-
-    /* =====================
-       Desktop / Mobile
-    ===================== */
 
     .desktop-only {
         display: none;
@@ -142,11 +111,7 @@
         display: flex;
     }
 
-
-    /* =====================
-       Startseite
-    ===================== */
-
+    /* Startseite */
     .quick-actions {
         grid-template-columns: repeat(2,1fr);
         gap: 12px;
@@ -166,327 +131,230 @@
         grid-template-columns: 1fr;
     }
 
-/* =====================================================
-   KUNDEN CARDS
-   ===================================================== */
-
-.customer-card {
-    width: 100%;
-    box-sizing: border-box;
-
-    padding: 0;
-    overflow: hidden;
-
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-
-    background: var(--card-bg);
-
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
-}
-
-
-/* =====================================================
-   HEADER
-   ===================================================== */
-
-.customer-card-header {
-    padding: 14px 16px;
-
-    border-bottom: 1px solid var(--border);
-
-    background: var(--background);
-}
-
-.customer-title {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-
-    gap: 10px;
-}
-
-.customer-title h3 {
-    margin: 0;
-
-    font-size: 1rem;
-    font-weight: 600;
-
-    color: var(--text);
-
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-}
-
-
-/* =====================================================
-   STATUS
-   ===================================================== */
-
-.customer-card .status-badge {
-    flex-shrink: 0;
-
-    padding: 4px 9px;
-
-    border-radius: 999px;
-
-    font-size: 0.72rem;
-    font-weight: 600;
-}
-
-
-/* =====================================================
-   INHALT
-   ===================================================== */
-
-.customer-card-body {
-    padding: 4px 16px;
-}
-
-.customer-detail {
-    display: flex;
-    align-items: flex-start;
-
-    gap: 12px;
-
-    padding: 10px 0;
-
-    border-bottom: 1px solid var(--border);
-}
-
-.customer-detail:last-child {
-    border-bottom: none;
-}
-
-
-/* Bezeichnung links */
-
-.customer-detail-label {
-    flex: 0 0 85px;
-
-    font-size: 0.72rem;
-    font-weight: 600;
-
-    color: var(--text-muted, #777);
-
-    text-transform: uppercase;
-    letter-spacing: 0.03em;
-}
-
-
-/* Wert rechts */
-
-.customer-detail-value {
-    flex: 1;
-
-    min-width: 0;
-
-    font-size: 0.88rem;
-    line-height: 1.4;
-
-    color: var(--text);
-
-    overflow-wrap: anywhere;
-}
-
-
-/* Links */
-
-a.customer-detail-value {
-    text-decoration: none;
-}
-
-a.customer-detail-value:hover {
-    text-decoration: underline;
-}
-
-
-/* =====================================================
-   PREISKATEGORIE
-   ===================================================== */
-
-.price-category-badge {
-    display: inline-flex;
-    align-items: center;
-
-    width: fit-content;
-
-    padding: 4px 8px;
-
-    border-radius: 6px;
-
-    border: 1px solid var(--border);
-
-    background: var(--background);
-
-    font-size: 0.76rem;
-    font-weight: 500;
-}
-
-
-/* =====================================================
-   AKTIONEN
-   ===================================================== */
-
-.customer-card .card-actions {
-    display: flex;
-
-    gap: 8px;
-
-    padding: 12px 16px 14px;
-
-    border-top: 1px solid var(--border);
-}
-
-.customer-card .card-actions .btn {
-    flex: 1;
-
-    min-height: 38px;
-
-    padding: 7px 10px;
-
-    font-size: 0.84rem;
-}
-
-
-/* =====================================================
-   MOBILE
-   ===================================================== */
-
-@media (max-width: 768px) {
-
+    /* Kundenkarten */
     .customer-card {
-        border-radius: 10px;
+        width: 100%;
+        box-sizing: border-box;
+        padding: 0;
+        overflow: hidden;
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        background: var(--card-bg);
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
     }
 
     .customer-card-header {
-        padding: 13px 14px;
+        padding: 14px 16px;
+        border-bottom: 1px solid var(--border);
+        background: var(--background);
+    }
+
+    .customer-title {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+    }
+
+    .customer-title h3 {
+        margin: 0;
+        font-size: 1rem;
+        font-weight: 600;
+        color: var(--text);
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .customer-card .status-badge {
+        flex-shrink: 0;
+        padding: 4px 9px;
+        border-radius: 999px;
+        font-size: 0.72rem;
+        font-weight: 600;
     }
 
     .customer-card-body {
-        padding: 3px 14px;
+        padding: 4px 16px;
     }
 
     .customer-detail {
-        gap: 8px;
-        padding: 9px 0;
+        display: flex;
+        align-items: flex-start;
+        gap: 12px;
+        padding: 10px 0;
+        border-bottom: 1px solid var(--border);
+    }
+
+    .customer-detail:last-child {
+        border-bottom: none;
     }
 
     .customer-detail-label {
-        flex-basis: 78px;
-        font-size: 0.68rem;
+        flex: 0 0 85px;
+        font-size: 0.72rem;
+        font-weight: 600;
+        color: var(--text-muted, #777);
+        text-transform: uppercase;
+        letter-spacing: 0.03em;
     }
 
     .customer-detail-value {
-        font-size: 0.84rem;
+        flex: 1;
+        min-width: 0;
+        font-size: 0.88rem;
+        line-height: 1.4;
+        color: var(--text);
+        overflow-wrap: anywhere;
+    }
+
+    a.customer-detail-value {
+        text-decoration: none;
+    }
+
+    a.customer-detail-value:hover {
+        text-decoration: underline;
+    }
+
+    .price-category-badge {
+        display: inline-flex;
+        align-items: center;
+        width: fit-content;
+        padding: 4px 8px;
+        border-radius: 6px;
+        border: 1px solid var(--border);
+        background: var(--background);
+        font-size: 0.76rem;
+        font-weight: 500;
     }
 
     .customer-card .card-actions {
-        padding: 10px 14px 13px;
+        display: flex;
+        gap: 8px;
+        padding: 12px 16px 14px;
+        border-top: 1px solid var(--border);
     }
 
-}
-    /* =====================
-       Mobile Karten
-    ===================== */
+    .customer-card .card-actions .btn {
+        flex: 1;
+        min-height: 38px;
+        padding: 7px 10px;
+        font-size: 0.84rem;
+    }
 
+    /* Responsive Anpassungen: (max-width: 768px) */
+    @media (max-width: 768px) {
+        /* Kundenkarten */
+        .customer-card {
+            border-radius: 10px;
+        }
+
+        .customer-card-header {
+            padding: 13px 14px;
+        }
+
+        .customer-card-body {
+            padding: 3px 14px;
+        }
+
+        .customer-detail {
+            gap: 8px;
+            padding: 9px 0;
+        }
+
+        .customer-detail-label {
+            flex-basis: 78px;
+            font-size: 0.68rem;
+        }
+
+        .customer-detail-value {
+            font-size: 0.84rem;
+        }
+
+        .customer-card .card-actions {
+            padding: 10px 14px 13px;
+        }
+    }
+
+    /* Listen und Tabellen */
     #rentalCardContainer,
     #materialCardContainer,
     #planningCards,
     #distributionCards,
     .mobile-cards {
-
         display: flex;
         flex-direction: column;
         gap: var(--space-md);
     }
 
-
-    /* =====================
-       Tabellen ausblenden
-    ===================== */
-
     #planningTableContainer {
         display: none;
     }
 
-
-    /* =====================
-       Kleinere Tabellen
-    ===================== */
-
+    /* Inhalt und responsive Sichtbarkeit */
     td::before {
         font-size: 13px;
     }
 
-    
     .output-grid {
         grid-template-columns: 1fr;
     }
 
-.invoice-header-layout {
-    display: grid;
-    grid-template-columns: 1fr 1.4fr;
-    gap: 1rem;
-    align-items: start;
-}
+    /* Rechnungen */
+    .invoice-header-layout {
+        display: grid;
+        grid-template-columns: 1fr 1.4fr;
+        gap: 1rem;
+        align-items: start;
+    }
 
-.invoice-info-card {
-    background: var(--card-bg);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    padding: 1rem;
-}
+    .invoice-info-card {
+        background: var(--card-bg);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        padding: 1rem;
+    }
 
-.invoice-info-card-header {
-    margin-bottom: 1rem;
-    padding-bottom: 0.6rem;
-    border-bottom: 1px solid var(--border);
-}
+    .invoice-info-card-header {
+        margin-bottom: 1rem;
+        padding-bottom: 0.6rem;
+        border-bottom: 1px solid var(--border);
+    }
 
-.invoice-info-card-header h4 {
-    margin: 0;
-    font-size: 1rem;
-    font-weight: 700;
-}
+    .invoice-info-card-header h3 {
+        margin: 0;
+        font-size: 1rem;
+        font-weight: 700;
+    }
 
-.invoice-info-fields {
-    display: flex;
-    flex-direction: column;
-    gap: 0.65rem;
-}
+    .invoice-info-fields {
+        display: flex;
+        flex-direction: column;
+        gap: 0.65rem;
+    }
 
-.invoice-info-fields .form-group {
-    margin: 0;
-}
+    .invoice-info-fields .form-group {
+        margin: 0;
+    }
 
-.invoice-info-fields label {
-    display: block;
-    margin-bottom: 0.25rem;
-}
+    .invoice-info-fields label {
+        display: block;
+        margin-bottom: 0.25rem;
+    }
 
-.invoice-address-row {
-    display: grid;
-    grid-template-columns: 110px 1fr;
-    gap: 0.6rem;
-}
+    .invoice-address-row {
+        display: grid;
+        grid-template-columns: 110px 1fr;
+        gap: 0.6rem;
+    }
 
-.invoice-header-actions {
-    grid-column: 1 / -1;
-    display: flex;
-    justify-content: flex-start;
-    gap: 0.5rem;
-    margin-top: 1rem;
-}
-}
-
-
-/* =====================================================
-   MOBILE
-===================================================== */
-
-@media (max-width: 768px) {
+    .invoice-header-actions {
+        grid-column: 1 / -1;
+        display: flex;
+        justify-content: flex-start;
+        gap: 0.5rem;
+        margin-top: 1rem;
+    }
 
     #invoiceItemCards {
         display: flex;
@@ -519,14 +387,6 @@ a.customer-detail-value:hover {
     .invoice-item-card-actions {
         padding: 10px 13px 12px;
     }
-}
-
-
-/* =====================================================
-   MOBILE
-===================================================== */
-
-@media (max-width: 768px) {
 
     .invoice-header-layout {
         display: flex;
@@ -538,5 +398,4 @@ a.customer-detail-value:hover {
         width: 100%;
         box-sizing: border-box;
     }
-
 }

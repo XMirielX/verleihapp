@@ -13,6 +13,7 @@
     </div>
 
     <div class="card-body">
+      <form id="customerForm" onsubmit="event.preventDefault(); saveCustomer()">
       <div class="form-grid">
         <div class="form-group">
           <label for="customerName"> Name * </label>
@@ -73,20 +74,20 @@
         </div>
       </div>
 
-      <div class="card-actions">
+      <div class="form-actions">
         <button
-          type="button"
+          type="submit"
           class="btn btn-primary"
           id="customerSaveButton"
-          onclick="saveCustomer()"
           aria-label="Speichern"
           title="Speichern"
-        ><i class="fa-solid fa-floppy-disk"></i>Speichern</button>
+        ><i class="fa-solid fa-floppy-disk"></i> Speichern</button>
 
-        <button type="button" class="btn" onclick="resetCustomerForm()">
+        <button type="button" class="btn btn-secondary" onclick="resetCustomerForm()">
           <i class="fa-solid fa-xmark"></i> Abbrechen
         </button>
       </div>
+      </form>
     </div>
   </div>
 </div>

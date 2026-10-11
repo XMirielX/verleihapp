@@ -9,6 +9,22 @@ function isPlanningEditable() {
 
 // Start
 async function initPlanningPage() {
+  selectedEvent = null;
+  selectedEventDataPlan = null;
+  currentPlan = [];
+  updatePlanningVisibility();
+  updatePlanningRights();
+
+  document.getElementById("planningContent")?.addEventListener("input", event => {
+    if (!event.target.matches(".quantityInput")) return;
+    const material = allMaterials.find(m => Number(m.id) === Number(event.target.dataset.id));
+    if (material) {
+      material.quantity = Number(event.target.value);
+      updateSummary();
+      refreshUnsavedNotice();
+    }
+  });
+
   await loadRentalEvents();
   await loadPlanningMaterials();
 
@@ -64,26 +80,16 @@ async function loadRentalEvents() {
       return;
     }
 
-    // Offene Events zuerst, abgeschlossene danach
-    events.sort((a, b) => {
-      const aClosed = Number(a.stat) === 90;
-      const bClosed = Number(b.stat) === 90;
-
-      if (aClosed !== bClosed) {
-        return aClosed ? 1 : -1;
-      }
-
-      return a.name.localeCompare(b.name);
-    });
+    sortEventsByStatus(events);
 
     events.forEach((event) => {
       const option = document.createElement("option");
 
       option.value = event.id;
-      option.textContent = event.name;
+      option.textContent = `${getEventStatusSymbol(event.stat)} ${event.name}`;
       option.dataset.stat = event.stat;
 
-      if (Number(event.stat) === 90) {
+      if ([90, 95].includes(Number(event.stat))) {
         option.textContent += " (abgeschlossen)";
       }
 
@@ -97,6 +103,11 @@ async function loadRentalEvents() {
 // Event geändert
 async function eventChanged() {
   const eventSelect = document.getElementById("eventSelect");
+  if (!confirmUnsavedChanges()) {
+    eventSelect.value = selectedEvent || "";
+    return;
+  }
+  resetUnsavedChanges();
 
   selectedEvent = eventSelect.value;
   selectedEventDataPlan = null;
@@ -127,6 +138,7 @@ async function eventChanged() {
 
   updatePlanningRights();
   renderPlanningView();
+  trackUnsavedChanges("material-plan", () => allMaterials.map(m => [m.id, Number(m.quantity)]), "Änderungen an der Materialplanung");
 }
 
 function updatePlanningRights() {
@@ -465,6 +477,7 @@ function updateQuantity(id, value) {
     material.quantity = Number(value);
     updateSummary();
     renderPlanningView();
+    refreshUnsavedNotice();
   }
 }
 
@@ -490,6 +503,8 @@ async function savePlanning() {
     }));
 
   try {
+    const savedSnapshot = getUnsavedSnapshot("material-plan");
+    setUnsavedSaving("material-plan", true);
     const response = await fetch("/api/event_plan", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -499,16 +514,21 @@ async function savePlanning() {
       }),
     });
 
-    await response.json();
+    const result = await response.json();
+    if (!response.ok) throw new Error(result.error || "Fehler beim Speichern");
+    markChangesSaved("material-plan", savedSnapshot);
     const resultElement = document.getElementById("result");
     if (resultElement) {
-      resultElement.textContent = "Planung gespeichert";
+      resultElement.textContent = "";
     }
+    showAppMessage("Planung gespeichert");
   } catch (error) {
     console.error("SAVE ERROR:", error);
     const resultElement = document.getElementById("result");
     if (resultElement) {
       resultElement.textContent = "Fehler beim Speichern";
     }
+  } finally {
+    setUnsavedSaving("material-plan", false);
   }
 }

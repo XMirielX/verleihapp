@@ -1,4 +1,6 @@
-<h1>Zurückgeben</h1>
+<div class="page-header">
+    <h1>Zurückgeben</h1>
+</div>
 
 <h2>Event auswählen</h2>
 
@@ -7,7 +9,7 @@
 
 <h2>Barcode scannen / eingeben</h2>
 
-<div class="form-group">
+<div class="form-group rental-scan-controls">
 
     <input 
         type="text" 
@@ -28,6 +30,8 @@
 <button id="backrentButton">
     Zurückgeben
 </button>
+
+<p id="result" role="status" aria-live="polite" aria-atomic="true"></p>
 
 
 
@@ -56,9 +60,3 @@
 
 
 <div id="rentalCardContainer" class="card-container mobile-only"></div>
-
-
-<p id="result"></p>
-
-
-<script src="js/rental.js"></script>

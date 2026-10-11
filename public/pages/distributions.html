@@ -1,6 +1,10 @@
-<main>
+<div class="distribution-page">
 
-    <h2>Distribution anlegen / bearbeiten</h2>
+    <div class="page-header">
+        <h1>Verteiler</h1>
+    </div>
+
+    <h2 id="distributionFormTitle">Verteiler anlegen</h2>
 
     <input type="hidden" id="distribution_id">
 
@@ -14,6 +18,7 @@
 
 
 <h3>Eingänge</h3>
+<div class="form-grid">
 
 <div class="form-group">
     <label for="input">Input</label>
@@ -33,6 +38,7 @@
     >
 </div>
 
+</div>
 <h3>Ausgänge</h3>
 
 <div class="output-grid">
@@ -64,18 +70,14 @@
 
 </div>
 
-<br>
-    <button onclick="saveDistribution()" aria-label="Speichern" title="Speichern">
+<div class="form-actions">
+    <button id="saveDistributionButton" type="button" onclick="saveDistribution()" aria-label="Speichern" title="Speichern">
         <i class="fa-solid fa-floppy-disk"></i> Speichern
     </button>
-    <button onclick="clearForm()">
-        <i class="fa-solid fa-plus"></i> Neu
-    </button>
-
-</section>
+</div>
 
 <section class="card">
-    <h2>Verteiler anlegen / bearbeiten</h2>
+    <h2>Vorhandene Verteiler</h2>
 <div id="distributionTableContainer" class="desktop-only">
     <table>
         <thead>
@@ -96,13 +98,14 @@
     </table>
 </div>
 <div id="distributionCards" class="card-container mobile-only"></div>
-</main>
+</section>
+</div>
 
 
 
 <div id="imageModal" class="modal hidden">
     <div class="modal-content">
-        <h2>Verteiler Bilder</h2>
+        <h2>Verteilerbilder</h2>
         <div id="imageGallery"></div>
         <div id="imageCounter"></div>
         <div id="imageAdminButtons">

@@ -1,13 +1,18 @@
 
-<body>
+
+<div class="page-header">
+    <h1>Benutzerverwaltung</h1>
+</div>
 
     <!-- Neuer Benutzer -->
     <h2>Neuen Benutzer erstellen</h2>
-    <div class="form-row">
+    <form id="userCreateForm">
+    <div class="form-grid">
+    <div class="form-group">
         <label for="newUsername">Benutzername:</label>
         <input type="text" id="newUsername">
     </div>
-    <div class="form-row">
+    <div class="form-group">
         <label for="newRole">Rolle:</label>
         <select id="newRole">
             <option value="user">User</option>
@@ -16,10 +21,12 @@
 
         </select>
     </div>
-    <button id="createUserButton">Benutzer erstellen</button>
+    </div>
+    <div class="form-actions"><button id="createUserButton" type="submit"><i class="fa-solid fa-floppy-disk"></i> Speichern</button></div>
+    </form>
     <p id="createUserResult"></p>
 
-    <button type="button" onclick="window.location.href='index.html'">Zurück</button>
+    <button type="button" class="btn-secondary" onclick="loadPage('home')">Zurück</button>
 
     <!-- Bestehende Benutzer -->
     <h2>Bestehende Benutzer</h2>

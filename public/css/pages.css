@@ -1,32 +1,197 @@
-/* Page-specific styles. Mobile list cards are defined exclusively below. */
+/* ============================================================
+   pages.css
+   Seitenspezifische Formulare und gemeinsame mobile Listenansichten.
+   Regelreihenfolge bleibt für die CSS-Kaskade erhalten.
+   ============================================================ */
 
-/* Material prices dialog */
-#priceDialog { width: 90%; min-width: 320px; max-width: 500px; padding: 1.5rem; color: var(--text); background: var(--card-bg); border: 1px solid var(--border); border-radius: var(--radius); }
-#priceDialog::backdrop { background: rgba(0, 0, 0, .55); }
-.material-price-row { display: flex; align-items: center; justify-content: space-between; gap: 1rem; padding: .65rem 0; border-bottom: 1px solid var(--border); }
-.material-price-row:last-child { border-bottom: 0; }
-.material-price-name { flex: 1; font-weight: 600; }
-.material-price-input { display: flex; align-items: center; gap: .35rem; }
-.material-price-field { box-sizing: border-box; width: 90px; }
-#priceDialog .dialog-actions { display: flex; justify-content: flex-end; gap: .5rem; margin-top: 1rem; }
+/* Verteiler: Formular und Bilder */
+#distributionFormTitle {
+    scroll-margin-top: 90px;
+}
 
-/* Invoice */
-.invoice-header-layout { display: grid; grid-template-columns: 1fr 1.4fr; gap: 1rem; align-items: start; }
-.invoice-info-card { padding: 1rem; background: var(--card-bg); border: 1px solid var(--border); border-radius: var(--radius); }
-.invoice-info-card-header { margin-bottom: 1rem; padding-bottom: .6rem; border-bottom: 1px solid var(--border); }
-.invoice-info-card-header h4 { margin: 0; font-size: 1rem; font-weight: 700; }
-.invoice-info-fields { display: flex; flex-direction: column; gap: .65rem; }
-.invoice-info-fields .form-group { margin: 0; }
-.invoice-info-fields label { display: block; margin-bottom: .25rem; }
-.invoice-address-row { display: grid; grid-template-columns: 110px 1fr; gap: .6rem; }
-.invoice-address-row .form-group { min-width: 0; }
-.invoice-header-actions { grid-column: 1 / -1; display: flex; justify-content: flex-start; gap: .5rem; margin-top: 1rem; }
+#imageGallery .distribution-image {
+    display: block;
+    max-width: 100%;
+    max-height: 60vh;
+    width: auto;
+    height: auto;
+    object-fit: contain;
+    margin: 0 auto;
+}
 
-/* This is a desktop form grid, not a mobile card. */
-.output-grid { display: grid; grid-template-columns: repeat(5, minmax(100px, 1fr)); gap: 15px; }
+/* Verleih: Barcode-Eingabe und Scan-Ergebnis */
+.rental-scan-controls {
+    flex-direction: row;
+    align-items: center;
+    width: min(100%, 420px);
+    gap: 12px;
+    margin-bottom: 20px;
+}
 
-/* The event list has no .mobile-only class in its markup, so all mobile-card
-   containers are explicitly hidden outside the breakpoint. */
+.rental-scan-controls #barcodeInput {
+    flex: 1;
+    min-width: 0;
+}
+
+.rental-scan-controls #scanBtn {
+    flex: 0 0 auto;
+    padding: 0.3rem 0.6rem;
+    min-height: 30px;
+    font-size: 0.8rem;
+}
+
+.rental-scan-controls + .camera-container {
+    margin-bottom: 20px;
+}
+
+.rental-scan-message {
+    padding: 12px 16px;
+    border: 1px solid currentColor;
+    border-left-width: 4px;
+    border-radius: 6px;
+    white-space: pre-line;
+}
+
+.rental-scan-message:empty {
+    display: none;
+}
+
+.rental-scan-message-success {
+    color: var(--status-free);
+    background: var(--card-bg);
+}
+
+.rental-scan-message-error {
+    color: var(--status-rented);
+    background: var(--card-bg);
+    font-weight: 600;
+}
+
+/* Material: Preisdialog */
+#priceDialog {
+    width: 90%;
+    min-width: 320px;
+    max-width: 500px;
+    padding: 1.5rem;
+    color: var(--text);
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+}
+
+#priceDialog::backdrop {
+    background: rgba(0, 0, 0, .55);
+}
+
+.material-price-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: .65rem 0;
+    border-bottom: 1px solid var(--border);
+}
+
+.material-price-row:last-child {
+    border-bottom: 0;
+}
+
+.material-price-name {
+    flex: 1;
+    font-weight: 600;
+}
+
+.material-price-input {
+    display: flex;
+    align-items: center;
+    gap: .35rem;
+}
+
+.material-price-field {
+    box-sizing: border-box;
+    width: 90px;
+}
+
+#priceDialog .dialog-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: .5rem;
+    margin-top: 1rem;
+}
+
+/* Rechnungen: Kopfdaten und Empfänger */
+.invoice-header-layout {
+    display: grid;
+    grid-template-columns: 1fr 1.4fr;
+    gap: 1rem;
+    align-items: start;
+}
+
+.invoice-info-card {
+    padding: 1rem;
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+}
+
+.invoice-info-card-header {
+    margin-bottom: 1rem;
+    padding-bottom: .6rem;
+    border-bottom: 1px solid var(--border);
+}
+
+.invoice-info-card-header h3 {
+    margin: 0;
+    font-size: 1rem;
+    font-weight: 700;
+}
+
+.invoice-info-fields {
+    display: flex;
+    flex-direction: column;
+    gap: .65rem;
+}
+
+.invoice-info-fields .form-group {
+    margin: 0;
+}
+
+.invoice-info-fields label {
+    display: block;
+    margin-bottom: .25rem;
+}
+
+.invoice-address-row {
+    display: grid;
+    grid-template-columns: 110px 1fr;
+    gap: .6rem;
+}
+
+/* Rechnungsadresse: auch PLZ und Ort untereinander, in allen Ansichten. */
+#invoiceHeader .invoice-address-row {
+    grid-template-columns: 1fr;
+}
+
+.invoice-address-row .form-group {
+    min-width: 0;
+}
+
+.invoice-header-actions {
+    grid-column: 1 / -1;
+    display: flex;
+    justify-content: flex-start;
+    gap: .5rem;
+    margin-top: 1rem;
+}
+
+/* Verteiler: Formular und Bilder */
+.output-grid {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(100px, 1fr));
+    gap: 15px;
+}
+
+/* Sichtbarkeit der Listenansichten */
 #productTableContainer,
 #materialCardContainer,
 #rentalCardContainer,
@@ -34,10 +199,13 @@
 #distributionCards,
 #userCardContainer,
 #customerCards,
-#categoryCardContainer { display: none; }
+#categoryCardContainer {
+    display: none;
+}
 
+/* Responsive Anpassungen: (max-width: 768px) */
 @media (max-width: 768px) {
-    /* Mobile card containers */
+    /* Sichtbarkeit der Listenansichten */
     #productTableContainer,
     #materialCardContainer,
     #rentalCardContainer,
@@ -45,22 +213,66 @@
     #distributionCards,
     #userCardContainer,
     #customerCards,
-    #categoryCardContainer { display: flex; flex-direction: column; gap: var(--space-md); }
+    #categoryCardContainer {
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-md);
+    }
 
-    #eventTableContainer { display: flex; flex-direction: column; gap: var(--space-md); }
+    #eventTableContainer {
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-md);
+    }
 
-    #priceDialog { width: calc(100% - 2rem); min-width: 0; max-width: none; padding: 1rem; }
-    .material-price-row { gap: .5rem; }
-    .material-price-field { width: 80px; }
-    .invoice-header-layout { grid-template-columns: 1fr; }
-    .invoice-info-card { padding: .85rem; }
-    .invoice-address-row { grid-template-columns: 1fr 1fr; }
-    .invoice-header-actions, .invoice-header-actions button { width: 100%; }
-    .output-grid { grid-template-columns: 1fr; }
+    /* Material: Preisdialog */
+    #priceDialog {
+        width: calc(100% - 2rem);
+        min-width: 0;
+        max-width: none;
+        padding: 1rem;
+    }
 
-    /* Shared mobile card shell */
-    .product-card, .event-card, .material-card, .rental-card,
-    .planning-card, .distribution-card, .customer-card, .user-card {
+    .material-price-row {
+        gap: .5rem;
+    }
+
+    .material-price-field {
+        width: 80px;
+    }
+
+    /* Rechnungen: Kopfdaten und Empfänger */
+    .invoice-header-layout {
+        grid-template-columns: 1fr;
+    }
+
+    .invoice-info-card {
+        padding: .85rem;
+    }
+
+    .invoice-address-row {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .invoice-header-actions,
+    .invoice-header-actions button {
+        width: 100%;
+    }
+
+    /* Verteiler: Formular und Bilder */
+    .output-grid {
+        grid-template-columns: 1fr;
+    }
+
+    /* Mobile Listen: Karten und Felder */
+    .product-card,
+    .event-card,
+    .material-card,
+    .rental-card,
+    .planning-card,
+    .distribution-card,
+    .customer-card,
+    .user-card {
         box-sizing: border-box;
         width: 100%;
         padding: 0;
@@ -72,15 +284,46 @@
         box-shadow: 0 2px 6px var(--card-shadow);
     }
 
-    .product-card-header, .event-card-header, .material-card-header,
-    .rental-card-header, .planning-card-header, .distribution-card-header,
-    .customer-card-header, .user-card-header { padding: 13px 14px; background: var(--background); border-bottom: 1px solid var(--border); }
+    /* Mobile Listen: Kopfzeilen */
+    .product-card-header,
+    .event-card-header,
+    .material-card-header,
+    .rental-card-header,
+    .planning-card-header,
+    .distribution-card-header,
+    .customer-card-header,
+    .user-card-header {
+        padding: 13px 14px;
+        background: var(--background);
+        border-bottom: 1px solid var(--border);
+    }
 
-    .product-title, .event-title, .material-title, .rental-title,
-    .planning-title, .distribution-title, .customer-title { display: flex; align-items: center; gap: 8px; }
-    .product-title, .event-title, .distribution-title, .customer-title { justify-content: space-between; }
-    .product-title h3, .event-title h3, .material-title h3, .rental-title h3,
-    .planning-title h3, .distribution-title h3, .customer-title h3 {
+    .product-title,
+    .event-title,
+    .material-title,
+    .rental-title,
+    .planning-title,
+    .distribution-title,
+    .customer-title {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .product-title,
+    .event-title,
+    .distribution-title,
+    .customer-title {
+        justify-content: space-between;
+    }
+
+    .product-title h3,
+    .event-title h3,
+    .material-title h3,
+    .rental-title h3,
+    .planning-title h3,
+    .distribution-title h3,
+    .customer-title h3 {
         min-width: 0;
         margin: 0;
         overflow: hidden;
@@ -90,24 +333,72 @@
         text-overflow: ellipsis;
         white-space: nowrap;
     }
-    .user-card-header { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
-    .user-card-header h3 { min-width: 0; margin: 0; overflow: hidden; color: var(--text); font-size: 1rem; font-weight: 600; text-overflow: ellipsis; white-space: nowrap; }
-    .user-role-badge { flex-shrink: 0; padding: 4px 9px; color: var(--text); background: var(--card-bg); border: 1px solid var(--border); border-radius: 999px; font-size: .72rem; font-weight: 600; }
 
-    .product-card-body, .event-card-body, .material-card-body,
-    .rental-card-body, .planning-card-body, .distribution-card-body,
-    .customer-card-body { padding: 3px 14px; }
-    .customer-card-body { display: flex; flex-direction: column; padding-bottom: 8px; }
-    .user-card-body { padding: 3px 14px; }
+    .user-card-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 8px;
+    }
 
-    .product-detail, .event-detail, .material-detail, .customer-detail {
+    .user-card-header h3 {
+        min-width: 0;
+        margin: 0;
+        overflow: hidden;
+        color: var(--text);
+        font-size: 1rem;
+        font-weight: 600;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    /* Mobile Listen: Karten und Felder */
+    .user-role-badge {
+        flex-shrink: 0;
+        padding: 4px 9px;
+        color: var(--text);
+        background: var(--card-bg);
+        border: 1px solid var(--border);
+        border-radius: 999px;
+        font-size: .72rem;
+        font-weight: 600;
+    }
+
+    .product-card-body,
+    .event-card-body,
+    .material-card-body,
+    .rental-card-body,
+    .planning-card-body,
+    .distribution-card-body,
+    .customer-card-body {
+        padding: 3px 14px;
+    }
+
+    .customer-card-body {
+        display: flex;
+        flex-direction: column;
+        padding-bottom: 8px;
+    }
+
+    .user-card-body {
+        padding: 3px 14px;
+    }
+
+    /* Mobile Listen: Details */
+    .product-detail,
+    .event-detail,
+    .material-detail,
+    .customer-detail {
         display: flex;
         align-items: flex-start;
         gap: 8px;
         padding: 9px 0;
         border-bottom: 1px solid var(--border);
     }
-    .rental-detail, .planning-detail, .distribution-detail {
+
+    .rental-detail,
+    .planning-detail,
+    .distribution-detail {
         display: flex;
         align-items: center;
         justify-content: space-between;
@@ -115,57 +406,249 @@
         padding: 9px 0;
         border-bottom: 1px solid var(--border);
     }
-    .user-detail { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 9px 0; }
-    .product-detail:last-child, .event-detail:last-child, .material-detail:last-child,
-    .rental-detail:last-child, .customer-detail:last-child, .distribution-detail:last-child { border-bottom: 0; }
 
-    .product-detail-label, .event-detail-label, .material-detail-label,
-    .customer-detail-label, .rental-detail-label, .planning-detail-label,
-    .distribution-detail-label, .user-detail-label, .planning-quantity-row label,
-    .distribution-location label, .distribution-output-title {
+    .user-detail {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 8px;
+        padding: 9px 0;
+    }
+
+    .product-detail:last-child,
+    .event-detail:last-child,
+    .material-detail:last-child,
+    .rental-detail:last-child,
+    .customer-detail:last-child,
+    .distribution-detail:last-child {
+        border-bottom: 0;
+    }
+
+    /* Mobile Listen: Beschriftungen */
+    .product-detail-label,
+    .event-detail-label,
+    .material-detail-label,
+    .customer-detail-label,
+    .rental-detail-label,
+    .planning-detail-label,
+    .distribution-detail-label,
+    .user-detail-label,
+    .planning-quantity-row label,
+    .distribution-location label,
+    .distribution-output-title {
         color: var(--text-muted, #777);
         font-size: .68rem;
         font-weight: 600;
         letter-spacing: .03em;
         text-transform: uppercase;
     }
-    .product-detail-label, .event-detail-label, .material-detail-label,
-    .customer-detail-label { flex: 0 0 78px; }
-    .product-detail-value, .event-detail-value, .material-detail-value,
-    .customer-detail-value { flex: 1; min-width: 0; overflow-wrap: anywhere; color: var(--text); font-size: .84rem; line-height: 1.4; }
-    .rental-detail-value, .planning-detail-value, .distribution-detail-value { color: var(--text); font-size: .84rem; font-weight: 600; }
-    .user-detail-value { color: var(--text); font-size: .84rem; font-weight: 600; }
-    .rental-subtitle, .planning-subtitle { margin-top: 3px; color: var(--text-muted, #777); font-size: .74rem; }
 
-    .product-card .status-badge, .event-card .status-badge, .customer-card .status-badge { flex-shrink: 0; padding: 4px 9px; border-radius: 999px; font-size: .72rem; font-weight: 600; }
-    .product-card .product-actions, .event-card .event-actions,
-    .material-card-actions, .customer-card .card-actions, .distribution-card-actions,
-    .user-card-actions { display: flex; gap: 8px; padding: 10px 14px 13px; border-top: 1px solid var(--border); }
-    .product-card .product-actions .small, .event-card .event-actions .small,
-    .material-card-actions button, .customer-card .card-actions .btn,
-    .distribution-card-actions .small, .user-card-actions button { flex: 1; min-height: 38px; padding: 7px 10px; font-size: .84rem; }
+    .product-detail-label,
+    .event-detail-label,
+    .material-detail-label,
+    .customer-detail-label {
+        flex: 0 0 78px;
+    }
 
-    .planning-card.warning { border-color: #d32f2f; }
-    .distribution-card.planned { border-left: 6px solid #00a000; }
-    .distribution-card.unplanned { border-left: 6px solid #777; }
-    .distribution-header-actions { display: flex; align-items: center; flex-shrink: 0; gap: 8px; }
+    /* Mobile Listen: Details */
+    .product-detail-value,
+    .event-detail-value,
+    .material-detail-value,
+    .customer-detail-value {
+        flex: 1;
+        min-width: 0;
+        overflow-wrap: anywhere;
+        color: var(--text);
+        font-size: .84rem;
+        line-height: 1.4;
+    }
 
-    .rental-card .product-details { padding: 0 14px; background: var(--background); border-top: 1px solid var(--border); }
-    .rental-card .product-details > div { padding: 9px 0; border-bottom: 1px solid var(--border); font-size: .82rem; }
-    .rental-card .product-details > div:last-child { border-bottom: 0; }
-    .rental-card .product-returned { color: var(--text-muted, #777); }
+    .rental-detail-value,
+    .planning-detail-value,
+    .distribution-detail-value {
+        color: var(--text);
+        font-size: .84rem;
+        font-weight: 600;
+    }
 
-    .planning-quantity-row, .distribution-location { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 10px 14px 13px; border-top: 1px solid var(--border); }
-    .planning-quantity-row input { box-sizing: border-box; width: 80px; min-height: 38px; font-size: .9rem; font-weight: 600; text-align: center; }
-    .distribution-output-title { padding: 10px 0 7px; }
-    .distribution-output-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 5px; padding-bottom: 9px; }
-    .distribution-output-grid > div { display: flex; flex-direction: column; align-items: center; gap: 3px; padding: 6px 2px; background: var(--background); border: 1px solid var(--border); border-radius: 6px; }
-    .distribution-output-grid small { color: var(--text-muted, #777); font-size: .6rem; }
-    .distribution-output-grid strong { color: var(--text); font-size: .82rem; }
-    .distribution-location label { flex: 0 0 55px; }
-    .distribution-location input { box-sizing: border-box; flex: 1; min-width: 0; min-height: 38px; }
+    .user-detail-value {
+        color: var(--text);
+        font-size: .84rem;
+        font-weight: 600;
+    }
 
-    .price-category-badge { display: inline-flex; align-items: center; width: fit-content; padding: 4px 8px; color: var(--text); background: var(--background); border: 1px solid var(--border); border-radius: 6px; font-size: .76rem; font-weight: 500; }
-    a.customer-detail-value { text-decoration: none; }
-    a.customer-detail-value:hover { text-decoration: underline; }
+    /* Mobile Listen: Kopfzeilen */
+    .rental-subtitle,
+    .planning-subtitle {
+        margin-top: 3px;
+        color: var(--text-muted, #777);
+        font-size: .74rem;
+    }
+
+    /* Mobile Listen: Karten und Felder */
+    .product-card .status-badge,
+    .event-card .status-badge,
+    .customer-card .status-badge {
+        flex-shrink: 0;
+        padding: 4px 9px;
+        border-radius: 999px;
+        font-size: .72rem;
+        font-weight: 600;
+    }
+
+    /* Mobile Listen: Aktionen */
+    .product-card .product-actions,
+    .event-card .event-actions,
+    .material-card-actions,
+    .customer-card .card-actions,
+    .distribution-card-actions,
+    .user-card-actions {
+        display: flex;
+        gap: 8px;
+        padding: 10px 14px 13px;
+        border-top: 1px solid var(--border);
+    }
+
+    .product-card .product-actions .small,
+    .event-card .event-actions .small,
+    .material-card-actions button,
+    .customer-card .card-actions .btn,
+    .distribution-card-actions .small,
+    .user-card-actions button {
+        flex: 1;
+        min-height: 38px;
+        padding: 7px 10px;
+        font-size: .84rem;
+    }
+
+    /* Mobile Listen: Karten und Felder */
+    .planning-card.warning {
+        border-color: #d32f2f;
+    }
+
+    .distribution-card.planned {
+        border-left: 6px solid #00a000;
+    }
+
+    .distribution-card.unplanned {
+        border-left: 6px solid #777;
+    }
+
+    /* Mobile Listen: Aktionen */
+    .distribution-header-actions {
+        display: flex;
+        align-items: center;
+        flex-shrink: 0;
+        gap: 8px;
+    }
+
+    /* Mobile Listen: Details */
+    .rental-card .product-details {
+        padding: 0 14px;
+        background: var(--background);
+        border-top: 1px solid var(--border);
+    }
+
+    .rental-card .product-details > div {
+        padding: 9px 0;
+        border-bottom: 1px solid var(--border);
+        font-size: .82rem;
+    }
+
+    .rental-card .product-details > div:last-child {
+        border-bottom: 0;
+    }
+
+    /* Mobile Listen: Karten und Felder */
+    .rental-card .product-returned {
+        color: var(--text-muted, #777);
+    }
+
+    .planning-quantity-row,
+    .distribution-location {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 8px;
+        padding: 10px 14px 13px;
+        border-top: 1px solid var(--border);
+    }
+
+    .planning-quantity-row input {
+        box-sizing: border-box;
+        width: 80px;
+        min-height: 38px;
+        font-size: .9rem;
+        font-weight: 600;
+        text-align: center;
+    }
+
+    /* Mobile Listen: Kopfzeilen */
+    .distribution-output-title {
+        padding: 10px 0 7px;
+    }
+
+    /* Verteiler: Formular und Bilder */
+    .distribution-output-grid {
+        display: grid;
+        grid-template-columns: repeat(5, 1fr);
+        gap: 5px;
+        padding-bottom: 9px;
+    }
+
+    .distribution-output-grid > div {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 3px;
+        padding: 6px 2px;
+        background: var(--background);
+        border: 1px solid var(--border);
+        border-radius: 6px;
+    }
+
+    .distribution-output-grid small {
+        color: var(--text-muted, #777);
+        font-size: .6rem;
+    }
+
+    .distribution-output-grid strong {
+        color: var(--text);
+        font-size: .82rem;
+    }
+
+    /* Mobile Listen: Beschriftungen */
+    .distribution-location label {
+        flex: 0 0 55px;
+    }
+
+    /* Mobile Listen: Karten und Felder */
+    .distribution-location input {
+        box-sizing: border-box;
+        flex: 1;
+        min-width: 0;
+        min-height: 38px;
+    }
+
+    .price-category-badge {
+        display: inline-flex;
+        align-items: center;
+        width: fit-content;
+        padding: 4px 8px;
+        color: var(--text);
+        background: var(--background);
+        border: 1px solid var(--border);
+        border-radius: 6px;
+        font-size: .76rem;
+        font-weight: 500;
+    }
+
+    /* Mobile Listen: Details */
+    a.customer-detail-value {
+        text-decoration: none;
+    }
+
+    a.customer-detail-value:hover {
+        text-decoration: underline;
+    }
 }

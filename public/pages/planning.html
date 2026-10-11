@@ -1,7 +1,9 @@
 
-<h1>Materialplanung</h1>
+<div class="page-header">
+    <h1>Materialplanung</h1>
+</div>
 
-<div class="planning-header">
+<div class="form-grid">
 
     <div class="form-group">
         <label for="eventSelect">Veranstaltung:</label>
@@ -16,7 +18,7 @@
 <!-- Wird erst bei ausgewählter Veranstaltung angezeigt -->
 <div id="planningContent">
 
-    <div class="planning-header">
+    <div class="form-grid">
 
         <div class="form-group">
             <label for="materialSelect">Material:</label>
@@ -74,9 +76,11 @@
 
     <br>
 
-    <button id="savePlanningButton">
-        <i class="fa-solid fa-floppy-disk"></i>
-    </button>
+    <div class="form-actions">
+        <button id="savePlanningButton" type="button">
+            <i class="fa-solid fa-floppy-disk"></i> Speichern
+        </button>
+    </div>
 
     <p id="result"></p>
 

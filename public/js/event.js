@@ -6,6 +6,7 @@ let sortDirection = 1;
 let endWasManuallyChanged = false;
 let editingEventId = null;
 let customersEvents = [];
+let eventUser = null;
 
 let form = null;
 let searchInput = null;
@@ -16,14 +17,14 @@ let container = null;
 // 🚀 INIT
 // =====================================================
 async function initEventPage() {
-  user = await checkLogin();
+  eventUser = await checkLogin();
 
   form = document.getElementById("eventForm");
   searchInput = document.getElementById("searchInput");
   table = document.getElementById("eventTable");
   container = document.getElementById("eventTableContainer");
 
-  await loadCustomers();
+  await loadEventCustomers();
   await loadEvents();
 
   setupEditMode();
@@ -31,7 +32,7 @@ async function initEventPage() {
   setupSearch();
 }
 
-async function loadCustomers() {
+async function loadEventCustomers() {
   try {
     const res = await fetch("/api/customers");
 
@@ -84,7 +85,8 @@ function renderEvents(events) {
 
   if (!container) return;
 
-  const isAdmin = user && user.role === "admin";
+  const isAdmin = eventUser?.role === "admin";
+  const canEdit = canEditEvents();
 
   // =====================================================
   // MOBILE
@@ -126,7 +128,7 @@ function renderEvents(events) {
     </div>
 
     ${
-      isAdmin
+      canEdit
         ? `
                 <div class="event-actions">
 
@@ -146,7 +148,7 @@ function renderEvents(events) {
 
 
                     ${
-                      Number(ev.stat) === 10
+                      isAdmin && Number(ev.stat) === 10
                         ? `
                                 <button
                                     class="small"
@@ -166,11 +168,21 @@ function renderEvents(events) {
 `;
 
       // Ganze Karte als Bearbeiten klickbar
-      if (isAdmin) {
+      if (canEdit) {
         item.title = "Veranstaltung bearbeiten";
+        item.style.cursor = "pointer";
+        item.tabIndex = 0;
+        item.setAttribute("role", "button");
+        item.setAttribute("aria-label", `${ev.name || "Veranstaltung"} bearbeiten`);
 
         item.addEventListener("click", (event) => {
           if (!event.target.closest("button")) {
+            openEventEdit(ev.id);
+          }
+        });
+        item.addEventListener("keydown", (event) => {
+          if (event.target === item && (event.key === "Enter" || event.key === " ")) {
+            event.preventDefault();
             openEventEdit(ev.id);
           }
         });
@@ -203,7 +215,7 @@ function renderEvents(events) {
             <td>${formatDateDE(ev.ende)}</td>
 
 ${
-  isAdmin
+  canEdit
     ? `
         <td class="event-actions">
 
@@ -223,7 +235,7 @@ ${
 }
 
             ${
-              Number(ev.stat) === 10
+              isAdmin && Number(ev.stat) === 10
                 ? `
                     <button
                         class="small"
@@ -244,7 +256,7 @@ ${
         `;
 
     // Ganze Zeile als Bearbeiten klickbar
-    if (isAdmin) {
+    if (canEdit) {
       row.classList.add("clickable-row");
       row.title = "Veranstaltung bearbeiten";
 
@@ -259,8 +271,12 @@ ${
   });
 }
 
+function canEditEvents() {
+  return ["admin", "user"].includes(eventUser?.role);
+}
+
 async function openEventEdit(id) {
-  if (!user || user.role !== "admin") {
+  if (!canEditEvents()) {
     return;
   }
 
@@ -296,6 +312,11 @@ function resetEventForm() {
 
   editingEventId = null;
   endWasManuallyChanged = false;
+  const heading = document.querySelector("#content h1");
+  if (heading) heading.textContent = "Veranstaltung anlegen";
+  document.title = "Veranstaltung anlegen | VerleihApp";
+  const pageTitle = document.getElementById("pageTitle");
+  if (pageTitle) pageTitle.textContent = "Veranstaltung anlegen";
 }
 
 function setupForm() {
@@ -353,7 +374,7 @@ function setupForm() {
       const result = await res.json();
       if (!res.ok) throw new Error(result.error);
 
-      alert(result.message || "Event gespeichert (ID: " + result.id + ")");
+      showAppMessage(result.message || "Event gespeichert (ID: " + result.id + ")");
       if (editingEventId) {
         editingEventId = null;
         await loadPage("events");
@@ -391,7 +412,7 @@ function setupEditMode() {
 
   document.title = "Veranstaltung bearbeiten";
 
-  const heading = document.querySelector("body > h1");
+  const heading = document.querySelector("#content h1");
 
   if (heading) {
     heading.textContent = "Veranstaltung bearbeiten";
@@ -400,7 +421,7 @@ function setupEditMode() {
   const submitButton = form.querySelector('button[type="submit"]');
 
   if (submitButton) {
-    submitButton.innerHTML = '<i class="fa-solid fa-floppy-disk"></i>';
+    submitButton.innerHTML = '<i class="fa-solid fa-floppy-disk"></i> Speichern';
     submitButton.setAttribute("aria-label", "Speichern");
     submitButton.title = "Speichern";
   }
@@ -442,7 +463,7 @@ if (eventIsClosed) {
 // ❌ EVENT LÖSCHEN
 // =====================================================
 async function deleteEvent(id) {
-  if (!user || user.role !== "admin") {
+  if (eventUser?.role !== "admin") {
     alert("Nur Administratoren dürfen Veranstaltungen löschen.");
     return;
   }
@@ -463,7 +484,7 @@ async function deleteEvent(id) {
       return;
     }
 
-    alert(result.message);
+    showAppMessage(result.message);
 
     await loadEvents();
   } catch (err) {

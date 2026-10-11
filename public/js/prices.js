@@ -159,7 +159,7 @@ function createPriceRow(priceCategoryId, name, price) {
   row.innerHTML = `
 
         <div class="material-price-name">
-            ${escapeHtml(name)}
+            ${escapeMaterialPriceHtml(name)}
         </div>
 
         <div class="material-price-input">
@@ -280,7 +280,7 @@ function closeMaterialPrices() {
 // HTML ESCAPEN
 // =====================================================
 
-function escapeHtml(value) {
+function escapeMaterialPriceHtml(value) {
   const div = document.createElement("div");
 
   div.textContent = value ?? "";

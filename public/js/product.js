@@ -1,7 +1,9 @@
 // =====================================================
 // 🌍 GLOBALE VARIABLEN
 // =====================================================
+(() => {
 let allProducts = [];
+let materialTypes = [];
 let categoryMap = {};
 let sortDirectionProducts = 1;
 let editingProductId = null;
@@ -47,9 +49,17 @@ async function loadProducts() {
     const res = await fetch("/api/products");
     const products = await res.json();
 
-    allProducts = products;
+    allProducts = products.sort((a, b) =>
+      getSortableProductValue(a, "name").localeCompare(
+        getSortableProductValue(b, "name"), "de", {
+          sensitivity: "base",
+          numeric: true,
+        },
+      ),
+    );
+    sortDirectionProducts = 1;
 
-    renderProducts(products);
+    renderProducts(allProducts);
   } catch (err) {
     console.error("Fehler beim Laden der Produkte:", err);
   }
@@ -220,18 +230,22 @@ async function loadMaterialTypes() {
 
   [...materialTypes]
     .sort((a, b) =>
-      (a.name || "").localeCompare(b.name || "", "de", {
+      getMaterialOptionLabel(a).localeCompare(getMaterialOptionLabel(b), "de", {
         sensitivity: "base",
+        numeric: true,
       }),
     )
     .forEach((mat) => {
     const option = document.createElement("option");
 
     option.value = mat.id;
-    option.textContent = `${mat.category_name} - ${mat.name} ${mat.specification ?? ""}`;
+    option.textContent = getMaterialOptionLabel(mat);
 
     select.appendChild(option);
     });
+}
+function getMaterialOptionLabel(material) {
+  return `${material.category_name || ""} - ${material.name || ""} ${material.specification ?? ""}`.trim();
 }
 // =====================================================
 // 🔍 FILTER & SUCHE
@@ -276,9 +290,11 @@ function sortProducts(field) {
     let valA = getSortableProductValue(a, field);
     let valB = getSortableProductValue(b, field);
 
-    if (typeof valA === "string") {
-      valA = valA.toLowerCase();
-      valB = valB.toLowerCase();
+    if (typeof valA === "string" && typeof valB === "string") {
+      return valA.localeCompare(valB, "de", {
+        sensitivity: "base",
+        numeric: true,
+      }) * sortDirectionProducts;
     }
 
     if (valA < valB) return -1 * sortDirectionProducts;
@@ -290,7 +306,7 @@ function sortProducts(field) {
 }
 
 function getSortableProductValue(product, field) {
-  if (field === "name") return getProductName(product);
+  if (field === "name") return product.bez || getProductName(product);
   if (field === "spezification") return getProductSpec(product);
   return product[field] ?? "";
 }
@@ -437,7 +453,7 @@ function setupForm() {
       });
       const result = await res.json();
       if (!res.ok) throw new Error(result.error);
-      alert(result.message);
+      showAppMessage(result.message);
       if (editingProductId) {
         editingProductId = null;
         await loadPage("products");
@@ -474,10 +490,10 @@ function setupEditMode() {
   }
 
   document.title = "Produkt bearbeiten";
-  const heading = document.querySelector("body > h1");
+  const heading = document.querySelector("#content h1");
   if (heading) heading.textContent = "Produkt bearbeiten";
   const submitButton = form.querySelector('button[type="submit"]');
-  if (submitButton) submitButton.textContent = "Aktualisieren";
+  if (submitButton) submitButton.innerHTML = '<i class="fa-solid fa-floppy-disk"></i> Speichern';
 
   document.getElementById("bez").value = product.bez || "";
   document.getElementById("Code").value = product.Code || "";
@@ -513,7 +529,7 @@ async function deleteProduct(id) {
     const res = await fetch(`/api/products/${id}`, { method: "DELETE" });
     const result = await res.json();
     if (!res.ok) throw new Error(result.error);
-    alert(result.message);
+    showAppMessage(result.message);
     loadProducts();
   } catch (err) {
     alert("Fehler beim Loeschen: " + err.message);
@@ -533,7 +549,7 @@ async function checkProduct(id) {
     });
     const result = await res.json();
     if (!res.ok) throw new Error(result.error);
-    alert(result.message);
+    showAppMessage(result.message);
     loadProducts();
   } catch (err) {
     alert(err.message);
@@ -557,3 +573,12 @@ function toDateInputValue(date) {
 function normalizeCode(code) {
   return String(Number(code));
 }
+
+Object.assign(window, {
+  initProductPage,
+  openProductEdit,
+  sortProducts,
+  deleteProduct,
+  checkProduct,
+});
+})();

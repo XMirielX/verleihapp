@@ -1,3 +1,4 @@
+let customerPriceCategories = [];
 let customers = [];
 let editingCustomerId = null;
 
@@ -37,7 +38,7 @@ function renderPriceCategoriesCustomer() {
         </option>
     `;
 
-  priceCategories
+  customerPriceCategories
     .filter((category) => category.stat)
     .forEach((category) => {
       const option = document.createElement("option");
@@ -96,26 +97,26 @@ function renderCustomerTable() {
 
     tr.innerHTML = `
             <td>
-                ${escapeHtml(customer.name)}
+                ${escapeCustomerHtml(customer.name)}
             </td>
 
             <td>
-                ${escapeHtml(customer.street || "")}<br>
-                ${escapeHtml(
+                ${escapeCustomerHtml(customer.street || "")}<br>
+                ${escapeCustomerHtml(
                   `${customer.plz || ""} ${customer.city || ""}`.trim(),
                 )}
             </td>
 
             <td>
-                ${escapeHtml(customer.email || "")}
+                ${escapeCustomerHtml(customer.email || "")}
             </td>
 
             <td>
-                ${escapeHtml(customer.phone || "")}
+                ${escapeCustomerHtml(customer.phone || "")}
             </td>
 
             <td>
-                ${escapeHtml(customer.price_category || "Default")}
+                ${escapeCustomerHtml(customer.price_category || "Default")}
             </td>
 <td>
     ${customer.knz_privat ? "Privat" : "Organisation"}
@@ -191,7 +192,7 @@ function renderCustomerCards() {
       `${customer.plz || ""} ${customer.city || ""}`.trim(),
     ]
       .filter(Boolean)
-      .map((line) => escapeHtml(line))
+      .map((line) => escapeCustomerHtml(line))
       .join("<br>");
 
     card.innerHTML = `
@@ -201,7 +202,7 @@ function renderCustomerCards() {
         <div class="customer-title">
 
             <h3>
-                ${escapeHtml(customer.name)}
+                ${escapeCustomerHtml(customer.name)}
             </h3>
 
             <span class="status-badge ${
@@ -244,8 +245,8 @@ function renderCustomerCards() {
 
                         <a
                             class="customer-detail-value"
-                            href="mailto:${escapeHtml(customer.email)}">
-                            ${escapeHtml(customer.email)}
+                            href="mailto:${escapeCustomerHtml(customer.email)}">
+                            ${escapeCustomerHtml(customer.email)}
                         </a>
                     </div>
                 `
@@ -263,8 +264,8 @@ function renderCustomerCards() {
 
                         <a
                             class="customer-detail-value"
-                            href="tel:${escapeHtml(customer.phone)}">
-                            ${escapeHtml(customer.phone)}
+                            href="tel:${escapeCustomerHtml(customer.phone)}">
+                            ${escapeCustomerHtml(customer.phone)}
                         </a>
                     </div>
                 `
@@ -289,7 +290,7 @@ function renderCustomerCards() {
             </span>
 
             <span class="price-category-badge">
-                ${escapeHtml(customer.price_category || "Default")}
+                ${escapeCustomerHtml(customer.price_category || "Default")}
             </span>
 
         </div>
@@ -369,7 +370,7 @@ function editCustomer(id) {
   document.getElementById("customerFormTitle").textContent = "Kunde bearbeiten";
   document.getElementById("customerKnzPrivat").checked = !!customer.knz_privat;
   const saveButton = document.getElementById("customerSaveButton");
-  saveButton.innerHTML = '<i class="fa-solid fa-floppy-disk"></i>';
+  saveButton.innerHTML = '<i class="fa-solid fa-floppy-disk"></i> Speichern';
   saveButton.setAttribute("aria-label", "Speichern");
   saveButton.title = "Speichern";
 }
@@ -448,6 +449,7 @@ async function saveCustomer() {
     resetCustomerForm();
 
     await loadCustomers();
+    showAppMessage(data.message || "Kunde gespeichert");
   } catch (err) {
     console.error("Fehler beim Speichern des Kunden:", err);
 
@@ -576,7 +578,7 @@ function resetCustomerForm() {
   const button = document.getElementById("customerSaveButton");
 
   if (button) {
-    button.innerHTML = '<i class="fa-solid fa-floppy-disk"></i>';
+    button.innerHTML = '<i class="fa-solid fa-floppy-disk"></i> Speichern';
     button.setAttribute("aria-label", "Speichern");
     button.title = "Speichern";
   }
@@ -593,7 +595,7 @@ async function loadPriceCategoriesCustomer() {
       throw new Error("Preiskategorien konnten nicht geladen werden");
     }
 
-    priceCategories = await response.json();
+    customerPriceCategories = await response.json();
 
     renderPriceCategoriesCustomer();
   } catch (err) {
@@ -607,7 +609,7 @@ async function loadPriceCategoriesCustomer() {
 // HTML ESCAPEN
 // =====================================================
 
-function escapeHtml(value) {
+function escapeCustomerHtml(value) {
   return String(value ?? "")
     .replace(/&/g, "&amp;")
     .replace(/</g, "&lt;")

@@ -1,55 +1,49 @@
-/* =====================================================
-   style.css - THW Förderverein Stil
-===================================================== */
+/* ============================================================
+   variables.css
+   Zentrale Farben, Schriftgrößen, Abstände und Statuswerte.
+   Regelreihenfolge bleibt für die CSS-Kaskade erhalten.
+   ============================================================ */
 
-/* =====================================================
-   Variablen
-===================================================== */
-
+/* Zentrale Designwerte */
 :root {
-  --primary: #005aa7;
-  --primary-dark: #004080;
-
-  --background: #f4f4f9;
-  --text: #333;
-
-  --border: #ccc;
-  --table-border: black;
-
-  --card-bg: #fff;
-  --card-shadow: rgba(0, 0, 0, 0.1);
-
-  --text-secondary: #666;
-
-  --table-header: #e6f0fa;
-  --hover: #f0f8ff;
-
-  --input-bg: #fff;
-  --font-family:
-     Arial, sans-serif;
-  --space-x: 2px;
-  --space-xs: 4px;
-  --space-sm: 8px;
-  --space-md: 12px;
-  --space-mx: 16px;
-  --space-lg: 20px;
-
-  --font-title: 28px;
-  --font-large: 18px;
-  --font-normal: 16px;
-  --font-small: 12px;
-
-  --radius-sm: 6px;
-  --radius-md: 10px;
-
-  --transition-fast: 0.15s ease;
-
-       --status-free: #188118;
-        --status-rented: #ac1313;
-        --status-missing: #d5ab1e;
-        --status-gestartet: #007bff;
-        --status-abgeschlossen: #d97706;
-        --status-abgerechnet: #d32f2f;
-        --status-inaktiv: #ab0d0d;
-
+    /* Oberflächen und Farben */
+    --primary: #005aa7;
+    --primary-dark: #004080;
+    --background: #f4f4f9;
+    --text: #333;
+    --border: #ccc;
+    --table-border: black;
+    --card-bg: #fff;
+    --card-shadow: rgba(0, 0, 0, 0.1);
+    --text-secondary: #666;
+    --table-header: #e6f0fa;
+    --hover: #f0f8ff;
+    --input-bg: #fff;
+    /* Schrift */
+    --font-family: Arial, sans-serif;
+    /* Abstände */
+    --space-x: 2px;
+    --space-xs: 4px;
+    --space-sm: 8px;
+    --space-md: 12px;
+    --space-mx: 16px;
+    --space-lg: 20px;
+    /* Schrift */
+    --font-title: 28px;
+    --font-large: 18px;
+    --font-normal: 16px;
+    --font-small: 12px;
+    /* Rundungen */
+    --radius-sm: 6px;
+    --radius-md: 10px;
+    /* Animationen */
+    --transition-fast: 0.15s ease;
+    /* Statusfarben */
+    --status-free: #188118;
+    --status-rented: #ac1313;
+    --status-missing: #d5ab1e;
+    --status-gestartet: #007bff;
+    --status-abgeschlossen: #d97706;
+    --status-abgerechnet: #d32f2f;
+    --status-inaktiv: #ab0d0d;
 }

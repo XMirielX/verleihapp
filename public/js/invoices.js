@@ -7,12 +7,29 @@ let invoiceEvents = [];
 let currentInvoice = null;
 let currentInvoiceItems = [];
 let deletedInvoiceItemIds = [];
+let selectedInvoiceEventId = "";
+
+function getInvoiceHeaderValues() {
+  return Object.fromEntries([...document.querySelectorAll("#invoiceDataFields input, #invoiceCustomerFields input")]
+    .map(input => [input.id, input.value]));
+}
+
+function trackInvoiceChanges({ preserveHeader = false } = {}) {
+  if (!preserveHeader) {
+    trackUnsavedChanges("invoice-header", getInvoiceHeaderValues, "Rechnungsdaten");
+  }
+  trackUnsavedChanges("invoice-items", () => ({
+    items: currentInvoiceItems,
+    deleted: deletedInvoiceItemIds,
+  }), "Rechnungspositionen");
+}
 
 // =====================================================
 // INITIALISIERUNG
 // =====================================================
 
 async function initInvoicePage() {
+  selectedInvoiceEventId = "";
   currentInvoice = null;
   currentInvoiceItems = [];
   deletedInvoiceItemIds = [];
@@ -68,7 +85,9 @@ async function loadInvoiceEvents() {
       throw new Error("Events konnten nicht geladen werden.");
     }
 
-    invoiceEvents = await response.json();
+    invoiceEvents = (await response.json())
+      .filter((event) => [90, 95].includes(Number(event.stat)))
+      .sort((a, b) => getInvoiceEventDate(b) - getInvoiceEventDate(a));
 
     const select = document.getElementById("invoiceEventSelect");
 
@@ -87,7 +106,7 @@ async function loadInvoiceEvents() {
 
       option.value = event.id;
 
-      option.textContent = `${event.name} – ${
+      option.textContent = `${getEventStatusSymbol(event.stat)} ${event.name} – ${
         event.customer_name || "Kein Kunde"
       }`;
 
@@ -100,12 +119,25 @@ async function loadInvoiceEvents() {
   }
 }
 
+function getInvoiceEventDate(event) {
+  const end = Date.parse(event.ende);
+  if (Number.isFinite(end)) return end;
+  const start = Date.parse(event.start);
+  return Number.isFinite(start) ? start : 0;
+}
+
 // =====================================================
 // EVENT GEÄNDERT
 // =====================================================
 
 async function handleInvoiceEventChange(event) {
   const eventId = event.target.value;
+  if (!confirmUnsavedChanges()) {
+    event.target.value = selectedInvoiceEventId;
+    return;
+  }
+  resetUnsavedChanges();
+  selectedInvoiceEventId = eventId;
 
   const container = document.getElementById("invoiceContainer");
 
@@ -134,7 +166,8 @@ async function handleInvoiceEventChange(event) {
 // RECHNUNG FÜR EVENT LADEN
 // =====================================================
 
-async function loadInvoiceForEvent(eventId) {
+async function loadInvoiceForEvent(eventId, { preserveHeader = false } = {}) {
+  let headerValues = null;
   try {
     const response = await fetch(`/api/invoices/event/${eventId}`);
 
@@ -162,11 +195,21 @@ async function loadInvoiceForEvent(eventId) {
     // Rechnung vorhanden
     // -------------------------------------------------
 
+    headerValues = preserveHeader ? getInvoiceHeaderValues() : null;
     currentInvoice = data.invoice;
 
     currentInvoiceItems = data.items || [];
+    deletedInvoiceItemIds = [];
 
     renderInvoice();
+    if (headerValues) {
+      for (const [id, value] of Object.entries(headerValues)) {
+        const input = document.getElementById(id);
+        if (input) input.value = value;
+      }
+    }
+    trackInvoiceChanges({ preserveHeader });
+    return true;
   } catch (err) {
     console.error("Fehler beim Laden der Rechnung:", err);
 
@@ -315,7 +358,7 @@ function showCreateInvoice(eventId) {
       <p>
         Kunde:
         <strong>
-          ${escapeHtml(event.customer_name || "")}
+          ${escapeInvoiceHtml(event.customer_name || "")}
         </strong>
       </p>
 
@@ -380,6 +423,7 @@ async function createInvoice(eventId) {
     // Die Antwort enthält bereits Rechnungskopf und Positionen. Dadurch kann
     // die Oberfläche ohne einen zweiten Ladezyklus sofort umgeschaltet werden.
     renderInvoice();
+    trackInvoiceChanges();
   } catch (err) {
     console.error("Fehler beim Erstellen der Rechnung:", err);
 
@@ -432,20 +476,17 @@ function renderInvoiceHeader() {
     return;
   }
 
-  let status = document.getElementById("invoiceStatus");
   let invoiceFields = document.getElementById("invoiceDataFields");
   let customerFields = document.getElementById("invoiceCustomerFields");
 
   // Nach "Rechnung erstellen" oder einem Wechsel von einem Event
   // ohne Rechnung existiert der normale Rechnungskopf nicht mehr.
   // Deshalb hier den vollständigen Kopf wieder aufbauen.
-  if (!status || !invoiceFields || !customerFields) {
+  if (!invoiceFields || !customerFields) {
     header.innerHTML = `
-      <div id="invoiceStatus"></div>
-
       <div class="invoice-info-card">
         <div class="invoice-info-card-header">
-          <h4>Rechnung</h4>
+          <h3>Rechnung</h3>
         </div>
 
         <div
@@ -456,7 +497,7 @@ function renderInvoiceHeader() {
 
       <div class="invoice-info-card">
         <div class="invoice-info-card-header">
-          <h4>Rechnungsempfänger</h4>
+          <h3>Rechnungsempfänger</h3>
         </div>
 
         <div
@@ -465,7 +506,7 @@ function renderInvoiceHeader() {
         </div>
       </div>
 
-      <div class="invoice-header-actions">
+      <div class="invoice-header-actions form-actions">
 
         <button
           type="button"
@@ -494,34 +535,11 @@ function renderInvoiceHeader() {
       </div>
     `;
 
-    status = document.getElementById("invoiceStatus");
     invoiceFields = document.getElementById("invoiceDataFields");
     customerFields = document.getElementById("invoiceCustomerFields");
   }
 
   const isFinal = currentInvoice.status === "final";
-
-  // -------------------------------------------------
-  // Status anzeigen
-  // -------------------------------------------------
-
-  status.innerHTML = `
-    ${
-      isFinal
-        ? `
-          <div class="invoice-status invoice-status-final">
-            <i class="fa-solid fa-lock"></i>
-            Rechnung abgeschlossen
-          </div>
-        `
-        : `
-          <div class="invoice-status invoice-status-draft">
-            <i class="fa-solid fa-pen"></i>
-            Rechnung in Bearbeitung
-          </div>
-        `
-    }
-  `;
 
   // =====================================================
   // RECHNUNGSDATEN
@@ -536,7 +554,7 @@ function renderInvoiceHeader() {
       <input
         type="text"
         id="invoiceNumber"
-        value="${escapeHtml(currentInvoice.invoice_number || "")}"
+        value="${escapeInvoiceHtml(currentInvoice.invoice_number || "")}"
         ${isFinal ? "disabled" : ""}
       >
     </div>
@@ -568,7 +586,7 @@ function renderInvoiceHeader() {
       <input
         type="text"
         id="invoiceCustomerName"
-        value="${escapeHtml(currentInvoice.customer_name || "")}"
+        value="${escapeInvoiceHtml(currentInvoice.customer_name || "")}"
         ${isFinal ? "disabled" : ""}
       >
     </div>
@@ -581,7 +599,7 @@ function renderInvoiceHeader() {
       <input
         type="text"
         id="invoiceCustomerAddress"
-        value="${escapeHtml(currentInvoice.customer_address || "")}"
+        value="${escapeInvoiceHtml(currentInvoice.customer_address || "")}"
         ${isFinal ? "disabled" : ""}
       >
     </div>
@@ -596,7 +614,7 @@ function renderInvoiceHeader() {
         <input
           type="text"
           id="invoiceCustomerZip"
-          value="${escapeHtml(currentInvoice.customer_zip || "")}"
+          value="${escapeInvoiceHtml(currentInvoice.customer_zip || "")}"
           ${isFinal ? "disabled" : ""}
         >
       </div>
@@ -609,7 +627,7 @@ function renderInvoiceHeader() {
         <input
           type="text"
           id="invoiceCustomerCity"
-          value="${escapeHtml(currentInvoice.customer_city || "")}"
+          value="${escapeInvoiceHtml(currentInvoice.customer_city || "")}"
           ${isFinal ? "disabled" : ""}
         >
       </div>
@@ -624,7 +642,7 @@ function renderInvoiceHeader() {
       <input
         type="email"
         id="invoiceCustomerEmail"
-        value="${escapeHtml(currentInvoice.customer_email || "")}"
+        value="${escapeInvoiceHtml(currentInvoice.customer_email || "")}"
         ${isFinal ? "disabled" : ""}
       >
     </div>
@@ -677,82 +695,6 @@ function renderInvoiceHeader() {
     finalizeButton.onclick = finalizeInvoice;
     finalizeButton.disabled = isFinal;
     finalizeButton.hidden = isFinal;
-  }
-}
-
-// =====================================================
-// RECHNUNG ABSCHLIESSEN
-// =====================================================
-
-async function finalizeInvoice() {
-  if (!currentInvoice) {
-    return;
-  }
-
-  // Bereits abgeschlossen
-  if (currentInvoice.status === "final") {
-    return;
-  }
-
-  const confirmed = confirm(
-    "Rechnung wirklich abschließen?\n\n" +
-      "Danach können Rechnungsdaten und Positionen nicht mehr geändert werden.\n\n" +
-      "Bitte prüfe vorher Rechnungsnummer, Datum, Empfänger und Positionen.",
-  );
-
-  if (!confirmed) {
-    return;
-  }
-
-  const button = document.getElementById("finalizeInvoiceBtn");
-
-  if (button) {
-    button.disabled = true;
-    button.textContent = "Rechnung wird abgeschlossen...";
-  }
-
-  try {
-    const response = await fetch(
-      `/api/invoices/${currentInvoice.id}/finalize`,
-      {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      },
-    );
-
-    const result = await response.json();
-
-    if (!response.ok) {
-      throw new Error(
-        result.error || "Rechnung konnte nicht abgeschlossen werden.",
-      );
-    }
-
-    // -------------------------------------------------
-    // Lokalen Status setzen
-    // -------------------------------------------------
-
-    currentInvoice.status = "final";
-
-    // -------------------------------------------------
-    // Komplett neu rendern
-    // Dadurch werden alle Eingaben und Buttons gesperrt.
-    // -------------------------------------------------
-
-    renderInvoice();
-
-    alert("Rechnung wurde abgeschlossen.");
-  } catch (err) {
-    console.error("Fehler beim Abschließen der Rechnung:", err);
-
-    alert(err.message);
-
-    if (button) {
-      button.disabled = false;
-      button.textContent = "Rechnung abschließen";
-    }
   }
 }
 
@@ -814,6 +756,8 @@ async function saveInvoiceHeader() {
     return;
   }
 
+  const savedSnapshot = getUnsavedSnapshot("invoice-header");
+  setUnsavedSaving("invoice-header", true);
   try {
     const response = await fetch(`/api/invoices/${currentInvoice.id}`, {
       method: "PUT",
@@ -857,11 +801,15 @@ async function saveInvoiceHeader() {
     currentInvoice.customer_city = customerCity;
     currentInvoice.customer_email = customerEmail;
 
-    alert("Rechnungsdaten gespeichert.");
+    markChangesSaved("invoice-header", savedSnapshot);
+    showAppMessage("Rechnungsdaten gespeichert.");
   } catch (err) {
     console.error("Fehler beim Speichern der Rechnungsdaten:", err);
 
     alert(err.message);
+    return false;
+  } finally {
+    setUnsavedSaving("invoice-header", false);
   }
 }
 
@@ -870,6 +818,10 @@ async function saveInvoiceHeader() {
 // =====================================================
 
 function createInvoicePdf() {
+  if (hasUnsavedChanges()) {
+    showAppMessage("Rechnungsdaten oder Positionen wurden noch nicht gespeichert. Bitte vor dem PDF-Erstellen speichern.", "warning");
+    return;
+  }
   if (!currentInvoice) {
     return;
   }
@@ -1006,130 +958,6 @@ function updateLocalInvoiceTotal() {
 // POSITIONEN GESAMT SPEICHERN
 // =====================================================
 
-async function saveInvoiceItems() {
-  if (!currentInvoice) {
-    return;
-  }
-
-  // Sicherheitsprüfung
-  if (currentInvoice.status === "final") {
-    alert(
-      "Diese Rechnung ist bereits abgeschlossen und kann nicht mehr geändert werden.",
-    );
-    return;
-  }
-
-  // -------------------------------------------------
-  // Eingaben aus DOM übernehmen
-  // -------------------------------------------------
-
-  const rows = document.querySelectorAll("#invoiceItemsTable tbody tr");
-
-  rows.forEach((row, index) => {
-    const item = currentInvoiceItems[index];
-
-    if (!item) {
-      return;
-    }
-
-    const description = row.querySelector(".invoice-item-description");
-
-    const quantity = row.querySelector(".invoice-item-quantity");
-
-    const price = row.querySelector(".invoice-item-price");
-
-    if (description) {
-      item.description = description.value.trim();
-    }
-
-    if (quantity) {
-      item.quantity = Number(quantity.value) || 0;
-    }
-
-    if (price) {
-      item.unit_price = Number(price.value) || 0;
-    }
-
-    item.total = item.quantity * item.unit_price;
-  });
-
-  // -------------------------------------------------
-  // Prüfen
-  // -------------------------------------------------
-
-  for (const item of currentInvoiceItems) {
-    if (!item.description?.trim()) {
-      alert("Die Beschreibung einer Position darf nicht leer sein.");
-
-      return;
-    }
-  }
-
-  const button = document.getElementById("saveInvoiceItemsBtn");
-
-  if (button) {
-    button.disabled = true;
-
-    button.innerHTML = `
-      <i class="fa-solid fa-spinner fa-spin"></i>
-      Speichern...
-    `;
-  }
-
-  try {
-    const response = await fetch(
-      `/api/invoices/${currentInvoice.id}/items/save`,
-      {
-        method: "PUT",
-
-        headers: {
-          "Content-Type": "application/json",
-        },
-
-        body: JSON.stringify({
-          items: currentInvoiceItems,
-          deletedItemIds: [...deletedInvoiceItemIds],
-        }),
-      },
-    );
-
-    const result = await response.json();
-
-    if (!response.ok) {
-      throw new Error(
-        result.error || "Positionen konnten nicht gespeichert werden.",
-      );
-    }
-
-    deletedInvoiceItemIds = [];
-
-    // -------------------------------------------------
-    // Rechnung neu laden
-    // -------------------------------------------------
-
-    await loadInvoiceForEvent(currentInvoice.event_id);
-
-    alert("Rechnungspositionen gespeichert.");
-  } catch (err) {
-    console.error("Fehler beim Speichern der Rechnungspositionen:", err);
-
-    alert(err.message);
-  } finally {
-    if (button) {
-      button.disabled = false;
-
-      button.innerHTML = `
-        <i class="fa-solid fa-floppy-disk"></i>
-        Positionen speichern
-      `;
-    }
-  }
-}
-
-// =====================================================
-// RECHNUNGSDATUM ÄNDERN
-// =====================================================
-
 async function updateInvoiceDate(date) {
   if (!currentInvoice) {
     return;
@@ -1214,6 +1042,10 @@ function formatCurrency(value) {
 // =====================================================
 
 async function finalizeInvoice() {
+  if (hasUnsavedChanges()) {
+    showAppMessage("Rechnungsdaten oder Positionen wurden noch nicht gespeichert. Bitte vor dem Abschließen speichern.", "warning");
+    return;
+  }
   if (!currentInvoice) {
     return;
   }
@@ -1266,7 +1098,7 @@ async function finalizeInvoice() {
     // Alles neu rendern
     renderInvoice();
 
-    alert("Rechnung wurde abgeschlossen.");
+    showAppMessage("Rechnung wurde abgeschlossen.");
   } catch (err) {
     console.error("Fehler beim Abschließen der Rechnung:", err);
 
@@ -1300,7 +1132,7 @@ function renderInvoiceItemsTable() {
         <input
           type="text"
           class="invoice-item-description"
-          value="${escapeHtml(item.description || "")}"
+          value="${escapeInvoiceHtml(item.description || "")}"
           ${isFinal ? "disabled" : ""}
         >
       </td>
@@ -1321,7 +1153,7 @@ function renderInvoiceItemsTable() {
           type="number"
           class="invoice-item-price"
           value="${Number(item.unit_price || 0).toFixed(2)}"
-          step="0.01"
+          step="1"
           ${isFinal ? "disabled" : ""}
         >
       </td>
@@ -1400,7 +1232,7 @@ function renderInvoiceItemCards() {
     card.innerHTML = `
       <div class="invoice-item-card-header">
         <strong>
-          ${escapeHtml(item.description || "Position")}
+          ${escapeInvoiceHtml(item.description || "Position")}
         </strong>
       </div>
 
@@ -1409,7 +1241,7 @@ function renderInvoiceItemCards() {
         <input
           type="text"
           class="invoice-item-description"
-          value="${escapeHtml(item.description || "")}"
+          value="${escapeInvoiceHtml(item.description || "")}"
           ${isFinal ? "disabled" : ""}
         >
 
@@ -1440,7 +1272,7 @@ function renderInvoiceItemCards() {
             type="number"
             class="invoice-item-price"
             value="${Number(item.unit_price || 0).toFixed(2)}"
-            step="0.01"
+            step="1"
             ${isFinal ? "disabled" : ""}
           >
 
@@ -1508,35 +1340,7 @@ async function saveInvoiceItems() {
   // Eingaben aus DOM übernehmen
   // -------------------------------------------------
 
-  const rows = document.querySelectorAll("#invoiceItemsTable tbody tr");
-
-  rows.forEach((row, index) => {
-    const item = currentInvoiceItems[index];
-
-    if (!item) {
-      return;
-    }
-
-    const description = row.querySelector(".invoice-item-description");
-
-    const quantity = row.querySelector(".invoice-item-quantity");
-
-    const price = row.querySelector(".invoice-item-price");
-
-    if (description) {
-      item.description = description.value.trim();
-    }
-
-    if (quantity) {
-      item.quantity = Number(quantity.value) || 0;
-    }
-
-    if (price) {
-      item.unit_price = Number(price.value) || 0;
-    }
-
-    item.total = item.quantity * item.unit_price;
-  });
+  // Input handlers keep the shared item model current on desktop and mobile.
 
   // -------------------------------------------------
   // Prüfen
@@ -1550,6 +1354,10 @@ async function saveInvoiceItems() {
   }
 
   const button = document.getElementById("saveInvoiceItemsBtn");
+  const controls = [...document.querySelectorAll("#invoicePositionsSection input, #invoicePositionsSection button")]
+    .map(input => ({ input, disabled: input.disabled }));
+  controls.forEach(({ input }) => { input.disabled = true; });
+  setUnsavedSaving("invoice-items", true);
 
   if (button) {
     button.disabled = true;
@@ -1596,14 +1404,19 @@ async function saveInvoiceItems() {
 
     deletedInvoiceItemIds = [];
 
-    await loadInvoiceForEvent(currentInvoice.event_id);
+    if (!await loadInvoiceForEvent(currentInvoice.event_id, { preserveHeader: true })) {
+      showAppMessage("Positionen gespeichert, aber die Ansicht konnte nicht aktualisiert werden. Bitte die Seite neu laden.", "warning");
+      return;
+    }
 
-    alert("Rechnungspositionen gespeichert.");
+    showAppMessage("Rechnungspositionen gespeichert.");
   } catch (err) {
     console.error("Fehler beim Speichern der Rechnungspositionen:", err);
 
     alert(err.message);
   } finally {
+    setUnsavedSaving("invoice-items", false);
+    controls.forEach(({ input, disabled }) => { input.disabled = disabled; });
     if (button) {
       button.disabled = false;
 
@@ -1650,6 +1463,7 @@ function addInvoiceItem() {
 
   renderInvoiceItems();
   updateLocalInvoiceTotal();
+  refreshUnsavedNotice();
 }
 
 // =====================================================
@@ -1688,13 +1502,14 @@ function deleteInvoiceItem(item) {
 
   renderInvoiceItems();
   updateLocalInvoiceTotal();
+  refreshUnsavedNotice();
 }
 
 // =====================================================
 // HTML SICHERN
 // =====================================================
 
-function escapeHtml(value) {
+function escapeInvoiceHtml(value) {
   return String(value ?? "")
     .replace(/&/g, "&amp;")
     .replace(/</g, "&lt;")

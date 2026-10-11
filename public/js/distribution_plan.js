@@ -8,6 +8,30 @@ function isPlanEditable() {
 }
 
 async function initDistributionPlanPage() {
+  selectedEventData = null;
+  plan = [];
+  categoriesDistr = [];
+  updateDistributionVisibility();
+  updateRights();
+
+  const content = document.getElementById("distributionContent");
+  const updateItem = event => {
+    const input = event.target;
+    if (!input.matches(".planned, .location")) return;
+    const item = plan.find(item => Number(item.id) === Number(input.dataset.id));
+    if (!item) return;
+    const checkbox = input.classList.contains("planned");
+    if (checkbox) item.planned = input.checked ? 1 : 0;
+    else item.location = input.value;
+    content.querySelectorAll(`.${checkbox ? "planned" : "location"}[data-id="${item.id}"]`).forEach(other => {
+      if (checkbox) other.checked = input.checked;
+      else other.value = input.value;
+    });
+    refreshUnsavedNotice();
+  };
+  content?.addEventListener("input", updateItem);
+  content?.addEventListener("change", updateItem);
+
   const filterElement = document.getElementById("distributionFilter");
 
   const categoryElement = document.getElementById("categoryFilter");
@@ -62,7 +86,7 @@ function updateDistributionVisibility() {
 
   distributionContent.style.display = selectedEventData ? "" : "none";
 }
-async function loadDistributionPlan() {
+async function loadDistributionPlan(event = null) {
   const eventSelect = document.getElementById("event_id");
 
   if (!eventSelect) {
@@ -70,6 +94,11 @@ async function loadDistributionPlan() {
   }
 
   const eventId = eventSelect.value;
+  if (event && !confirmUnsavedChanges()) {
+    eventSelect.value = selectedEventData?.id || "";
+    return;
+  }
+  resetUnsavedChanges();
 
   // Zurücksetzen
   selectedEventData = null;
@@ -106,13 +135,14 @@ async function loadDistributionPlan() {
       plan = [];
     }
 
-    loadCategories();
+    loadDistributionPlanCategories();
 
     updateDistributionVisibility();
 
     updateRights();
 
     renderDistributionsView();
+    trackUnsavedChanges("distribution-plan", () => plan.map(item => [item.id, Number(item.planned || 0), item.location || ""]), "Änderungen an der Verteilerplanung");
   } catch (error) {
     console.error("DISTRIBUTION PLAN LOAD ERROR:", error);
 
@@ -144,8 +174,8 @@ async function loadCurrentUser() {
   }
 }
 function renderDistributionsView() {
-  renderDistributionTable();
-  renderDistributionCards();
+  renderDistributionPlanTable();
+  renderDistributionPlanCards();
 }
 function updateRights() {
   const editable = canEdit && isPlanEditable();
@@ -172,28 +202,18 @@ async function loadDistributionEvents() {
 
   select.innerHTML = '<option value="">Bitte auswählen</option>';
 
-  // Offene Events zuerst, abgeschlossene danach
-  events.sort((a, b) => {
-    const aClosed = Number(a.stat) === 90;
-    const bClosed = Number(b.stat) === 90;
-
-    if (aClosed !== bClosed) {
-      return aClosed ? 1 : -1;
-    }
-
-    return a.name.localeCompare(b.name);
-  });
+  sortEventsByStatus(events);
 
   events.forEach((event) => {
     const option = document.createElement("option");
 
     option.value = event.id;
-    option.textContent = event.name;
+    option.textContent = `${getEventStatusSymbol(event.stat)} ${event.name}`;
 
     // Status für später speichern
     option.dataset.stat = event.stat;
 
-    if (Number(event.stat) === 90) {
+    if ([90, 95].includes(Number(event.stat))) {
       option.textContent += " (abgeschlossen)";
     }
 
@@ -202,7 +222,7 @@ async function loadDistributionEvents() {
 }
 
 
-function renderDistributionTable() {
+function renderDistributionPlanTable() {
   const tbody = document.getElementById("plan_table");
   if (!tbody) return;
 
@@ -252,7 +272,7 @@ function renderDistributionTable() {
   });
 }
 
-function renderDistributionCards() {
+function renderDistributionPlanCards() {
   const container = document.getElementById("distributionCards");
   if (!container) return;
 
@@ -372,6 +392,10 @@ function renderDistributionCards() {
 
 
 async function transferToMaterialPlan() {
+  if (hasUnsavedChanges("distribution-plan")) {
+    showAppMessage("Bitte die Verteilerplanung vor dem Übernehmen speichern.", "warning");
+    return;
+  }
   const eventId = document.getElementById("event_id").value;
 
   if (!eventId) {
@@ -398,9 +422,9 @@ async function transferToMaterialPlan() {
     return;
   }
 
-  alert("Materialplanung wurde übernommen.");
+  showAppMessage("Materialplanung wurde übernommen.");
 }
-function loadCategories() {
+function loadDistributionPlanCategories() {
   const select = document.getElementById("categoryFilter");
   const values = [
     ...new Set(plan.map((x) => x.category_name).filter(Boolean)),
@@ -446,20 +470,20 @@ async function saveDistributionPlan() {
     );
     return;
   }
-  const items = [];
-  const handled = new Set();
-  document.querySelectorAll(".planned").forEach((check) => {
-    const id = Number(check.dataset.id);
-    // verhindert doppelte Einträge (Tabelle + Cards)
-    if (handled.has(id)) return;
-    handled.add(id);
-    const location = document.querySelector(`.location[data-id="${id}"]`);
-    items.push({
-      distribution_item_id: id,
-      planned: check.checked ? 1 : 0,
-      location: location ? location.value : "",
-    });
+  const items = plan.map((item) => {
+    const checkbox = document.querySelector(`.planned[data-id="${item.id}"]`);
+    const location = document.querySelector(`.location[data-id="${item.id}"]`);
+
+    return {
+      distribution_item_id: item.id,
+      planned: checkbox ? (checkbox.checked ? 1 : 0) : Number(item.planned || 0),
+      location: location ? location.value : item.location || "",
+    };
   });
+
+  const savedSnapshot = getUnsavedSnapshot("distribution-plan");
+  setUnsavedSaving("distribution-plan", true);
+  try {
   const response = await fetch("/api/distribution-plan", {
     method: "POST",
     headers: {
@@ -471,11 +495,15 @@ async function saveDistributionPlan() {
     }),
   });
   const result = await response.json();
-  if (result.error) {
+  if (!response.ok || result.error) {
     alert(result.error);
     return;
   }
-  alert("Planung gespeichert.");
-
-  loadDistributionPlan();
+  showAppMessage("Planung gespeichert.");
+  markChangesSaved("distribution-plan", savedSnapshot);
+  } catch (err) {
+    showAppMessage(err.message || "Die Verteilerplanung wurde nicht gespeichert.", "error");
+  } finally {
+    setUnsavedSaving("distribution-plan", false);
+  }
 }

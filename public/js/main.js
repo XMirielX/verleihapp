@@ -52,7 +52,7 @@ async function changePassword() {
         const result = await res.json();
         if (!res.ok) throw new Error(result.error);
 
-        alert("Passwort geändert!");
+        queueAppMessage("Passwort geändert!");
 
         // 👉 Nach Änderung zurück zur App
         window.location.href = "mainframe.html";
@@ -118,7 +118,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
                 if (!res.ok) throw new Error(result.error);
 
-                alert("Backup erstellt ✅");
+                showAppMessage("Backup erstellt ✅");
             } catch (err) {
                 alert("Fehler beim Backup: " + err.message);
             }
@@ -126,8 +126,10 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
     // Login-Button (falls auf Login-Seite)
     const loginBtn = document.getElementById("loginButton");
+    const loginForm = document.getElementById("loginForm");
     if (loginBtn) {
-        loginBtn.addEventListener("click", async () => {
+        (loginForm || loginBtn).addEventListener(loginForm ? "submit" : "click", async (event) => {
+            event.preventDefault();
             const username = document.getElementById("username").value.trim();
             const password = document.getElementById("password").value.trim();
             if (!username || !password) return alert("Username & Passwort angeben");
@@ -139,7 +141,9 @@ document.addEventListener("DOMContentLoaded", async () => {
     // Login-Button (falls auf Login-Seite)
     const chpassBtn = document.getElementById("changePasswordButton");
     if (chpassBtn) {
-        chpassBtn.addEventListener("click", async () => {
+        const passwordForm = document.getElementById("passwordChangeForm");
+        (passwordForm || chpassBtn).addEventListener(passwordForm ? "submit" : "click", async event => {
+            event.preventDefault();
             changePassword();
         });
     }

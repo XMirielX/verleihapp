@@ -1,32 +1,27 @@
-<h1>Produktgruppen verwalten</h1>
-
-<br />
+<div class="page-header">
+  <h1>Produktgruppen</h1>
+</div>
 
 <h2 id="formTitle">Produktgruppe anlegen</h2>
 
 <form id="materialForm">
-  <label for="name">Name</label>
-  <br />
+  <div class="form-grid">
+    <div class="form-group">
+      <label for="category">Kategorie</label>
+      <select id="category"></select>
+      <button type="button" id="newCategoryBtn" class="btn-secondary">+ Kategorie</button>
+    </div>
+    <div class="form-group">
+      <label for="name">Name</label>
+      <input type="text" id="name" placeholder="z.B. CEE Verlängerung" />
+    </div>
+    <div class="form-group">
+      <label for="specification">Spezifikation</label>
+      <input type="text" id="specification" placeholder="z.B. CEE 32A" />
+    </div>
+  </div>
 
-  <input type="text" id="name" placeholder="z.B. CEE Verlängerung" />
-
-  <br />
-
-  <label for="specification">Spezifikation</label>
-  <br />
-
-  <input type="text" id="specification" placeholder="z.B. CEE 32A" />
-
-  <br />
-
-  <label for="category">Kategorie</label>
-  <br />
-
-  <select id="category"></select>
-
-  <button type="button" id="newCategoryBtn">+ Kategorie</button>
-
-  <br />
+  <div class="form-actions">
 
   <button
     type="submit"
@@ -37,9 +32,10 @@
     <i class="fa-solid fa-floppy-disk"></i> Speichern
   </button>
 
-  <button type="button" id="cancelButton" onclick="clearForm()" hidden>
-    <i class="fa-solid fa-xmark"></i>Abbrechen
+  <button type="button" id="cancelButton" class="btn-secondary" onclick="clearMaterialForm()" hidden>
+    <i class="fa-solid fa-xmark"></i> Abbrechen
   </button>
+  </div>
 </form>
 
 <p id="result"></p>
@@ -107,7 +103,7 @@
 ========================= -->
 
 <dialog id="categoryDialog">
-  <h3>Neue Kategorie</h3>
+  <h2>Neue Kategorie</h2>
 
   <label for="newCategoryName"> Name </label>
 
@@ -115,18 +111,18 @@
 
   <br /><br />
 
-  <div class="dialog-actions">
+  <div class="dialog-actions form-actions">
     <button
       type="button"
       id="saveCategoryBtn"
       aria-label="Speichern"
       title="Speichern"
     >
-      <i class="fa-solid fa-floppy-disk"></i>Speichern
+      <i class="fa-solid fa-floppy-disk"></i> Speichern
     </button>
 
-    <button type="button" id="closeDialogBtn">
-      <i class="fa-solid fa-xmark"></i>Abbrechen
+    <button type="button" class="btn-secondary" id="closeDialogBtn">
+      <i class="fa-solid fa-xmark"></i> Abbrechen
     </button>
   </div>
 </dialog>
@@ -136,7 +132,7 @@
 ========================= -->
 
 <dialog id="priceDialog">
-  <h3 id="priceDialogTitle">Produktpreise</h3>
+  <h2 id="priceDialogTitle">Produktpreise</h2>
 
   <div id="materialPriceContainer">
     <!-- Preise werden per JavaScript geladen -->
@@ -144,18 +140,18 @@
 
   <br />
 
-  <div class="dialog-actions">
+  <div class="dialog-actions form-actions">
     <button
       type="button"
       id="saveMaterialPricesBtn"
       aria-label="Speichern"
       title="Speichern"
     >
-      <i class="fa-solid fa-floppy-disk"></i>Speichern
+      <i class="fa-solid fa-floppy-disk"></i> Speichern
     </button>
 
-    <button type="button" id="closePriceDialogBtn">
-      <i class="fa-solid fa-xmark"></i>Abbrechen
+    <button type="button" class="btn-secondary" id="closePriceDialogBtn">
+      <i class="fa-solid fa-xmark"></i> Abbrechen
     </button>
   </div>
 </dialog>

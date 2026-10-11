@@ -1,4 +1,6 @@
-<h1>Stornieren</h1>
+<div class="page-header">
+    <h1>Stornieren</h1>
+</div>
 
 <h2>Event auswählen</h2>
 
@@ -6,7 +8,7 @@
 
 <h2>Barcode scannen / eingeben</h2>
 
-<div class="form-group">
+<div class="form-group rental-scan-controls">
   <input type="text" id="barcodeInput" placeholder="Barcode scannen..." />
 
   <button id="scanBtn">Kamera</button>
@@ -15,6 +17,8 @@
 <div id="cameraContainer" class="camera-container"></div>
 
 <button id="stornorentButton">Stornieren</button>
+
+<p id="result" role="status" aria-live="polite" aria-atomic="true"></p>
 
 <div class="desktop-only">
   <h2>Materialübersicht</h2>
@@ -36,5 +40,3 @@
 </div>
 
 <div id="rentalCardContainer" class="card-container mobile-only"></div>
-
-<p id="result"></p>

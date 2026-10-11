@@ -1,6 +1,7 @@
 # Node modules
 node_modules/
 backups/
+data/backups/
 
 # Logs
 npm-debug.log*

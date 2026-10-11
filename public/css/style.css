@@ -1,13 +1,22 @@
-/* =====================================================
-   THW Förderverein VerleihApp
-   CSS Hauptdatei
-===================================================== */
+/* ============================================================
+   style.css – Einstiegspunkt der VerleihApp
+   Die Importreihenfolge bestimmt die Kaskade:
+   Designwerte → Basis → Layout → Komponenten → Seiten → Farben → Mobil.
+   invoice-print.css wird separat für Rechnungs-PDFs geladen.
+   ============================================================ */
 
 @import url("https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.0/css/all.min.css");
+/* Farben, Abstände, Schrift und Rundungen. */
 @import "variables.css";
+/* Buttons, Eingabefelder, Tabellen und Statusfarben. */
 @import "basis.css";
+/* Seitenrahmen, Navigation und Formulargruppen. */
 @import "layout.css";
+/* Karten, Dialoge, Kameravorschau und Rückmeldungen. */
 @import "components.css";
+/* Fachliche Seiten und gemeinsame mobile Listenansichten. */
 @import "pages.css";
+/* Dunkles Farbschema; nutzt dieselben Designvariablen. */
 @import "darkmode.css";
+/* Abschließende Anpassungen für kleine Bildschirme. */
 @import "mobile.css";

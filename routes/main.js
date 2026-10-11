@@ -1,17 +1,11 @@
 const express = require("express");
 const router = express.Router();
-const { db } = require("../models/dbv");
-const { backupDB } = require("../backup_persistent");
+const { backupService } = require("../services/backup_service");
+const { requireLogin, requireAdmin } = require("./users");
 
-router.post("/backup", (req, res) => {
+router.post("/backup", requireLogin, requireAdmin, async (req, res) => {
   try {
-    const success = backupDB();
-
-    if (!success) {
-      return res.status(400).json({ error: "Datenbank nicht gefunden" });
-    }
-
-    res.json({ success: true });
+    res.json(await backupService.runBackup());
   } catch (err) {
     res.status(500).json({ error: err.message });
   }

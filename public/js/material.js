@@ -44,8 +44,8 @@ async function initMaterialPage() {
 
   bindEvents();
 
-  await loadCategories();
-  await loadMaterialTypes();
+  await loadMaterialCategories();
+  await loadManagedMaterialTypes();
   initPricesPage();
 }
 // ==========================
@@ -78,7 +78,7 @@ function bindEvents() {
 // ==========================
 // LOAD DATA
 // ==========================
-async function loadCategories() {
+async function loadMaterialCategories() {
   const res = await fetch("/api/categories");
   categories = await res.json();
 
@@ -86,7 +86,7 @@ async function loadCategories() {
   renderMaterials();
 }
 
-async function loadMaterialTypes() {
+async function loadManagedMaterialTypes() {
   const res = await fetch("/api/material");
   materialTypes = await res.json();
 
@@ -114,7 +114,7 @@ async function createCategory() {
   }
 
   categoryDialog.close();
-  await loadCategories();
+  await loadMaterialCategories();
 }
 
 async function createMaterialType() {
@@ -154,12 +154,13 @@ async function createMaterialType() {
   }
 
   // 🟢 SUCCESS
-  result.textContent = data?.message || "Gespeichert ✔";
+  result.textContent = "";
+  showAppMessage(data?.message || "Material gespeichert");
   currentMaterialId = null;
-  formTitle.textContent = "Neuen Materialtyp anlegen";
-  saveButton.textContent = "Material anlegen";
+  formTitle.textContent = "Produktgruppe anlegen";
+  saveButton.innerHTML = '<i class="fa-solid fa-floppy-disk"></i> Speichern';
   materialForm.reset();
-  await loadMaterialTypes();
+  await loadManagedMaterialTypes();
 }
 // ==========================
 // Edit
@@ -170,8 +171,8 @@ function editMaterial(material) {
   document.getElementById("name").value = material.name || "";
   document.getElementById("specification").value = material.specification || "";
   categorySelect.value = material.category_id;
-  formTitle.textContent = "Materialtyp bearbeiten";
-  saveButton.innerHTML = '<i class="fa-solid fa-floppy-disk"></i>';
+  formTitle.textContent = "Produktgruppe bearbeiten";
+  saveButton.innerHTML = '<i class="fa-solid fa-floppy-disk"></i> Speichern';
   saveButton.setAttribute("aria-label", "Speichern");
   saveButton.title = "Speichern";
 }
@@ -206,27 +207,28 @@ async function updateMaterialType() {
     return;
   }
 
-  result.textContent = data.message;
+  result.textContent = "";
+  showAppMessage(data.message || "Material gespeichert");
 
   currentMaterialId = null;
 
   materialForm.reset();
 
-  formTitle.textContent = "Neuen Materialtyp anlegen";
-  saveButton.innerHTML = '<i class="fa-solid fa-floppy-disk"></i>';
+  formTitle.textContent = "Produktgruppe anlegen";
+  saveButton.innerHTML = '<i class="fa-solid fa-floppy-disk"></i> Speichern';
   saveButton.setAttribute("aria-label", "Speichern");
   saveButton.title = "Speichern";
 
-  await loadMaterialTypes();
+  await loadManagedMaterialTypes();
 }
-function clearForm() {
+function clearMaterialForm() {
   currentMaterialId = null;
 
   materialForm.reset();
 
-  formTitle.textContent = "Neuen Materialtyp anlegen";
+  formTitle.textContent = "Produktgruppe anlegen";
 
-  saveButton.innerHTML = '<i class="fa-solid fa-floppy-disk"></i>';
+  saveButton.innerHTML = '<i class="fa-solid fa-floppy-disk"></i> Speichern';
   saveButton.setAttribute("aria-label", "Speichern");
   saveButton.title = "Speichern";
 
@@ -240,7 +242,7 @@ async function deleteMaterialType(id) {
     method: "DELETE",
   });
 
-  await loadMaterialTypes();
+  await loadManagedMaterialTypes();
 }
 
 async function deleteCategory(id) {
@@ -248,7 +250,7 @@ async function deleteCategory(id) {
     method: "DELETE",
   });
 
-  await loadCategories();
+  await loadMaterialCategories();
 }
 
 // ==========================

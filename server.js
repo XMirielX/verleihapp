@@ -1,3 +1,4 @@
+require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
 const http = require("http");
@@ -73,22 +74,8 @@ const app = express();
   app.use("/api/material", materialRoutes);
 
   // Server starten
-  const PORT = process.env.PORT || 3000;
+  const PORT = process.env.PORT || 3001;
   app.listen(PORT, () => console.log(`Server läuft auf Port ${PORT}`));
 
-  setInterval(
-    () => {
-      console.log("Auto-Backup läuft...");
-      backupDB();
-    },
-    1000 * 60 * 60 * 24 * 7,
-  ); // 7 Tage
-  function cleanupBackups() {
-    const files = fs.readdirSync(BACKUP_DIR).sort();
-
-    while (files.length > 10) {
-      const file = files.shift();
-      fs.unlinkSync(path.join(BACKUP_DIR, file));
-    }
-  }
+  require("./services/backup_service").backupService.start();
 })();
