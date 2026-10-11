@@ -99,6 +99,54 @@ function previousImage() {
 
 
 // Upload
+async function prepareDistributionImage(file) {
+    // Keep the request below common 1 MB proxy limits, including multipart headers.
+    const maxBytes = 800 * 1024;
+    if (file.size <= maxBytes) return file;
+    if (file.type && !file.type.startsWith("image/")) {
+        throw new Error("Bitte eine Bilddatei auswählen");
+    }
+    if (file.type === "image/gif") {
+        throw new Error("Dieses GIF ist zu groß. Bitte ein JPG- oder PNG-Bild auswählen.");
+    }
+
+    const image = new Image();
+    const source = URL.createObjectURL(file);
+    try {
+        image.src = source;
+        try {
+            await image.decode();
+        } catch {
+            throw new Error("Das Bildformat konnte nicht gelesen werden. Bitte JPG, PNG oder WebP verwenden.");
+        }
+        const canvas = document.createElement("canvas");
+        const context = canvas.getContext("2d");
+        if (!context) throw new Error("Das Bild konnte nicht für den Upload vorbereitet werden");
+        const format = file.type === "image/jpeg" ? "image/jpeg" : "image/webp";
+        let edge = Math.min(1600, Math.max(image.naturalWidth, image.naturalHeight));
+        const minEdge = Math.min(300, edge);
+
+        while (edge >= minEdge) {
+            const scale = Math.min(1, edge / Math.max(image.naturalWidth, image.naturalHeight));
+            canvas.width = Math.max(1, Math.round(image.naturalWidth * scale));
+            canvas.height = Math.max(1, Math.round(image.naturalHeight * scale));
+            context.drawImage(image, 0, 0, canvas.width, canvas.height);
+            for (const quality of [0.85, 0.7, 0.55]) {
+                const blob = await new Promise(resolve => canvas.toBlob(resolve, format, quality));
+                if (blob && blob.size <= maxBytes) {
+                    const extension = blob.type === "image/jpeg" ? "jpg" : blob.type === "image/webp" ? "webp" : "png";
+                    const name = file.name.replace(/\.[^.]+$/, "");
+                    return new File([blob], `${name}.${extension}`, { type: blob.type });
+                }
+            }
+            edge = Math.floor(edge * 0.75);
+        }
+        throw new Error("Das Bild ist zu groß. Bitte ein kleineres Bild auswählen.");
+    } finally {
+        URL.revokeObjectURL(source);
+    }
+}
+
 async function uploadDistributionImage(valid) {
     if (valid) {
         return;
@@ -109,13 +157,10 @@ async function uploadDistributionImage(valid) {
         alert("Bitte Bild auswählen");
         return;
     }
-    const formData =
-        new FormData();
-    formData.append(
-        "image",
-        input.files[0]
-    );
     try {
+        const image = await prepareDistributionImage(input.files[0]);
+        const formData = new FormData();
+        formData.append("image", image);
         const res = await fetch(
             `/api/distributions_images/${currentDistributionId}/images`,
             {
@@ -125,6 +170,9 @@ async function uploadDistributionImage(valid) {
         );
         const result = await res.json().catch(() => null);
         if (!res.ok) {
+            if (res.status === 413) {
+                throw new Error("Der Server lehnt die Bildgröße ab (HTTP 413). Bitte ein kleineres Bild wählen oder das Upload-Limit des Servers erhöhen.");
+            }
             throw new Error(result?.error || `Bild konnte nicht gespeichert werden (HTTP ${res.status})`);
         }
         if (!result?.success || !result.filename) {
