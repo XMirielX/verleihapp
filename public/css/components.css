@@ -5,6 +5,13 @@
    ============================================================ */
 
 /* Markenname auf Login und Passwortänderung, kein Seitentitel. */
+.auth-logo {
+    display: block;
+    width: 96px;
+    max-width: 100%;
+    height: auto;
+}
+
 .auth-brand {
     font-size: 2em;
     font-weight: bold;

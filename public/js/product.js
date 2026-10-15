@@ -252,15 +252,23 @@ function getMaterialOptionLabel(material) {
 // =====================================================
 function filterProducts(products) {
   const search =
-    document.getElementById("searchInput")?.value.toLowerCase() || "";
+    document.getElementById("searchInput")?.value.trim().toLowerCase() || "";
   const category = document.getElementById("categoryFilter")?.value || "";
   const spec = document.getElementById("specFilter")?.value.toLowerCase() || "";
 
   return products.filter((p) => {
-    const productName = getProductName(p).toLowerCase();
     const productSpec = getProductSpec(p).toLowerCase();
-    const matchSearch =
-      productName.includes(search) || String(p.Code).includes(search);
+    const searchValues = [
+      ...Object.values(p),
+      getProductName(p),
+      productSpec,
+      categoryMap[p.category_id],
+      String(formatStatus(p.stat) ?? "").replace(/<[^>]*>/g, ""),
+      formatDateDE(p.check_date),
+    ];
+    const matchSearch = searchValues.some((value) =>
+      String(value ?? "").toLowerCase().includes(search),
+    );
     const matchCategory = !category || p.category_id == category;
     const matchSpec = !spec || productSpec.includes(spec);
     return matchSearch && matchCategory && matchSpec;

@@ -6,11 +6,13 @@ const path = require("node:path");
 
 function fixture(response) {
   const messages = { textContent: "", className: "" };
+  const notifications = [];
   const input = { value: "123", focus() { context.document.activeElement = this; } };
   const context = {
     console: { error() {} },
     window: { innerWidth: 390 },
     navigator: {},
+    showAppMessage(message, type) { notifications.push({ message, type }); },
     alert() { throw new Error("Unexpected blocking alert"); },
     document: {
       body: { dataset: { mode: "rent" } },
@@ -21,8 +23,27 @@ function fixture(response) {
   vm.createContext(context);
   vm.runInContext(fs.readFileSync(path.join(__dirname, "../public/js/rental.js"), "utf8"), context);
   context.loadRentals = async () => {};
-  return { context, messages, input };
+  return { context, messages, input, notifications };
 }
+
+test("cancellation confirms success with a visible green notification for scan and button", async () => {
+  for (const useScanner of [true, false]) {
+    const f = fixture({ ok: true, json: async () => ({ results: [{ Code: 123, product: "Kabel 001", status: "storniert" }] }) });
+    f.context.document.body.dataset.mode = "storno";
+    if (useScanner) await f.context.handleScan("123");
+    else await f.context.handleRentalAction("/api/rentals/storno");
+    assert.deepEqual(f.notifications, [{ message: "Kabel 001 wurde storniert (123)", type: "success" }]);
+    assert.match(f.messages.className, /message-success/);
+    assert.equal(f.context.document.activeElement, f.input);
+  }
+});
+
+test("rejected cancellations do not show a green notification", async () => {
+  const f = fixture({ ok: true, json: async () => ({ results: [{ Code: 123, status: "nicht verliehen" }] }) });
+  await f.context.handleRentalAction("/api/rentals/storno");
+  assert.equal(f.notifications.length, 0);
+  assert.match(f.messages.className, /message-error/);
+});
 
 test("successful rental, return and cancellation show green inline messages and restore focus", async () => {
   for (const status of ["wird ausgeliehen", "wird erneut ausgeliehen", "zurückgegeben", "storniert"]) {

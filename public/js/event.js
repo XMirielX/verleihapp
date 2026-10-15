@@ -522,7 +522,7 @@ function sortEvents(field) {
   sortDirection *= -1;
 
   allEvents.sort((a, b) => {
-    const rankDiff = getEventSortRank(a) - getEventSortRank(b);
+    const rankDiff = getEventStatusSortRank(a) - getEventStatusSortRank(b);
     if (rankDiff !== 0) return rankDiff;
 
     let valA = a[field];
@@ -542,36 +542,7 @@ function sortEvents(field) {
 }
 
 function sortEventsSmart(events) {
-  return [...events].sort((a, b) => {
-    const rankDiff = getEventSortRank(a) - getEventSortRank(b);
-    if (rankDiff !== 0) return rankDiff;
-
-    const dateA = getEventSortDate(a);
-    const dateB = getEventSortDate(b);
-    return dateA - dateB;
-  });
-}
-
-function getEventSortRank(ev) {
-  if (isEventClosed(ev)) return 3;
-
-  const today = getTodayDate();
-  const start = parseEventDate(ev.start);
-  const end = parseEventDate(ev.ende);
-
-  if (start && end && start <= today && end >= today) return 0;
-  if (start && start > today) return 1;
-  return 2;
-}
-
-function getEventSortDate(ev) {
-  const rank = getEventSortRank(ev);
-  const start = parseEventDate(ev.start);
-  const end = parseEventDate(ev.ende);
-
-  if (rank === 0) return start ? -start.getTime() : 0;
-  if (rank === 1) return start ? start.getTime() : Number.MAX_SAFE_INTEGER;
-  return end ? -end.getTime() : Number.MAX_SAFE_INTEGER;
+  return sortEventsByStatus([...events]);
 }
 
 // =====================================================

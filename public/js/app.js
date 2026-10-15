@@ -101,7 +101,7 @@ const pages = {
     title: "Übersicht",
     group: "Veranstaltung",
     roles: ["admin", "user"],
-    scripts: ["js/event.js"],
+    scripts: ["js/event_selection.js", "js/event.js"],
     init: "initEventPage",
   },
 
@@ -109,7 +109,7 @@ const pages = {
     title: "Hinzufügen",
     group: "Veranstaltung",
     roles: ["admin", "user"],
-    scripts: ["js/event.js"],
+    scripts: ["js/event_selection.js", "js/event.js"],
     init: "initEventPage",
   },
   customers: {

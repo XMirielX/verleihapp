@@ -77,6 +77,7 @@ async function loadCustomers() {
 // =====================================================
 
 function renderCustomers() {
+  customers.sort((a, b) => Number(Boolean(b.stat)) - Number(Boolean(a.stat)));
   renderCustomerTable();
   renderCustomerCards();
 }

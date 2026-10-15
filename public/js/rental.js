@@ -513,8 +513,14 @@ async function handleRentalAction(url) {
       const successStatuses = ["wird ausgeliehen", "wird erneut ausgeliehen", "zurückgegeben", "storniert"];
       const hasErrors = result.results.some(r => !successStatuses.includes(r.status));
       showRentalScanMessage(messages.join("\n"), hasErrors ? "error" : "success");
+      if (url === "/api/rentals/storno" && !hasErrors) {
+        showAppMessage(messages.join("\n"), "success");
+      }
     } else {
       showRentalScanMessage(result.message || "Aktion abgeschlossen");
+      if (url === "/api/rentals/storno") {
+        showAppMessage(result.message || "Storno abgeschlossen", "success");
+      }
     }
     clearProductDetailCacheForEvent(event_id);
     await loadRentals(event_id);
